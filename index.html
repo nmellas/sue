@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUE — Sociedad Universitaria de Economía</title>
+<meta name="description" content="Sociedad Universitaria de Economía: espacio estudiantil de investigación, debate y publicaciones sobre economía.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="inicio">
+
+<div class="ticker-bar" aria-hidden="true">
+  <div class="ticker-track" id="ticker-track">
+    <span>CARGANDO INDICADORES ECONÓMICOS…</span>
+  </div>
+</div>
+
+<header class="site-header">
+  <nav class="nav">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">SUE</span>
+      <span class="brand-text">
+        <span class="name">Sociedad Universitaria</span>
+        <span class="full">DE ECONOMÍA · EST. 1987</span>
+      </span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-label="Abrir menú">MENÚ ☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html" data-page="inicio">Inicio</a></li>
+      <li><a href="quienes-somos.html" data-page="quienes-somos">Quiénes somos</a></li>
+      <li><a href="historia.html" data-page="historia">Historia</a></li>
+      <li><a href="publicaciones.html" data-page="publicaciones">Publicaciones</a></li>
+      <li><a href="contacto.html" data-page="contacto">Contacto</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow">Asociación estudiantil de economía</span>
+        <h1>Donde la teoría se <em>discute</em>, se <em>cuestiona</em> y se pone a prueba.</h1>
+        <p class="hero-sub">Somos una comunidad de estudiantes de economía que investiga, publica y debate sobre los problemas económicos que nos rodean — dentro y fuera del aula.</p>
+        <div class="hero-actions">
+          <a href="quienes-somos.html" class="btn btn-primary">Conoce la sociedad</a>
+          <a href="publicaciones.html" class="btn btn-ghost">Leer publicaciones</a>
+        </div>
+      </div>
+
+      <div class="chart-frame">
+        <svg viewBox="0 0 380 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="chartTitle">
+          <title id="chartTitle">Gráfico de oferta y demanda con punto de equilibrio E</title>
+          <!-- ejes -->
+          <line x1="40" y1="20" x2="40" y2="260" stroke="#172340" stroke-width="1.5"/>
+          <line x1="40" y1="260" x2="360" y2="260" stroke="#172340" stroke-width="1.5"/>
+          <text x="10" y="24" font-family="IBM Plex Mono" font-size="11" fill="#3d4a63">Precio</text>
+          <text x="330" y="278" font-family="IBM Plex Mono" font-size="11" fill="#3d4a63">Cantidad</text>
+
+          <!-- curva de demanda (baja) -->
+          <path class="curve curve-demand" d="M 60 50 L 340 230" fill="none" stroke="#a83b2c" stroke-width="2.5"/>
+          <!-- curva de oferta (sube) -->
+          <path class="curve curve-supply" d="M 60 230 L 340 50" fill="none" stroke="#b98a1f" stroke-width="2.5"/>
+
+          <!-- punto de equilibrio -->
+          <circle cx="200" cy="140" r="5" fill="#172340"/>
+          <line x1="200" y1="140" x2="200" y2="260" stroke="#172340" stroke-width="1" stroke-dasharray="3 4"/>
+          <line x1="40" y1="140" x2="200" y2="140" stroke="#172340" stroke-width="1" stroke-dasharray="3 4"/>
+          <text x="206" y="132" font-family="Fraunces" font-style="italic" font-size="16" fill="#172340">E</text>
+
+          <text x="270" y="70" font-family="IBM Plex Mono" font-size="11" fill="#b98a1f">Oferta</text>
+          <text x="270" y="222" font-family="IBM Plex Mono" font-size="11" fill="#a83b2c">Demanda</text>
+        </svg>
+        <div class="cap">
+          <span>FIG. 01 — MODELO DE MERCADO</span>
+          <span>SUE / 2026</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STAT STRIP -->
+  <section class="stat-strip">
+    <div class="container">
+      <div class="stat">
+        <span class="num">1987</span>
+        <span class="label">Año de fundación</span>
+      </div>
+      <div class="stat">
+        <span class="num">400+</span>
+        <span class="label">Miembros activos</span>
+      </div>
+      <div class="stat">
+        <span class="num">62</span>
+        <span class="label">Ediciones de "El Índice"</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTRO / MISSION -->
+  <section class="section">
+    <div class="container section-head">
+      <span class="eyebrow">Qué hacemos</span>
+      <h2>Un espacio para pensar la economía con rigor y sin solemnidad</h2>
+      <p class="lede">Organizamos investigación aplicada, encuentros de discusión y una publicación periódica que conecta a estudiantes con la actualidad económica del país y la región.</p>
+    </div>
+
+    <div class="container">
+      <div class="card-grid">
+        <a class="card" href="quienes-somos.html#investigacion">
+          <span class="idx">§01</span>
+          <h3>Investigación</h3>
+          <p>Grupos de trabajo que producen análisis sobre temas de coyuntura y política pública.</p>
+        </a>
+        <a class="card" href="publicaciones.html">
+          <span class="idx">§02</span>
+          <h3>Publicaciones</h3>
+          <p>El boletín "El Índice" y documentos de trabajo abiertos a toda la comunidad estudiantil.</p>
+        </a>
+        <a class="card" href="quienes-somos.html#eventos">
+          <span class="idx">§03</span>
+          <h3>Eventos y extensión</h3>
+          <p>Conversatorios, seminarios y el Congreso Estudiantil de Economía cada año.</p>
+        </a>
+        <a class="card" href="contacto.html">
+          <span class="idx">§04</span>
+          <h3>Comunidad</h3>
+          <p>Una red de estudiantes, egresados y académicos que se apoyan mutuamente.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MISSION BAND -->
+  <section class="band">
+    <div class="container">
+      <blockquote>
+        "Creemos que entender la economía no es memorizar modelos, sino aprender a hacer las preguntas correctas sobre el mundo en que vivimos."
+        <cite>— Declaración de principios, SUE</cite>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- LATEST PUBLICATION -->
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Última edición</span>
+      <div class="pub-teaser">
+        <span class="tag">EL ÍNDICE Nº 62</span>
+        <div>
+          <h3 style="margin-bottom:6px;">Inflación, expectativas y el costo de vida estudiantil</h3>
+          <p style="margin:0;font-size:14.5px;">Un análisis sobre cómo la variación de precios afecta el presupuesto de los propios estudiantes, con datos recogidos por la comisión de investigación.</p>
+        </div>
+        <a href="publicaciones.html" class="btn btn-ghost">Leer edición →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>Sociedad Universitaria de Economía</h4>
+        <p>Asociación estudiantil dedicada a la investigación, el debate y la difusión del pensamiento económico. Fundada en 1987.</p>
+      </div>
+      <div>
+        <h4>Navegación</h4>
+        <ul class="footer-links">
+          <li><a href="quienes-somos.html">Quiénes somos</a></li>
+          <li><a href="historia.html">Historia</a></li>
+          <li><a href="publicaciones.html">Publicaciones</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <ul class="footer-links">
+          <li>contacto@sue-economia.org</li>
+          <li>Edificio de Ciencias Económicas, Of. 214</li>
+          <li>Reuniones: martes, 16:00 h</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Sociedad Universitaria de Economía</span>
+      <span>Sitio de la organización estudiantil</span>
+    </div>
+  </div>
+</footer>
+
+<script src="indicators.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

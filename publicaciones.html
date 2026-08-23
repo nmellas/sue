@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Publicaciones — SUE</title>
+<meta name="description" content="Boletín El Índice y documentos de trabajo de la Sociedad Universitaria de Economía.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="publicaciones">
+
+<div class="ticker-bar" aria-hidden="true">
+  <div class="ticker-track" id="ticker-track">
+    <span>CARGANDO INDICADORES ECONÓMICOS…</span>
+  </div>
+</div>
+
+<header class="site-header">
+  <nav class="nav">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">SUE</span>
+      <span class="brand-text">
+        <span class="name">Sociedad Universitaria</span>
+        <span class="full">DE ECONOMÍA · EST. 1987</span>
+      </span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-label="Abrir menú">MENÚ ☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html" data-page="inicio">Inicio</a></li>
+      <li><a href="quienes-somos.html" data-page="quienes-somos">Quiénes somos</a></li>
+      <li><a href="historia.html" data-page="historia">Historia</a></li>
+      <li><a href="publicaciones.html" data-page="publicaciones">Publicaciones</a></li>
+      <li><a href="contacto.html" data-page="contacto">Contacto</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <section class="page-head">
+    <div class="container">
+      <span class="eyebrow">Publicaciones</span>
+      <h1>Artículos, papers y policy briefs escritos por miembros.</h1>
+      <p>Desde 1992 publicamos análisis escritos por estudiantes, revisados por la comisión de publicaciones. Cualquier miembro puede enviar el suyo, sin necesidad de tocar el sitio ni saber programar.</p>
+      <div class="hero-actions" style="margin-top:20px;">
+        <a href="#" data-form-link target="_blank" rel="noopener" class="btn btn-primary">Enviar mi publicación</a>
+        <a href="#como-publicar" class="btn btn-ghost">¿Cómo funciona?</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CÓMO PUBLICAR -->
+  <section class="section" id="como-publicar">
+    <div class="container section-head">
+      <span class="eyebrow">Cómo publicar</span>
+      <h2>Tres pasos, sin código</h2>
+      <p class="lede">El proceso está pensado para que cualquier miembro pueda subir su trabajo desde el celular en un par de minutos.</p>
+    </div>
+    <div class="container">
+      <div class="publish-steps">
+        <div>
+          <span class="n">01</span>
+          <h4>Completa el formulario</h4>
+          <p>Título, tipo de trabajo (artículo, paper o policy brief), autores, resumen breve y el enlace a tu documento.</p>
+        </div>
+        <div>
+          <span class="n">02</span>
+          <h4>La comisión revisa</h4>
+          <p>El equipo editorial de publicaciones da una lectura rápida antes de aprobar la publicación.</p>
+        </div>
+        <div>
+          <span class="n">03</span>
+          <h4>Aparece en la web</h4>
+          <p>Una vez aprobado, tu trabajo se suma automáticamente a esta página — nadie necesita editar el sitio.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <span class="eyebrow">Archivo de publicaciones</span>
+      <div class="filter-row" id="filter-row">
+        <span>Cargando categorías…</span>
+      </div>
+
+      <div class="pub-list" id="pub-list"></div>
+      <div id="pub-empty" style="display:none;">No hay publicaciones en esta categoría todavía.</div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="container" style="display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:center;">
+      <div style="max-width:520px;">
+        <h2 style="color:var(--paper);font-size:26px;">¿Tienes un artículo, paper o policy brief listo?</h2>
+        <p style="color:#b7bccb;margin:0;">La convocatoria está abierta todo el semestre para estudiantes de cualquier carrera.</p>
+      </div>
+      <a href="#" data-form-link target="_blank" rel="noopener" class="btn btn-primary">Enviar propuesta</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>Sociedad Universitaria de Economía</h4>
+        <p>Asociación estudiantil dedicada a la investigación, el debate y la difusión del pensamiento económico. Fundada en 1987.</p>
+      </div>
+      <div>
+        <h4>Navegación</h4>
+        <ul class="footer-links">
+          <li><a href="quienes-somos.html">Quiénes somos</a></li>
+          <li><a href="historia.html">Historia</a></li>
+          <li><a href="publicaciones.html">Publicaciones</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <ul class="footer-links">
+          <li>contacto@sue-economia.org</li>
+          <li>Edificio de Ciencias Económicas, Of. 214</li>
+          <li>Reuniones: martes, 16:00 h</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Sociedad Universitaria de Economía</span>
+      <span>Sitio de la organización estudiantil</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="indicators.js"></script>
+<script src="publicaciones-data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
