@@ -138,20 +138,20 @@
     </div>
   </section>
 
-  <!-- LATEST PUBLICATION -->
-  <section class="section">
-    <div class="container">
-      <span class="eyebrow">Última edición</span>
-      <div class="pub-teaser">
-        <span class="tag">EL ÍNDICE Nº 62</span>
-        <div>
-          <h3 style="margin-bottom:6px;">Inflación, expectativas y el costo de vida estudiantil</h3>
-          <p style="margin:0;font-size:14.5px;">Un análisis sobre cómo la variación de precios afecta el presupuesto de los propios estudiantes, con datos recogidos por la comisión de investigación.</p>
-        </div>
-        <a href="publicaciones.html" class="btn btn-ghost">Leer edición →</a>
+<!-- LATEST PUBLICATION -->
+<section class="section">
+  <div class="container">
+    <span class="eyebrow">Última publicación</span>
+    <div class="pub-teaser" id="latest-pub">
+      <span class="tag" id="latest-pub-tag">CARGANDO…</span>
+      <div>
+        <h3 style="margin-bottom:6px;" id="latest-pub-title">—</h3>
+        <p style="margin:0;font-size:14.5px;" id="latest-pub-resumen"></p>
       </div>
+      <a href="publicaciones.html" class="btn btn-ghost" id="latest-pub-link">Leer →</a>
     </div>
-  </section>
+  </div>
+</section>
 </main>
 
 <footer class="site-footer">
@@ -187,6 +187,10 @@
 </footer>
 
 <script src="indicators.js"></script>
+<script src="script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="indicators.js"></script>
+<script src="ultima-publicacion.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
