@@ -17,6 +17,7 @@
   --gold:       #b98a1f;
   --line:       #c9cdb6;
   --white:      #fbfbf6;
+  --negroclaro: #111111;
 
   --font-display: 'Fraunces', serif;
   --font-body: 'IBM Plex Sans', sans-serif;
@@ -43,7 +44,7 @@ body{
 
 img{max-width:100%;display:block;}
 a{color:inherit;}
-h1,h2,h3,h4{font-family:var(--font-display);margin:0 0 .4em;font-weight:600;letter-spacing:-0.01em;color:var(--ink);}
+h1,h2,h3,h4{font-family:var(--font-display);margin:0 0 .4em;font-weight:600;letter-spacing:-0.01em;color:var(--negroclaro);}
 p{margin:0 0 1em;color:var(--ink-soft);}
 .container{max-width:var(--container);margin:0 auto;padding:0 28px;}
 
