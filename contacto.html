@@ -73,30 +73,57 @@
       </div>
 
       <div>
-              <form 
-          id="contact-form"
-          action="https://formspree.io/f/xqpzonej"
-          method="POST"
-              >
-          <div class="form-field">
-            <label for="nombre">Nombre completo</label>
-            <input type="text" id="nombre" name="nombre" required>
-          </div>
-          <div class="form-field">
-            <label for="correo">Correo electrónico</label>
-            <input type="email" id="correo" name="correo" required>
-          </div>
-          <div class="form-field">
-            <label for="asunto">Asunto</label>
-            <input type="text" id="asunto" name="asunto" placeholder="Ej: Propuesta de artículo, unirme a una comisión...">
-          </div>
-          <div class="form-field">
-            <label for="mensaje">Mensaje</label>
-            <textarea id="mensaje" name="mensaje" rows="6" required></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary">Enviar mensaje</button>
-          <p id="form-status" role="status"></p>
-        </form>
+  <form
+  id="contact-form"
+  action="https://formspree.io/f/xqpzonej"
+  method="POST"
+>
+  <div class="form-field">
+    <label for="nombre">Nombre completo</label>
+    <input
+      type="text"
+      id="nombre"
+      name="nombre"
+      required
+    >
+  </div>
+
+  <div class="form-field">
+    <label for="correo">Correo electrónico</label>
+    <input
+      type="email"
+      id="correo"
+      name="correo"
+      required
+    >
+  </div>
+
+  <div class="form-field">
+    <label for="asunto">Asunto</label>
+    <input
+      type="text"
+      id="asunto"
+      name="asunto"
+      placeholder="Ej: Propuesta de artículo, unirme a una comisión..."
+    >
+  </div>
+
+  <div class="form-field">
+    <label for="mensaje">Mensaje</label>
+    <textarea
+      id="mensaje"
+      name="mensaje"
+      rows="6"
+      required
+    ></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary">
+    Enviar mensaje
+  </button>
+
+  <p id="form-status" role="status"></p>
+</form>
       </div>
     </div>
   </section>
