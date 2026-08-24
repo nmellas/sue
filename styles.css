@@ -470,6 +470,54 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
 }
 
+/* ============ ARTÍCULO (detalle de publicación) ============ */
+.article-container{
+  max-width:760px;margin:0 auto;
+  padding:56px 28px 100px;
+}
+.back-link{
+  font-family:var(--font-mono);font-size:12.5px;letter-spacing:.04em;
+  color:var(--brick);text-decoration:none;display:inline-flex;align-items:center;gap:7px;
+  margin-bottom:36px;
+}
+.back-link::before{content:"←";}
+.back-link:hover{text-decoration:underline;}
+ 
+.article-status{
+  font-family:var(--font-mono);font-size:13.5px;color:var(--ink-faint);
+  text-align:center;padding:80px 0;
+}
+ 
+.article-header{
+  border-bottom:1px solid var(--line);
+  padding-bottom:30px;margin-bottom:38px;
+}
+.article-meta{
+  font-family:var(--font-mono);font-size:12px;letter-spacing:.05em;
+  color:var(--brick);text-transform:uppercase;margin-bottom:16px;
+}
+.article-title{
+  font-size:clamp(30px,4.6vw,46px);
+  line-height:1.08;margin-bottom:18px;
+}
+.article-resumen{
+  font-family:var(--font-display);font-style:italic;font-weight:400;
+  font-size:19px;line-height:1.55;color:var(--ink-soft);margin:0;
+}
+ 
+.article-image{
+  display:block;width:100%;height:auto;margin:34px 0;
+  border:1.5px solid var(--ink);border-radius:6px;
+  box-shadow:6px 6px 0 var(--line);
+}
+ 
+.article-body{
+  font-family:var(--font-body);font-size:17px;line-height:1.85;
+  color:var(--ink-soft);white-space:pre-wrap;
+}
+.article-body p{margin:0 0 1.2em;}
+ 
+
 /* ============ PAGE HEADER (subpages) ============ */
 .page-head{padding:56px 0 40px;border-bottom:1px solid var(--line);}
 .page-head h1{font-size:clamp(30px,4vw,46px);}
