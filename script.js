@@ -15,15 +15,4 @@ document.addEventListener('DOMContentLoaded', function () {
     if (a.getAttribute('data-page') === current) a.classList.add('active');
   });
 
-  // Formulario de contacto (demo, sin backend)
-  var form = document.getElementById('contact-form');
-  if (form) {
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var status = document.getElementById('form-status');
-      status.textContent = 'Mensaje registrado. Te responderemos dentro de dos días hábiles a la dirección indicada.';
-      status.className = 'ok';
-      form.reset();
-    });
-  }
 });
