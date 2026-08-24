@@ -1,3 +1,4 @@
+@@ -1,524 +1,549 @@
 /* ============================================================
    SUE — Sociedad Universitaria de Economía
    Sistema: papel de gráfico + tinta de sello + datos en mono
@@ -6,18 +7,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
 :root{
-  --ink:        #172340;
-  --ink-soft:   #3d4a63;
-  --ink-faint:  #6b7488;
-  --negroclaro: #15171c;
-  --paper:      #edefe3;
-  --paper-2:    #e4e7d6;
+  --ink:        #bf0d1f; /* Rojo principal (extraído de Canva) */
+  --ink-soft:   #960f1b; /* Tono medio/oscuro para contraste y jerarquía */
+  --ink-faint:  #d4636e; /* Tono suave/deslavado para elementos secundarios */
+  --paper:      #FFFAF2; /* Crema principal */
+  --paper-2:    #F5EFE5; /* Crema ligeramente más oscuro */
   --grid-line:  rgba(23,35,64,0.08);
-  --brick:      #a83b2c;
-  --brick-dark: #832c20;
+  --brick:      #CD1729;
+  --brick-dark: #980A18;
   --gold:       #b98a1f;
   --line:       #c9cdb6;
   --white:      #fbfbf6;
+  --negroclaro: #111111;
 
   --font-display: 'Fraunces', serif;
   --font-body: 'IBM Plex Sans', sans-serif;
@@ -42,9 +43,31 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
+/* Incrementamos el tamaño del logo */
+.brand .logo-img {
+  height: 80px; /* Incrementa este valor según el tamaño deseado (ej. 70px - 100px) */
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* Flexbox para alineación correcta y eliminación de límites apretados */
+.brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 5px 0;
+}
+
+.site-header .nav {
+  display: flex;
+  align-items: center;
+  min-height: 90px; /* Asegura suficiente espacio vertical para el logo grande */
+}
+
 img{max-width:100%;display:block;}
 a{color:inherit;}
-h1,h2,h3,h4{font-family:var(--font-display);margin:0 0 .4em;font-weight:600;letter-spacing:-0.01em;color:var(--ink);}
+h1,h2,h3,h4{font-family:var(--font-display);margin:0 0 .4em;font-weight:600;letter-spacing:-0.01em;color:var(--negroclaro);}
 p{margin:0 0 1em;color:var(--ink-soft);}
 .container{max-width:var(--container);margin:0 auto;padding:0 28px;}
 
@@ -450,8 +473,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 /* ============ ARTÍCULO (detalle de publicación) ============ */
 .article-container{
-  max-width:900px;margin:0 auto;
-  padding:56px 32px 100px;
+  max-width:760px;margin:0 auto;
+  padding:56px 28px 100px;
 }
 .back-link{
   font-family:var(--font-mono);font-size:12.5px;letter-spacing:.04em;
@@ -470,23 +493,35 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   border-bottom:1px solid var(--line);
   padding-bottom:30px;margin-bottom:38px;
 }
+.article-meta{
+  font-family:var(--font-mono);font-size:12px;letter-spacing:.05em;
+  color:var(--brick);text-transform:uppercase;margin-bottom:16px;
+}
+.article-title{
+  font-size:clamp(30px,4.6vw,46px);
+  line-height:1.08;margin-bottom:18px;
 h1.article-title{
-  font-family:var(--font-display) !important;
-  font-weight:600 !important;
-  color:var(--negroclaro) !important;
-  font-size:clamp(30px,4.2vw,48px) !important;
-  line-height:1.08;
+  font-family:var(--font-display);
+  font-weight:600;
+  color:var(--negroclaro);
+  font-size:clamp(38px,5.6vw,64px);
+  line-height:1.03;
   letter-spacing:-0.01em;
   margin:0 0 20px;
 }
+.article-resumen{
 .article-meta{
   font-family:var(--font-mono);font-size:12px;letter-spacing:.05em;
   color:var(--brick);text-transform:uppercase;margin-bottom:0;
 }
 p.article-resumen{
   font-family:var(--font-display);font-style:italic;font-weight:400;
+  font-size:19px;line-height:1.55;color:var(--ink-soft);margin:0;
   font-size:17px;line-height:1.55;color:var(--ink-soft);margin:18px 0 0;
 }
+ 
+.article-image{
+  display:block;width:100%;height:auto;margin:34px 0;
 
 .article-hero-image{
   display:block;width:100%;
@@ -512,9 +547,10 @@ p.article-resumen{
 
 .article-body{
   font-family:var(--font-body);font-size:17px;line-height:1.85;
-  color:var(--ink-soft);
+  color:var(--ink-soft);white-space:pre-wrap;
 }
 .article-body p{margin:0 0 1.2em;}
+
 
 /* ============ PAGE HEADER (subpages) ============ */
 .page-head{padding:56px 0 40px;border-bottom:1px solid var(--line);}
