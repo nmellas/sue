@@ -178,11 +178,15 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   }
   .nav-links.open{display:flex;}
   .nav-links a{
-    padding:16px 18px;        /* antes: 12px 14px */
-    font-size:16px;           /* antes heredaba 13px */
+    padding:20px 20px;        /* antes: 16px 18px */
+    font-size:19px;           /* antes: 16px */
     letter-spacing:.01em;
   }
-  .nav-toggle{display:inline-flex;align-items:center;gap:8px;}
+  .nav-toggle{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:16px;
+    padding:12px 16px;
+  }
 }
 /* ============ BUTTONS ============ */
 .btn{
