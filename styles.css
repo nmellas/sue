@@ -169,7 +169,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .nav-links a.active{color:var(--brick);font-weight:600;}
   .nav-toggle{
     display:inline-flex;align-items:center;gap:8px;
-    font-size:28px;padding:6px 10px;line-height:1;
+  font-size:22px;padding:8px 12px;line-height:1;
     color:var(--brick);border-color:var(--brick);
   }
 
