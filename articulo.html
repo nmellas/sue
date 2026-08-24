@@ -129,6 +129,23 @@
       .join("");
   }
 
+  // Busca una columna de la fila sin importar mayúsculas/minúsculas
+  // ni espacios extra en el encabezado (Google Forms a veces genera
+  // el nombre de columna distinto a lo que uno espera).
+  function getField(row, candidates) {
+    var keys = Object.keys(row);
+    for (var i = 0; i < candidates.length; i++) {
+      var target = candidates[i].trim().toLowerCase();
+      for (var j = 0; j < keys.length; j++) {
+        if (keys[j].trim().toLowerCase() === target) {
+          var val = row[keys[j]];
+          if (val && val.trim() !== "") return val.trim();
+        }
+      }
+    }
+    return "";
+  }
+
   function getParam(param) {
     var urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
@@ -171,9 +188,16 @@
         document.getElementById("art-body").innerHTML = renderBody(row["Contenido"] || row["Texto"] || row["Cuerpo"] || "");
 
         // Manejo de gráficos o imágenes si el usuario adjuntó enlace
-        var imgUrl = row["Imagen"] || row["Grafico"] || row["Gráfico"] || row["Enlace a imagen"] || "";
-        if (imgUrl.trim() !== "") {
+        var imgUrl = getField(row, [
+          "Imagen", "Grafico", "Gráfico", "Enlace a imagen",
+          "Imagen de portada", "Portada", "Foto", "Imagen principal"
+        ]);
+        if (imgUrl !== "") {
           var imgEl = document.getElementById("art-image");
+          imgEl.onerror = function () {
+            console.warn("No se pudo cargar la imagen de portada:", imgUrl);
+            imgEl.style.display = "none";
+          };
           imgEl.src = imgUrl;
           imgEl.style.display = "block";
         }
