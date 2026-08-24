@@ -31,10 +31,8 @@
 html{scroll-behavior:smooth;}
 body{
   margin:0;
-  background:
-    repeating-linear-gradient(0deg, var(--grid-line) 0px, var(--grid-line) 1px, transparent 1px, transparent 32px),
-    repeating-linear-gradient(90deg, var(--grid-line) 0px, var(--grid-line) 1px, transparent 1px, transparent 32px),
-    var(--paper);
+  background: var(--paper);
+   
   color:var(--ink);
   font-family:var(--font-body);
   font-size:16px;
