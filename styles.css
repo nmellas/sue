@@ -44,7 +44,7 @@ body{
 
 /* Incrementamos el tamaño del logo */
 .brand .logo-img {
-  height: 80px; /* Incrementa este valor según el tamaño deseado (ej. 70px - 100px) */
+  height: 65px; /* Incrementa este valor según el tamaño deseado (ej. 70px - 100px) */
   width: auto;
   display: block;
   object-fit: contain;
