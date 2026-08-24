@@ -44,10 +44,16 @@ body{
 
 /* Incrementamos el tamaño del logo */
 .brand .logo-img {
-  height: 65px; /* Incrementa este valor según el tamaño deseado (ej. 70px - 100px) */
+  height: 80px;
   width: auto;
   display: block;
   object-fit: contain;
+}
+
+@media (max-width: 860px) {
+  .brand .logo-img {
+    height: 48px; /* ajusta este valor a tu gusto */
+  }
 }
 
 /* Flexbox para alineación correcta y eliminación de límites apretados */
