@@ -178,8 +178,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   }
   .nav-links.open{display:flex;}
   .nav-links a{
-    padding:20px 20px;        /* antes: 16px 18px */
-    font-size:19px;           /* antes: 16px */
+    display:block;          /* ← clave: hace que ocupe todo el ancho */
+    width:100%;              /* ← clave: hitbox de borde a borde */
+    padding:24px 24px;       /* antes: 20px 20px */
+    font-size:21px;          /* antes: 19px */
     letter-spacing:.01em;
   }
   .nav-toggle{
