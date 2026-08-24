@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cargando artículo... — SUE</title>
 <meta name="description" content="Artículo, paper o policy brief publicado por la Sociedad Universitaria de Economía.">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=2">
 
 <!-- Librerías para LaTeX (KaTeX) y CSV Parser (PapaParse) -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
@@ -47,13 +47,13 @@
   <div id="loading" class="article-status">Cargando artículo…</div>
 
   <article id="article-content" style="display:none;">
+    <img id="art-image" class="article-hero-image" style="display:none;" src="" alt="Imagen del artículo">
+
     <div class="article-header">
       <h1 class="article-title" id="art-title"></h1>
       <div class="article-meta" id="art-meta"></div>
       <p class="article-resumen" id="art-resumen"></p>
     </div>
-
-    <img id="art-image" class="article-image" style="display:none;" src="" alt="Gráfico del artículo">
 
     <div class="article-body" id="art-body"></div>
   </article>
@@ -96,6 +96,39 @@
 <script>
   var CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTMkfD6_sIOPrrsX4kHJp2Xrwn5TbcA-okC831-t9ZJB2O0wRe4BvjBnC1SdOyzLrPQCWZbA9vek3AV/pub?gid=439785421&single=true&output=csv";
 
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  // Convierte el texto del campo "Contenido" en párrafos, respetando
+  // saltos de línea, y transforma cualquier línea con el formato
+  // ![descripción](URL_DE_LA_IMAGEN) en una imagen dentro de la columna.
+  function renderBody(raw) {
+    if (!raw) return "";
+    var blocks = raw.split(/\n\s*\n/);
+    return blocks
+      .map(function (block) {
+        var trimmed = block.trim();
+        var imgMatch = trimmed.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+        if (imgMatch) {
+          var alt = escapeHtml(imgMatch[1]);
+          var url = escapeHtml(imgMatch[2].trim());
+          return (
+            '<figure class="article-body-figure">' +
+              '<img class="article-body-image" src="' + url + '" alt="' + (alt || "Imagen del artículo") + '" loading="lazy">' +
+              (alt ? "<figcaption>" + alt + "</figcaption>" : "") +
+            "</figure>"
+          );
+        }
+        var withBreaks = escapeHtml(trimmed).replace(/\n/g, "<br>");
+        return "<p>" + withBreaks + "</p>";
+      })
+      .join("");
+  }
+
   function getParam(param) {
     var urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
@@ -135,7 +168,7 @@
 
         document.getElementById("art-title").innerText = row["Título"] || row["Titulo"] || "";
         document.getElementById("art-resumen").innerText = row["Resumen"] || "";
-        document.getElementById("art-body").innerText = row["Contenido"] || row["Texto"] || row["Cuerpo"] || "";
+        document.getElementById("art-body").innerHTML = renderBody(row["Contenido"] || row["Texto"] || row["Cuerpo"] || "");
 
         // Manejo de gráficos o imágenes si el usuario adjuntó enlace
         var imgUrl = row["Imagen"] || row["Grafico"] || row["Gráfico"] || row["Enlace a imagen"] || "";
