@@ -1,56 +1,98 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cargando artículo... — SUE</title>
-  
-  <!-- CSS del sitio -->
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cargando artículo... — SUE</title>
+<meta name="description" content="Artículo, paper o policy brief publicado por la Sociedad Universitaria de Economía.">
+<link rel="stylesheet" href="styles.css">
 
-  <!-- Librerías para LaTeX (KaTeX) y CSV Parser (PapaParse) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-
-  <style>
-    .article-container { max-width: 780px; margin: 40px auto; padding: 0 20px; }
-    .article-header { border-bottom: 1px solid var(--line); padding-bottom: 24px; margin-bottom: 32px; }
-    .article-meta { font-family: var(--font-mono); font-size: 13px; color: var(--ink-faint); margin-bottom: 12px; }
-    .article-title { font-size: clamp(28px, 4vw, 42px); line-height: 1.15; margin-bottom: 16px; }
-    .article-body { font-size: 17px; line-height: 1.7; color: var(--ink-soft); white-space: pre-wrap; }
-    .article-image { margin: 28px 0; border: 1px solid var(--line); border-radius: 4px; max-width: 100%; height: auto; }
-  </style>
+<!-- Librerías para LaTeX (KaTeX) y CSV Parser (PapaParse) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 </head>
-<body>
+<body data-page="publicaciones">
 
-  <header class="site-header">
-    <nav class="nav">
-      <a href="index.html" class="brand">
-        <img src="logofinal_sue.png" alt="Sociedad Universitaria de Economía" class="logo-img">
-      </a>
-    </nav>
-  </header>
+<div class="ticker-bar" aria-hidden="true">
+  <div class="ticker-track" id="ticker-track">
+    <span>CARGANDO INDICADORES ECONÓMICOS…</span>
+  </div>
+</div>
 
-  <main class="article-container">
-    <a href="publicaciones.html" style="font-family: var(--font-mono); text-decoration: none; color: var(--brick); display: inline-block; margin-bottom: 24px;">← Volver a publicaciones</a>
-    
-    <div id="loading" style="font-family: var(--font-mono);">Cargando artículo...</div>
-    
-    <article id="article-content" style="display: none;">
-      <div class="article-header">
-        <div class="article-meta" id="art-meta"></div>
-        <h1 class="article-title" id="art-title"></h1>
-        <p style="font-style: italic; font-size: 18px;" id="art-resumen"></p>
+<header class="site-header">
+  <nav class="nav">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">SUE</span>
+      <span class="brand-text">
+        <span class="name">Sociedad Universitaria</span>
+        <span class="full">DE ECONOMÍA · EST. 1987</span>
+      </span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-label="Abrir menú">MENÚ ☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html" data-page="inicio">Inicio</a></li>
+      <li><a href="quienes-somos.html" data-page="quienes-somos">Quiénes somos</a></li>
+      <li><a href="historia.html" data-page="historia">Historia</a></li>
+      <li><a href="publicaciones.html" data-page="publicaciones">Publicaciones</a></li>
+      <li><a href="contacto.html" data-page="contacto">Contacto</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="article-container">
+  <a href="publicaciones.html" class="back-link">Volver a publicaciones</a>
+
+  <div id="loading" class="article-status">Cargando artículo…</div>
+
+  <article id="article-content" style="display:none;">
+    <div class="article-header">
+      <div class="article-meta" id="art-meta"></div>
+      <h1 class="article-title" id="art-title"></h1>
+      <p class="article-resumen" id="art-resumen"></p>
+    </div>
+
+    <img id="art-image" class="article-image" style="display:none;" src="" alt="Gráfico del artículo">
+
+    <div class="article-body" id="art-body"></div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>Sociedad Universitaria de Economía</h4>
+        <p>Asociación estudiantil dedicada a la investigación, el debate y la difusión del pensamiento económico. Fundada en 1987.</p>
       </div>
+      <div>
+        <h4>Navegación</h4>
+        <ul class="footer-links">
+          <li><a href="quienes-somos.html">Quiénes somos</a></li>
+          <li><a href="historia.html">Historia</a></li>
+          <li><a href="publicaciones.html">Publicaciones</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <ul class="footer-links">
+          <li>contacto@sue-economia.org</li>
+          <li>Edificio de Ciencias Económicas, Of. 214</li>
+          <li>Reuniones: martes, 16:00 h</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Sociedad Universitaria de Economía</span>
+      <span>Sitio de la organización estudiantil</span>
+    </div>
+  </div>
+</footer>
 
-      <img id="art-image" class="article-image" style="display: none;" src="" alt="Gráfico del artículo">
-
-      <div class="article-body" id="art-body"></div>
-    </article>
-  </main>
-
+<script src="indicators.js"></script>
+<script src="script.js"></script>
 <script>
   var CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTMkfD6_sIOPrrsX4kHJp2Xrwn5TbcA-okC831-t9ZJB2O0wRe4BvjBnC1SdOyzLrPQCWZbA9vek3AV/pub?gid=439785421&single=true&output=csv";
 
@@ -74,7 +116,7 @@
       })
       .then(csvText => {
         var parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
-        
+
         // Buscamos la fila correspondiente al ID de la hoja de cálculo
         var row = parsed[id];
 
@@ -85,7 +127,7 @@
 
         // Asignación de valores
         document.title = (row["Título"] || row["Titulo"] || "Artículo") + " — SUE";
-        
+
         var tipo = (row["Tipo"] || "ARTÍCULO").toUpperCase();
         var autor = row["Autor"] || row["Autor(es)"] || "Anónimo";
         var fecha = row["Fecha"] || row["Marca temporal"] || "";
