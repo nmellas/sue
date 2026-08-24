@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cargando artículo... — SUE</title>
+  
+  <!-- CSS del sitio -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Librerías para LaTeX (KaTeX) y CSV Parser (PapaParse) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+
+  <style>
+    .article-container { max-width: 780px; margin: 40px auto; padding: 0 20px; }
+    .article-header { border-bottom: 1px solid var(--line); padding-bottom: 24px; margin-bottom: 32px; }
+    .article-meta { font-family: var(--font-mono); font-size: 13px; color: var(--ink-faint); margin-bottom: 12px; }
+    .article-title { font-size: clamp(28px, 4vw, 42px); line-height: 1.15; margin-bottom: 16px; }
+    .article-body { font-size: 17px; line-height: 1.7; color: var(--ink-soft); white-space: pre-wrap; }
+    .article-image { margin: 28px 0; border: 1px solid var(--line); border-radius: 4px; max-width: 100%; height: auto; }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <nav class="nav">
+      <a href="index.html" class="brand">
+        <img src="logofinal_sue.png" alt="Sociedad Universitaria de Economía" class="logo-img">
+      </a>
+    </nav>
+  </header>
+
+  <main class="article-container">
+    <a href="publicaciones.html" style="font-family: var(--font-mono); text-decoration: none; color: var(--brick); display: inline-block; margin-bottom: 24px;">← Volver a publicaciones</a>
+    
+    <div id="loading" style="font-family: var(--font-mono);">Cargando artículo...</div>
+    
+    <article id="article-content" style="display: none;">
+      <div class="article-header">
+        <div class="article-meta" id="art-meta"></div>
+        <h1 class="article-title" id="art-title"></h1>
+        <p style="font-style: italic; font-size: 18px;" id="art-resumen"></p>
+      </div>
+
+      <img id="art-image" class="article-image" style="display: none;" src="" alt="Gráfico del artículo">
+
+      <div class="article-body" id="art-body"></div>
+    </article>
+  </main>
+
+  <script>
+    var CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTMkfD6_sIOPrrsX4kHJp2Xrwn5TbcA-okC831-t9ZJB2O0wRe4BvjBnC1SdOyzLrPQCWZbA9vek3AV/pub?gid=439785421&single=true&output=csv";
+
+    function getParam(param) {
+      var urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    function init() {
+      var id = getParam("id");
+      if (!id || !CSV_URL) {
+        document.getElementById("loading").innerText = "Artículo no encontrado.";
+        return;
+      }
+
+      fetch(CSV_URL)
+        .then(res => res.text())
+        .then(csvText => {
+          var parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
+          var row = parsed[id];
+
+          if (!row || (row["Estado"] || "").trim().toLowerCase() !== "publicado") {
+            document.getElementById("loading").innerText = "Artículo no disponible o no publicado.";
+            return;
+          }
+
+          document.title = row["Título"] + " — SUE";
+          document.getElementById("art-meta").innerText = `${(row["Tipo"] || "ARTÍCULO").toUpperCase()} · ${row["Autor"] || "Anónimo"} · ${row["Marca temporal"] || row["Fecha"] || ""}`;
+          document.getElementById("art-title").innerText = row["Título"] || row["Titulo"];
+          document.getElementById("art-resumen").innerText = row["Resumen"] || "";
+          document.getElementById("art-body").innerText = row["Contenido"] || "";
+
+          if (row["Imagen"] || row["Grafico"]) {
+            var imgEl = document.getElementById("art-image");
+            imgEl.src = row["Imagen"] || row["Grafico"];
+            imgEl.style.display = "block";
+          }
+
+          document.getElementById("loading").style.display = "none";
+          document.getElementById("article-content").style.display = "block";
+
+          // Renderizar ecuaciones de LaTeX ($...$ para inline, $$...$$ para bloque)
+          renderMathInElement(document.getElementById("art-body"), {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false}
+            ],
+            throwOnError : false
+          });
+        })
+        .catch(() => {
+          document.getElementById("loading").innerText = "Error al cargar el contenido.";
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+</html>
