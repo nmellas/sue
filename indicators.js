@@ -10,22 +10,13 @@
     uf: 'UF',
     utm: 'UTM',
     ipc: 'IPC (VAR. MENSUAL)',
-    tpm: 'TPM'
+    tpm: 'TPM',
+    imacec: 'IMACEC',
+    libra_cobre: 'LIBRA DE COBRE'
   };
 
   // Orden en que queremos mostrar los indicadores
-  var ORDER = ['dolar', 'uf', 'utm', 'euro', 'ipc', 'tpm'];
-
-  // Valores de respaldo, solo por si la API no responde (ej. sin conexión).
-  // Se muestran igual para que la cinta nunca quede vacía.
-  var FALLBACK = {
-    dolar: { valor: 916 },
-    uf: { valor: 40804 },
-    utm: { valor: 71506 },
-    euro: { valor: 990 },
-    ipc: { valor: 0.4 },
-    tpm: { valor: 5.5 }
-  };
+  var ORDER = ['dolar', 'uf', 'utm', 'euro', 'ipc', 'tpm', 'imacec', 'libra_cobre'];
 
   function formatValue(key, valor) {
     if (key === 'dolar' || key === 'euro') {
@@ -34,8 +25,11 @@
     if (key === 'uf' || key === 'utm') {
       return '$' + valor.toLocaleString('es-CL', { maximumFractionDigits: 2 });
     }
-    if (key === 'ipc' || key === 'tpm') {
+    if (key === 'ipc' || key === 'tpm' || key === 'imacec') {
       return valor.toLocaleString('es-CL', { maximumFractionDigits: 2 }) + '%';
+    }
+    if (key === 'libra_cobre') {
+      return 'US$' + valor.toLocaleString('es-CL', { maximumFractionDigits: 2 });
     }
     return valor;
   }
@@ -46,10 +40,6 @@
       if (!entry || typeof entry.valor === 'undefined') return '';
       return '<span>' + LABELS[key] + ' <b>' + formatValue(key, entry.valor) + '</b></span>';
     }).filter(Boolean);
-
-    // Un par de datos institucionales al final, para no perder el tono propio
-    spans.push('<span>PRÓXIMO CONVERSATORIO: <b>MARTES 16:00</b></span>');
-    spans.push('<span>CONVOCATORIA DE ARTÍCULOS ABIERTA</span>');
 
     return spans.join('');
   }
@@ -62,6 +52,11 @@
     track.innerHTML = html + html;
   }
 
+  function hideTicker() {
+    var bar = document.querySelector('.ticker-bar');
+    if (bar) bar.style.display = 'none';
+  }
+
   fetch('https://mindicador.cl/api')
     .then(function (res) {
       if (!res.ok) throw new Error('respuesta no válida');
@@ -71,7 +66,7 @@
       render(data);
     })
     .catch(function () {
-      // sin conexión a la API: se muestran valores de respaldo
-      render(FALLBACK);
+      // sin conexión a la API: se oculta la cinta en vez de mostrar datos viejos
+      hideTicker();
     });
 })();
