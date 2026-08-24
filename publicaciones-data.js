@@ -21,11 +21,11 @@
 var CONFIG = {
   // Pega aquí el enlace CSV publicado de la Google Sheet de respuestas.
   // Ejemplo: "https://docs.google.com/spreadsheets/d/e/XXXXX/pub?output=csv"
-  CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTMkfD6_sIOPrrsX4kHJp2Xrwn5TbcA-okC831-t9ZJB2O0wRe4BvjBnC1SdOyzLrPQCWZbA9vek3AV/pub?gid=439785421&single=true&output=csv",
+  CSV_URL: "",
 
   // Pega aquí el enlace del Google Form para que el botón
   // "Enviar mi publicación" funcione.
-  FORM_URL: "https://docs.google.com/forms/d/e/1FAIpQLSeyn8K_IyiogET0SfjAN3QtnSD-OzMrl2S5O4TJTppPW0HG7w/viewform?usp=dialog"
+  FORM_URL: ""
 };
 
 // Publicaciones de ejemplo (se usan solo si CONFIG.CSV_URL está vacío)
@@ -119,7 +119,7 @@ var FALLBACK_PUBLICATIONS = [
               "<h3>" + escapeHtml(pub.titulo) + "</h3>" +
               "<p>" + escapeHtml(pub.resumen) + "</p>" +
             "</div>" +
-            '<a class="read" href="' + escapeHtml(pub.link || "#") + '" target="_blank" rel="noopener">Leer →</a>' +
+            '<a class="read" href="' + escapeHtml(pub.link || "#") + '">Leer →</a>' +
           "</div>"
         );
       })
@@ -155,23 +155,46 @@ var FALLBACK_PUBLICATIONS = [
     renderList(items);
   }
 
+  // Busca una columna sin importar mayúsculas/minúsculas ni espacios
+  // extra en el encabezado (misma lógica que usa articulo.html).
+  function getField(row, candidates) {
+    var keys = Object.keys(row);
+    for (var i = 0; i < candidates.length; i++) {
+      var target = candidates[i].trim().toLowerCase();
+      for (var j = 0; j < keys.length; j++) {
+        if (keys[j].trim().toLowerCase() === target) {
+          var val = row[keys[j]];
+          if (val && val.trim() !== "") return val.trim();
+        }
+      }
+    }
+    return "";
+  }
+
   function parseCsvRows(csvText) {
     var parsed = window.Papa
       ? Papa.parse(csvText, { header: true, skipEmptyLines: true })
       : { data: [] };
+
+    // Guardamos la posición original de cada fila (antes de filtrar)
+    // porque articulo.html usa esa misma posición como su "id" en la URL.
     return parsed.data
-      .filter(function (row) {
-        return (row["Estado"] || "").trim().toLowerCase() === "publicado";
+      .map(function (row, originalIndex) {
+        return { row: row, originalIndex: originalIndex };
       })
-      .map(function (row) {
+      .filter(function (entry) {
+        return getField(entry.row, ["Estado"]).toLowerCase() === "publicado";
+      })
+      .map(function (entry) {
+        var row = entry.row;
         return {
-          tipo: row["Tipo"] || "Artículo",
-          titulo: row["Título"] || row["Titulo"] || "Sin título",
-          autor: row["Autor"] || row["Autor(es)"] || "",
-          fecha: row["Fecha"] || row["Marca temporal"] || "",
-          categoria: row["Categoría"] || row["Categoria"] || "",
-          resumen: row["Resumen"] || "",
-          link: row["Enlace"] || row["Enlace al documento"] || "#"
+          tipo: getField(row, ["Tipo"]) || "Artículo",
+          titulo: getField(row, ["Título", "Titulo"]) || "Sin título",
+          autor: getField(row, ["Autor", "Autor(es)"]),
+          fecha: getField(row, ["Fecha", "Marca temporal"]),
+          categoria: getField(row, ["Categoría", "Categoria"]),
+          resumen: getField(row, ["Resumen"]),
+          link: "articulo.html?id=" + entry.originalIndex
         };
       })
       .reverse(); // las respuestas más nuevas quedan primero
