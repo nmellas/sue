@@ -159,7 +159,7 @@
       return;
     }
 
-    fetch(CSV_URL)
+    fetch(CSV_URL + (CSV_URL.indexOf("?") > -1 ? "&" : "?") + "cachebust=" + Date.now())
       .then(res => {
         if (!res.ok) throw new Error("Error en red");
         return res.text();
@@ -170,22 +170,24 @@
         // Buscamos la fila correspondiente al ID de la hoja de cálculo
         var row = parsed[id];
 
-        if (!row || (row["Estado"] || "").trim().toLowerCase() !== "publicado") {
+        if (!row || getField(row, ["Estado"]).toLowerCase() !== "publicado") {
           document.getElementById("loading").innerText = "Artículo no disponible o no publicado.";
           return;
         }
 
-        // Asignación de valores
-        document.title = (row["Título"] || row["Titulo"] || "Artículo") + " — SUE";
+        // Asignación de valores (búsqueda flexible: no importan mayúsculas,
+        // tildes de más/menos o espacios extra en el encabezado de la Sheet)
+        var titulo = getField(row, ["Título", "Titulo", "TItulo"]);
+        document.title = (titulo || "Artículo") + " — SUE";
 
-        var tipo = (row["Tipo"] || "ARTÍCULO").toUpperCase();
-        var autor = row["Autor"] || row["Autor(es)"] || "Anónimo";
-        var fecha = row["Fecha"] || row["Marca temporal"] || "";
+        var tipo = (getField(row, ["Tipo"]) || "ARTÍCULO").toUpperCase();
+        var autor = getField(row, ["Autor", "Autor(es)"]) || "Anónimo";
+        var fecha = getField(row, ["Fecha", "Marca temporal"]);
         document.getElementById("art-meta").innerText = `${tipo} · ${autor} · ${fecha}`;
 
-        document.getElementById("art-title").innerText = row["Título"] || row["Titulo"] || "";
-        document.getElementById("art-resumen").innerText = row["Resumen"] || "";
-        document.getElementById("art-body").innerHTML = renderBody(row["Contenido"] || row["Texto"] || row["Cuerpo"] || "");
+        document.getElementById("art-title").innerText = titulo;
+        document.getElementById("art-resumen").innerText = getField(row, ["Resumen"]);
+        document.getElementById("art-body").innerHTML = renderBody(getField(row, ["Contenido", "Texto", "Cuerpo"]));
 
         // Manejo de gráficos o imágenes si el usuario adjuntó enlace
         var imgUrl = getField(row, [
