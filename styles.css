@@ -120,6 +120,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   from{transform:translateX(0);}
   to{transform:translateX(-50%);}
 }
+@media (max-width:860px){
+  .ticker-track{
+    animation-duration:14s; /* antes 32s: se ve más texto por segundo en pantallas chicas */
+  }
+}
 
 /* ============ NAV ============ */
 .site-header{
