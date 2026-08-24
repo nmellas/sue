@@ -42,10 +42,26 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
+/* Incrementamos el tamaño del logo */
 .brand .logo-img {
-  max-height: 50px; /* Ajusta la altura según las necesidades de tu layout */
+  height: 80px; /* Incrementa este valor según el tamaño deseado (ej. 70px - 100px) */
   width: auto;
   display: block;
+  object-fit: contain;
+}
+
+/* Flexbox para alineación correcta y eliminación de límites apretados */
+.brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 5px 0;
+}
+
+.site-header .nav {
+  display: flex;
+  align-items: center;
+  min-height: 90px; /* Asegura suficiente espacio vertical para el logo grande */
 }
 
 img{max-width:100%;display:block;}
