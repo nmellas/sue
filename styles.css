@@ -1,4 +1,3 @@
-@@ -1,524 +1,549 @@
 /* ============================================================
    SUE — Sociedad Universitaria de Economía
    Sistema: papel de gráfico + tinta de sello + datos en mono
@@ -473,8 +472,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 /* ============ ARTÍCULO (detalle de publicación) ============ */
 .article-container{
-  max-width:760px;margin:0 auto;
-  padding:56px 28px 100px;
+  max-width:900px;margin:0 auto;
+  padding:56px 32px 100px;
 }
 .back-link{
   font-family:var(--font-mono);font-size:12.5px;letter-spacing:.04em;
@@ -501,11 +500,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   font-size:clamp(30px,4.6vw,46px);
   line-height:1.08;margin-bottom:18px;
 h1.article-title{
-  font-family:var(--font-display);
-  font-weight:600;
-  color:var(--negroclaro);
-  font-size:clamp(38px,5.6vw,64px);
-  line-height:1.03;
+  font-family:var(--font-display) !important;
+  font-weight:600 !important;
+  color:var(--negroclaro) !important;
+  font-size:clamp(30px,4.2vw,48px) !important;
+  line-height:1.08;
   letter-spacing:-0.01em;
   margin:0 0 20px;
 }
