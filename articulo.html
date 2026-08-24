@@ -51,48 +51,63 @@
     </article>
   </main>
 
-  <script>
-    var CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTMkfD6_sIOPrrsX4kHJp2Xrwn5TbcA-okC831-t9ZJB2O0wRe4BvjBnC1SdOyzLrPQCWZbA9vek3AV/pub?gid=439785421&single=true&output=csv";
+<script>
+  var CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTMkfD6_sIOPrrsX4kHJp2Xrwn5TbcA-okC831-t9ZJB2O0wRe4BvjBnC1SdOyzLrPQCWZbA9vek3AV/pub?gid=439785421&single=true&output=csv";
 
-    function getParam(param) {
-      var urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
+  function getParam(param) {
+    var urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+
+  function init() {
+    var id = parseInt(getParam("id"), 10);
+
+    if (isNaN(id) || !CSV_URL) {
+      document.getElementById("loading").innerText = "Artículo no encontrado o enlace inválido.";
+      return;
     }
 
-    function init() {
-      var id = getParam("id");
-      if (!id || !CSV_URL) {
-        document.getElementById("loading").innerText = "Artículo no encontrado.";
-        return;
-      }
+    fetch(CSV_URL)
+      .then(res => {
+        if (!res.ok) throw new Error("Error en red");
+        return res.text();
+      })
+      .then(csvText => {
+        var parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
+        
+        // Buscamos la fila correspondiente al ID de la hoja de cálculo
+        var row = parsed[id];
 
-      fetch(CSV_URL)
-        .then(res => res.text())
-        .then(csvText => {
-          var parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
-          var row = parsed[id];
+        if (!row || (row["Estado"] || "").trim().toLowerCase() !== "publicado") {
+          document.getElementById("loading").innerText = "Artículo no disponible o no publicado.";
+          return;
+        }
 
-          if (!row || (row["Estado"] || "").trim().toLowerCase() !== "publicado") {
-            document.getElementById("loading").innerText = "Artículo no disponible o no publicado.";
-            return;
-          }
+        // Asignación de valores
+        document.title = (row["Título"] || row["Titulo"] || "Artículo") + " — SUE";
+        
+        var tipo = (row["Tipo"] || "ARTÍCULO").toUpperCase();
+        var autor = row["Autor"] || row["Autor(es)"] || "Anónimo";
+        var fecha = row["Fecha"] || row["Marca temporal"] || "";
+        document.getElementById("art-meta").innerText = `${tipo} · ${autor} · ${fecha}`;
 
-          document.title = row["Título"] + " — SUE";
-          document.getElementById("art-meta").innerText = `${(row["Tipo"] || "ARTÍCULO").toUpperCase()} · ${row["Autor"] || "Anónimo"} · ${row["Marca temporal"] || row["Fecha"] || ""}`;
-          document.getElementById("art-title").innerText = row["Título"] || row["Titulo"];
-          document.getElementById("art-resumen").innerText = row["Resumen"] || "";
-          document.getElementById("art-body").innerText = row["Contenido"] || "";
+        document.getElementById("art-title").innerText = row["Título"] || row["Titulo"] || "";
+        document.getElementById("art-resumen").innerText = row["Resumen"] || "";
+        document.getElementById("art-body").innerText = row["Contenido"] || row["Texto"] || row["Cuerpo"] || "";
 
-          if (row["Imagen"] || row["Grafico"]) {
-            var imgEl = document.getElementById("art-image");
-            imgEl.src = row["Imagen"] || row["Grafico"];
-            imgEl.style.display = "block";
-          }
+        // Manejo de gráficos o imágenes si el usuario adjuntó enlace
+        var imgUrl = row["Imagen"] || row["Grafico"] || row["Gráfico"] || row["Enlace a imagen"] || "";
+        if (imgUrl.trim() !== "") {
+          var imgEl = document.getElementById("art-image");
+          imgEl.src = imgUrl;
+          imgEl.style.display = "block";
+        }
 
-          document.getElementById("loading").style.display = "none";
-          document.getElementById("article-content").style.display = "block";
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("article-content").style.display = "block";
 
-          // Renderizar ecuaciones de LaTeX ($...$ para inline, $$...$$ para bloque)
+        // Renderizar ecuaciones de LaTeX ($...$ para inline, $$...$$ para bloque)
+        if (window.renderMathInElement) {
           renderMathInElement(document.getElementById("art-body"), {
             delimiters: [
               {left: '$$', right: '$$', display: true},
@@ -100,13 +115,15 @@
             ],
             throwOnError : false
           });
-        })
-        .catch(() => {
-          document.getElementById("loading").innerText = "Error al cargar el contenido.";
-        });
-    }
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById("loading").innerText = "Error al cargar el contenido del artículo.";
+      });
+  }
 
-    document.addEventListener("DOMContentLoaded", init);
-  </script>
+  document.addEventListener("DOMContentLoaded", init);
+</script>
 </body>
 </html>
