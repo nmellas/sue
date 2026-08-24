@@ -74,23 +74,23 @@ var FALLBACK_PUBLICATIONS = [
     });
   }
 
-  function parseCsvRows(csvText) {
-    var parsed = window.Papa ? Papa.parse(csvText, { header: true, skipEmptyLines: true }) : { data: [] };
-    
-    return parsed.data
-      .map((row, originalIndex) => ({ ...row, _id: originalIndex })) // Guarda el índice real de la fila
-      .filter(row => (row["Estado"] || "").trim().toLowerCase() === "publicado")
-      .map(row => ({
-        tipo: row["Tipo"] || "Artículo",
-        titulo: row["Título"] || row["Titulo"] || "Sin título",
-        autor: row["Autor"] || row["Autor(es)"] || "",
-        fecha: row["Fecha"] || row["Marca temporal"] || "",
-        categoria: row["Categoría"] || "",
-        resumen: row["Resumen"] || "",
-        link: "articulo.html?id=" + row._id
-      }))
-      .reverse();
-  }
+function parseCsvRows(csvText) {
+  var parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
+  
+  return parsed
+    .map((row, originalIndex) => ({ ...row, _id: originalIndex })) // Guarda el número de fila original
+    .filter(row => (row["Estado"] || "").trim().toLowerCase() === "publicado")
+    .map(row => ({
+      tipo: row["Tipo"] || "Artículo",
+      titulo: row["Título"] || row["Titulo"] || "Sin título",
+      autor: row["Autor"] || row["Autor(es)"] || "",
+      fecha: row["Fecha"] || row["Marca temporal"] || "",
+      categoria: row["Categoría"] || "",
+      resumen: row["Resumen"] || "",
+      link: "articulo.html?id=" + row._id
+    }))
+    .reverse();
+}
 
   function init() {
     var formLinks = document.querySelectorAll("[data-form-link]");
