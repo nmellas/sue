@@ -189,5 +189,104 @@
 <script src="indicators.js"></script>
 <script src="publicaciones-data.js"></script>
 <script src="script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="indicators.js"></script>
+<script src="publicaciones-data.js"></script>
+<script src="script.js"></script>
+<script>
+(function () {
+  function escapeHtml(str) {
+    return (str || "").replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function getField(row, candidates) {
+    var keys = Object.keys(row);
+    for (var i = 0; i < candidates.length; i++) {
+      var target = candidates[i].trim().toLowerCase();
+      for (var j = 0; j < keys.length; j++) {
+        if (keys[j].trim().toLowerCase() === target) {
+          var val = row[keys[j]];
+          if (val && val.trim() !== "") return val.trim();
+        }
+      }
+    }
+    return "";
+  }
+
+  function renderLatest(pub) {
+    var tag = document.getElementById("latest-pub-tag");
+    var title = document.getElementById("latest-pub-title");
+    var resumen = document.getElementById("latest-pub-resumen");
+    var link = document.getElementById("latest-pub-link");
+    if (!tag || !title || !resumen || !link) return;
+
+    tag.textContent = (pub.tipo || "Artículo").toUpperCase();
+    title.textContent = pub.titulo || "Sin título";
+    resumen.textContent = pub.resumen || "";
+    link.setAttribute("href", pub.link || "publicaciones.html");
+  }
+
+  function fromFallback() {
+    if (window.FALLBACK_PUBLICATIONS && window.FALLBACK_PUBLICATIONS.length) {
+      var last = window.FALLBACK_PUBLICATIONS[0];
+      renderLatest({
+        tipo: last.tipo,
+        titulo: last.titulo,
+        resumen: last.resumen,
+        link: "publicaciones.html"
+      });
+    }
+  }
+
+  function init() {
+    var csvUrl = window.CONFIG && window.CONFIG.CSV_URL;
+
+    if (!csvUrl) {
+      fromFallback();
+      return;
+    }
+
+    fetch(csvUrl + (csvUrl.indexOf("?") > -1 ? "&" : "?") + "cachebust=" + Date.now())
+      .then(function (res) {
+        if (!res.ok) throw new Error("No se pudo leer la hoja de cálculo");
+        return res.text();
+      })
+      .then(function (csvText) {
+        var parsed = window.Papa
+          ? Papa.parse(csvText, { header: true, skipEmptyLines: true })
+          : { data: [] };
+
+        var publicados = parsed.data
+          .map(function (row, originalIndex) { return { row: row, originalIndex: originalIndex }; })
+          .filter(function (entry) {
+            return getField(entry.row, ["Estado"]).toLowerCase() === "publicado";
+          });
+
+        if (!publicados.length) {
+          fromFallback();
+          return;
+        }
+
+        // La última fila publicada = la más reciente
+        var entry = publicados[publicados.length - 1];
+        var row = entry.row;
+
+        renderLatest({
+          tipo: getField(row, ["Tipo"]) || "Artículo",
+          titulo: getField(row, ["Título", "Titulo"]) || "Sin título",
+          resumen: getField(row, ["Resumen"]),
+          link: "articulo.html?id=" + entry.originalIndex
+        });
+      })
+      .catch(function () {
+        fromFallback();
+      });
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
+})();
+</script>
 </body>
 </html>
