@@ -3,8 +3,7 @@
   Sistema: papel de gráfico + tinta de sello + datos en mono
   ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Montserrat:wght@400;500;600&display=swap');
 :root{
 --ink:        #bf0d1f; /* Rojo principal (extraído de Canva) */
 --ink-soft:   #960f1b; /* Tono medio/oscuro para contraste y jerarquía */
@@ -71,7 +70,7 @@ min-height: 90px; /* Asegura suficiente espacio vertical para el logo grande */
 img{max-width:100%;display:block;}
 a{color:inherit;}
 h1,h2,h3,h4{font-family:var(--font-display);margin:0 0 .4em;font-weight:600;letter-spacing:-0.01em;color:var(--negroclaro);}
-p{margin:0 0 1em;color:var(--ink-soft);}
+p{margin:0 0 1em;color:var(--ink-soft);font-family:'Montserrat', sans-serif;}
 .container{max-width:var(--container);margin:0 auto;padding:0 28px;}
 
 /* --- focus visibility --- */
