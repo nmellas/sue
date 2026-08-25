@@ -276,10 +276,10 @@ border-top:1px solid var(--line);border-bottom:1px solid var(--line);
 background:var(--paper-2);
 }
 .stat-strip .container{
-display:grid;grid-template-columns:repeat(3,1fr);gap:0;
+display:grid;grid-template-columns:repeat(2,1fr);gap:0;
 }
 .stat{
-padding:28px 24px;text-align:left;
+padding:28px 24px;text-align:center;
 border-left:1px solid var(--line);
 }
 .stat:first-child{border-left:none;}
