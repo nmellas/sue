@@ -508,7 +508,7 @@ padding-bottom:32px;border-bottom:1px solid rgba(251,251,246,0.14);
 .footer-links{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px;}
 .footer-links a{color:#d7dae2;text-decoration:none;font-size:13.5px;}
 .footer-links a:hover{color:var(--gold);}
-.footer-small{font-size:12px;}
+.footer-small{font-size:13.5px;}
 
 .footer-social{
 display:flex;gap:14px;margin-top:16px;
