@@ -565,7 +565,7 @@ display:block;width:100%;height:auto;margin:34px 0;
 
 .article-hero-image{
 display:block;width:100%;
-aspect-ratio:16/9;
+aspect-ratio:21/9;
 object-fit:cover;
 object-position:center;
 background:var(--paper-2);
