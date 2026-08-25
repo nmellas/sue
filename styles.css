@@ -382,6 +382,22 @@ box-shadow:0 0 0 4px var(--paper);
 
 /* ============ TEAM (quienes somos) ============ */
 .team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
+.team-grid-top{
+display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
+background:var(--line);border:1px solid var(--line);
+margin-bottom:24px;
+}
+.team-grid-bottom{
+display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+background:var(--line);border:1px solid var(--line);
+}
+@media (max-width:880px){
+.team-grid-bottom{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:560px){
+.team-grid-top{grid-template-columns:1fr;}
+.team-grid-bottom{grid-template-columns:1fr;}
+}
 .team-card{background:var(--white);padding:26px 22px;}
 .team-card .role{font-family:var(--font-mono);font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
 .team-card h3{font-size:17px;margin-bottom:6px;}
