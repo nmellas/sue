@@ -41,7 +41,7 @@ line-height:1.6;
 
 /* Incrementamos el tamaño del logo */
 .brand .logo-img {
-height: 65px;
+height: 60px;
 width: auto;
 display: block;
 object-fit: contain;
