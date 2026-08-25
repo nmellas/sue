@@ -91,38 +91,110 @@
 <script>
   var CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTMkfD6_sIOPrrsX4kHJp2Xrwn5TbcA-okC831-t9ZJB2O0wRe4BvjBnC1SdOyzLrPQCWZbA9vek3AV/pub?gid=439785421&single=true&output=csv";
 
-  function escapeHtml(str) {
-    return str
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
-  }
+ function escapeHtml(str) {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
 
-  // Convierte el texto del campo "Contenido" en párrafos, respetando
-  // saltos de línea, y transforma cualquier línea con el formato
-  // ![descripción](URL_DE_LA_IMAGEN) en una imagen dentro de la columna.
-  function renderBody(raw) {
-    if (!raw) return "";
-    var blocks = raw.split(/\n\s*\n/);
-    return blocks
-      .map(function (block) {
-        var trimmed = block.trim();
-        var imgMatch = trimmed.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
-        if (imgMatch) {
-          var alt = escapeHtml(imgMatch[1]);
-          var url = escapeHtml(imgMatch[2].trim());
-          return (
-            '<figure class="article-body-figure">' +
-              '<img class="article-body-image" src="' + url + '" alt="' + (alt || "Imagen del artículo") + '" loading="lazy">' +
-              (alt ? "<figcaption>" + alt + "</figcaption>" : "") +
-            "</figure>"
-          );
-        }
-        var withBreaks = escapeHtml(trimmed).replace(/\n/g, "<br>");
-        return "<p>" + withBreaks + "</p>";
-      })
-      .join("");
-  }
+// Aplica el formato inline de Markdown (negrita, cursiva, tachado,
+// código, enlaces) sobre texto que YA fue escapado con escapeHtml.
+function applyInlineMarkdown(text) {
+  // Enlaces [texto](url)
+  text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+    '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+  // Negrita + cursiva: ***texto*** o ___texto___
+  text = text.replace(/\*\*\*([\s\S]+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+  text = text.replace(/___([\s\S]+?)___/g, '<strong><em>$1</em></strong>');
+  // Negrita: **texto** o __texto__
+  text = text.replace(/\*\*([\s\S]+?)\*\*/g, '<strong>$1</strong>');
+  text = text.replace(/__([\s\S]+?)__/g, '<strong>$1</strong>');
+  // Tachado: ~~texto~~
+  text = text.replace(/~~([\s\S]+?)~~/g, '<del>$1</del>');
+  // Código inline: `texto`
+  text = text.replace(/`([^`]+?)`/g, '<code>$1</code>');
+  // Cursiva: *texto* o _texto_
+  text = text.replace(/\*([\s\S]+?)\*/g, '<em>$1</em>');
+  text = text.replace(/_([\s\S]+?)_/g, '<em>$1</em>');
+  return text;
+}
+
+// Convierte el texto del campo "Contenido" en HTML, interpretando
+// Markdown estándar: encabezados, listas, citas, líneas divisorias,
+// imágenes en bloque, y formato inline (negrita, cursiva, etc).
+function renderBody(raw) {
+  if (!raw) return "";
+  var blocks = raw.split(/\n\s*\n/);
+
+  return blocks
+    .map(function (block) {
+      var trimmed = block.trim();
+      if (!trimmed) return "";
+
+      // Imagen en bloque: ![alt](url)
+      var imgMatch = trimmed.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+      if (imgMatch) {
+        var alt = escapeHtml(imgMatch[1]);
+        var url = escapeHtml(imgMatch[2].trim());
+        return (
+          '<figure class="article-body-figure">' +
+            '<img class="article-body-image" src="' + url + '" alt="' + (alt || "Imagen del artículo") + '" loading="lazy">' +
+            (alt ? "<figcaption>" + alt + "</figcaption>" : "") +
+          "</figure>"
+        );
+      }
+
+      // Línea divisoria: ---  ***  ___
+      if (/^(-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
+        return '<hr class="article-hr">';
+      }
+
+      var lines = trimmed.split("\n");
+
+      // Encabezado: # / ## / ### ... (solo si es una línea sola)
+      var headingMatch = lines.length === 1 && trimmed.match(/^(#{1,6})\s+(.*)$/);
+      if (headingMatch) {
+        var level = Math.min(headingMatch[1].length + 1, 6); // # -> h2 (h1 es el título del artículo)
+        var content = applyInlineMarkdown(escapeHtml(headingMatch[2]));
+        return "<h" + level + ' class="article-heading">' + content + "</h" + level + ">";
+      }
+
+      // Cita: todas las líneas empiezan con >
+      var isBlockquote = lines.every(function (l) { return /^>\s?/.test(l.trim()); });
+      if (isBlockquote) {
+        var quoteText = lines.map(function (l) { return l.trim().replace(/^>\s?/, ""); }).join("\n");
+        var quoteHtml = applyInlineMarkdown(escapeHtml(quoteText)).replace(/\n/g, "<br>");
+        return '<blockquote class="article-quote"><p>' + quoteHtml + "</p></blockquote>";
+      }
+
+      // Lista con viñetas: -, * o + al inicio de cada línea
+      var isUnordered = lines.every(function (l) { return /^[-*+]\s+/.test(l.trim()); });
+      if (isUnordered) {
+        var uItems = lines.map(function (l) {
+          var itemText = l.trim().replace(/^[-*+]\s+/, "");
+          return "<li>" + applyInlineMarkdown(escapeHtml(itemText)) + "</li>";
+        }).join("");
+        return '<ul class="article-list">' + uItems + "</ul>";
+      }
+
+      // Lista numerada: 1. 2. 3. ...
+      var isOrdered = lines.every(function (l) { return /^\d+[.)]\s+/.test(l.trim()); });
+      if (isOrdered) {
+        var oItems = lines.map(function (l) {
+          var itemText = l.trim().replace(/^\d+[.)]\s+/, "");
+          return "<li>" + applyInlineMarkdown(escapeHtml(itemText)) + "</li>";
+        }).join("");
+        return '<ol class="article-list">' + oItems + "</ol>";
+      }
+
+      // Párrafo normal, con formato inline y saltos de línea simples
+      var escaped = applyInlineMarkdown(escapeHtml(trimmed));
+      var withBreaks = escaped.replace(/\n/g, "<br>");
+      return "<p>" + withBreaks + "</p>";
+    })
+    .join("");
+}
 
   // Busca una columna de la fila sin importar mayúsculas/minúsculas
   // ni espacios extra en el encabezado (Google Forms a veces genera
