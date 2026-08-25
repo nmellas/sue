@@ -168,34 +168,31 @@ transition:color .15s ease, background .15s ease;
 .nav-links a:hover{color:var(--ink);background:var(--paper-2);}
 .nav-links a.active{color:var(--brick);font-weight:600;}
 .nav-toggle{
-display:none !important;background:none;border:1.5px solid var(--ink);border-radius:3px;
-padding:8px 10px;cursor:pointer;font-family:var(--font-mono);font-size:13px;
-}
-media (max-width:860px){
-.nav-toggle{
   display:none !important;background:none;border:1.5px solid var(--ink);border-radius:3px;
   padding:8px 10px;cursor:pointer;font-family:var(--font-mono);font-size:13px;
 }
+
 @media (max-width:860px){
   .nav-toggle{
     display:inline-flex !important;align-items:center;gap:8px;
     font-size:22px;padding:8px 12px;line-height:1;
     color:var(--brick);border-color:var(--brick);
   }
-}
-.nav-links.open{display:flex;}
-.nav-links a{
-display:block;          /* ← clave: hace que ocupe todo el ancho */
-width:100%;              /* ← clave: hitbox de borde a borde */
-padding:24px 24px;       /* antes: 20px 20px */
-font-size:21px;          /* antes: 19px */
-letter-spacing:.01em;
-}
-.nav-toggle{
-display:inline-flex;align-items:center;gap:8px;
-font-size:16px;
-padding:12px 16px;
-}
+
+  .nav-links{
+    position:absolute;top:100%;left:0;right:0;
+    background:var(--paper);border-bottom:1px solid var(--line);
+    flex-direction:column;padding:8px;gap:0;
+    display:none;
+  }
+  .nav-links.open{display:flex;}
+  .nav-links a{
+    display:block;
+    width:100%;
+    padding:24px 24px;
+    font-size:21px;
+    letter-spacing:.01em;
+  }
 }
 /* ============ BUTTONS ============ */
 .btn{
