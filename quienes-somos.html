@@ -6,30 +6,6 @@
 <title>Quiénes somos — SUE, Sociedad Universitaria de Economía</title>
 <meta name="description" content="Sociedad Universitaria de Economía: espacio estudiantil de investigación, debate y publicaciones sobre economía.">
 <link rel="stylesheet" href="styles.css">
-<style>
-  /* Directiva: un recuadro por coordinación (puede moverse a styles.css) */
-  .directiva-grupos { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:24px; margin-top:24px; }
-  .directiva-grupo {
-    padding:26px 28px 24px;
-    border:1px solid color-mix(in srgb, currentColor 16%, transparent);
-    border-radius:14px;
-    background:color-mix(in srgb, currentColor 2.5%, transparent);
-  }
-  .directiva-grupo h3.grupo-nombre {
-    margin:0 0 18px; padding-bottom:14px; font-size:1.05rem;
-    border-bottom:1px solid color-mix(in srgb, currentColor 14%, transparent);
-  }
-  .directiva-miembros { display:grid; gap:18px; }
-  .directiva-grupo--general { border-width:1.5px; border-color:color-mix(in srgb, currentColor 30%, transparent); }
-  .directiva-grupo--general .directiva-miembros { grid-template-columns:repeat(2, minmax(0,1fr)); gap:18px 32px; }
-  /* las tarjetas internas pierden su marco propio para no duplicar bordes */
-  .directiva-grupo .team-card { border:0; box-shadow:none; background:transparent; padding:0; margin:0; }
-  .directiva-grupo .team-card h3 { margin:.15em 0 0; }
-  .team-card .mail { display:inline-block; margin-top:.35em; font-size:.92rem; overflow-wrap:anywhere; }
-  @media (max-width: 720px) {
-    .directiva-grupos, .directiva-grupo--general .directiva-miembros { grid-template-columns:1fr; }
-  }
-</style>
 </head>
 <body data-page="quienes-somos">
 
