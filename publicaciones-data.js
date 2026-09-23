@@ -3,88 +3,31 @@
    ------------------------------------------------------------
    Cómo funciona (para quien administra el sitio):
    1. Los miembros envían su artículo/paper/policy brief a través
-      de un Google Form (ver guía de configuración entregada aparte).
+      de un Google Form.
    2. Las respuestas del formulario caen automáticamente en una
       Google Sheet.
-   3. La comisión de publicaciones revisa las filas y escribe
-      "Publicado" en la columna "Estado" de las que aprueba.
+   3. La Coordinación de Investigación y Contenidos revisa las filas
+      y escribe "Publicado" en la columna "Estado" de las que aprueba.
    4. Esa hoja se publica como CSV (Archivo → Compartir → Publicar
       en la Web → formato CSV) y el enlace se pega abajo en
       CONFIG.CSV_URL.
-   5. Desde ese momento, esta página se actualiza sola: nadie
-      vuelve a tocar código para publicar algo nuevo.
+   5. Desde ese momento, esta página se actualiza sola.
 
-   Mientras CONFIG.CSV_URL esté vacío, la página muestra un set
-   de publicaciones de ejemplo para que el sitio no se vea vacío.
+   Encabezados que lee (exactos, sin importar mayúsculas):
+   Estado, Tipo, Título, Autor, Fecha, Categoría, Resumen.
    ============================================================ */
 
 var CONFIG = {
-  // Pega aquí el enlace CSV publicado de la Google Sheet de respuestas.
-  // Ejemplo: "https://docs.google.com/spreadsheets/d/e/XXXXX/pub?output=csv"
+  // Enlace CSV publicado de la Google Sheet de respuestas.
   CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQjt6eQhpe3H-Xg5KY_TA8BMFXaSWR_JSDsI3Q1WxGESnFJ2ua14ekwptDkDLc2lJDVByhnm8A-uqe_/pub?gid=2048697698&single=true&output=csv",
 
-  // Pega aquí el enlace del Google Form para que el botón
-  // "Enviar mi publicación" funcione.
+  // Enlace del Google Form (uso interno; el sitio ya no muestra un botón público).
   FORM_URL: "https://docs.google.com/forms/d/e/1FAIpQLSe7qdoZAF3cw2brBkoNei5-PN8UnXJ4EA_RvGfvmnUh0x-bYg/viewform?usp=dialog"
 };
 
-// Publicaciones de ejemplo (se usan solo si CONFIG.CSV_URL está vacío)
-var FALLBACK_PUBLICATIONS = [
-  {
-    tipo: "Policy Brief",
-    titulo: "Recomendaciones para una reforma al sistema de becas estudiantiles",
-    autor: "Comisión de Investigación",
-    fecha: "Agosto 2026",
-    categoria: "Política pública",
-    resumen: "Tres propuestas concretas para mejorar la focalización de las becas de arancel, basadas en datos propios sobre deserción por motivos económicos.",
-    link: "#"
-  },
-  {
-    tipo: "Artículo",
-    titulo: "Inflación, expectativas y el costo de vida estudiantil",
-    autor: "El Índice · Nº 62",
-    fecha: "Agosto 2026",
-    categoria: "Macroeconomía",
-    resumen: "Cómo la variación de precios de los últimos dos años ha modificado el presupuesto mensual de un estudiante promedio.",
-    link: "#"
-  },
-  {
-    tipo: "Documento de trabajo",
-    titulo: "Informalidad laboral juvenil: una revisión de causas y políticas",
-    autor: "Comisión de Investigación",
-    fecha: "Junio 2026",
-    categoria: "Economía laboral",
-    resumen: "Un repaso de la literatura reciente sobre informalidad entre jóvenes, con una propuesta de indicadores para el seguimiento local.",
-    link: "#"
-  },
-  {
-    tipo: "Artículo",
-    titulo: "¿Qué explica el precio de la vivienda cerca del campus?",
-    autor: "El Índice · Nº 60",
-    fecha: "Abril 2026",
-    categoria: "Desarrollo",
-    resumen: "Un análisis de oferta y demanda aplicado al mercado de arriendo estudiantil en los barrios aledaños a la universidad.",
-    link: "#"
-  },
-  {
-    tipo: "Documento de trabajo",
-    titulo: "Comercio regional y cadenas de valor: el caso de la agroindustria",
-    autor: "Comisión de Investigación",
-    fecha: "Febrero 2026",
-    categoria: "Desarrollo",
-    resumen: "Un estudio exploratorio sobre la integración de pequeños productores agrícolas a cadenas de exportación regionales.",
-    link: "#"
-  },
-  {
-    tipo: "Artículo",
-    titulo: "Política monetaria explicada para no economistas",
-    autor: "El Índice · Nº 58",
-    fecha: "Diciembre 2025",
-    categoria: "Finanzas",
-    resumen: "Una guía breve sobre cómo las decisiones del banco central afectan las decisiones cotidianas de consumo y ahorro.",
-    link: "#"
-  }
-];
+// Sin publicaciones de ejemplo: si no hay nada publicado, la página
+// muestra el aviso de "todavía no hay publicaciones".
+var FALLBACK_PUBLICATIONS = [];
 
 (function () {
   function escapeHtml(str) {
@@ -129,6 +72,8 @@ var FALLBACK_PUBLICATIONS = [
   function renderFilters(items) {
     var row = document.getElementById("filter-row");
     if (!row) return;
+    if (!items.length) { row.innerHTML = ""; return; }
+
     var tipos = ["Todos"].concat(
       Array.from(new Set(items.map(function (p) { return p.tipo; })))
     );
@@ -201,11 +146,6 @@ var FALLBACK_PUBLICATIONS = [
   }
 
   function init() {
-    var formLink = document.querySelectorAll("[data-form-link]");
-    if (CONFIG.FORM_URL) {
-      formLink.forEach(function (a) { a.setAttribute("href", CONFIG.FORM_URL); });
-    }
-
     if (!CONFIG.CSV_URL) {
       setup(FALLBACK_PUBLICATIONS);
       return;
@@ -217,10 +157,10 @@ var FALLBACK_PUBLICATIONS = [
         return res.text();
       })
       .then(function (csvText) {
-        var items = parseCsvRows(csvText);
-        setup(items.length ? items : FALLBACK_PUBLICATIONS);
+        setup(parseCsvRows(csvText));
       })
-      .catch(function () {
+      .catch(function (err) {
+        console.error("Publicaciones:", err);
         setup(FALLBACK_PUBLICATIONS);
       });
   }
