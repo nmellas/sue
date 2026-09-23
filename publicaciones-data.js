@@ -15,6 +15,9 @@
 
    Encabezados que lee (exactos, sin importar mayúsculas):
    Estado, Tipo, Título, Autor, Fecha, Categoría, Resumen.
+   Imagen: cualquier columna cuyo nombre contenga "imagen" o "portada".
+   Acepta archivos subidos por el formulario (enlaces de Drive) o
+   enlaces directos a imágenes.
    ============================================================ */
 
 var CONFIG = {
@@ -29,11 +32,47 @@ var CONFIG = {
 // muestra el aviso de "todavía no hay publicaciones".
 var FALLBACK_PUBLICATIONS = [];
 
+/* Convierte lo que venga en la columna de imagen en una URL que el
+   navegador pueda mostrar. Google Forms guarda los archivos subidos como
+   enlaces de Drive ("https://drive.google.com/open?id=…"), que no se
+   pueden usar directo en un <img>. Disponible como window.SUE_IMAGEN. */
+var SUE_IMAGEN = (function () {
+  function idDrive(url) {
+    var m = String(url || "").match(/[?&]id=([\w-]{10,})/) || String(url || "").match(/\/d\/([\w-]{10,})/);
+    return m ? m[1] : null;
+  }
+  function primera(raw) {
+    // Si subieron varias imágenes, se usa la primera
+    return String(raw || "").split(/[\s,]+/).filter(Boolean)[0] || "";
+  }
+  return {
+    url: function (raw, ancho) {
+      var u = primera(raw), id = idDrive(u);
+      if (id) return "https://drive.google.com/thumbnail?id=" + id + "&sz=w" + (ancho || 1600);
+      return /^https?:\/\//i.test(u) ? u : "";
+    },
+    respaldo: function (raw, ancho) {
+      var id = idDrive(primera(raw));
+      return id ? "https://lh3.googleusercontent.com/d/" + id + "=w" + (ancho || 1600) : "";
+    }
+  };
+})();
+
 (function () {
   function escapeHtml(str) {
     return (str || "").replace(/[&<>"']/g, function (c) {
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
+  }
+
+  function miniatura(pub) {
+    var src = SUE_IMAGEN.url(pub.imagen, 900);
+    if (!src) return "";
+    var resp = SUE_IMAGEN.respaldo(pub.imagen, 900);
+    // Si Drive falla, prueba la URL de respaldo; si también falla, oculta la miniatura
+    return '<div class="pub-thumb"><img src="' + escapeHtml(src) + '" alt="" loading="lazy" decoding="async"' +
+      ' data-r="' + escapeHtml(resp) + '"' +
+      ' onerror="if(this.dataset.r){var r=this.dataset.r;this.dataset.r=\'\';this.src=r;}else{this.parentNode.style.display=\'none\';}"></div>';
   }
 
   function renderList(items) {
@@ -52,7 +91,8 @@ var FALLBACK_PUBLICATIONS = [];
     list.innerHTML = items
       .map(function (pub, i) {
         return (
-          '<div class="pub-row" data-tipo="' + escapeHtml(pub.tipo) + '">' +
+          '<div class="pub-row' + (pub.imagen ? " has-thumb" : "") + '" data-tipo="' + escapeHtml(pub.tipo) + '">' +
+            miniatura(pub) +
             '<span class="idx">§' + (total - i) + '</span>' +
             "<div>" +
               '<span class="meta">' + escapeHtml(pub.tipo).toUpperCase() +
@@ -116,6 +156,21 @@ var FALLBACK_PUBLICATIONS = [];
     return "";
   }
 
+  // Primera columna no vacía cuyo encabezado contenga alguna de las claves
+  function getFieldLike(row, claves) {
+    var keys = Object.keys(row);
+    for (var j = 0; j < keys.length; j++) {
+      var k = keys[j].normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+      for (var i = 0; i < claves.length; i++) {
+        if (k.indexOf(claves[i]) !== -1) {
+          var val = row[keys[j]];
+          if (val && val.trim() !== "") return val.trim();
+        }
+      }
+    }
+    return "";
+  }
+
   function parseCsvRows(csvText) {
     var parsed = window.Papa
       ? Papa.parse(csvText, { header: true, skipEmptyLines: true })
@@ -139,6 +194,7 @@ var FALLBACK_PUBLICATIONS = [];
           fecha: getField(row, ["Fecha", "Marca temporal"]),
           categoria: getField(row, ["Categoría", "Categoria"]),
           resumen: getField(row, ["Resumen"]),
+          imagen: getFieldLike(row, ["imagen", "portada"]),
           link: "articulo.html?id=" + entry.originalIndex
         };
       })
@@ -166,4 +222,5 @@ var FALLBACK_PUBLICATIONS = [];
   }
 
   document.addEventListener("DOMContentLoaded", init);
+  window.SUE_IMAGEN = SUE_IMAGEN;
 })();
