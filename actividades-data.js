@@ -13,7 +13,8 @@
   var CONFIG = {
     // Pega aquí el enlace CSV de la pestaña "Web"
     // (Hoja de cálculo → Archivo → Compartir → Publicar en la web → CSV).
-    csvUrl: "",
+    csvUrl: "   csvUrl: "https://docs.google.com/spreadsheets/d/e/…/pub?gid=…&single=true&output=csv",
+",
     intervaloMs: 5500,     // tiempo entre fotos del carrusel
     anchoFoto: 1600,       // resolución de las fotos del carrusel
     anchoMiniatura: 800    // resolución de las miniaturas de la grilla
