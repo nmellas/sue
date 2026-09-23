@@ -102,7 +102,7 @@ var SUE_IMAGEN = (function () {
               "<h3>" + escapeHtml(pub.titulo) + "</h3>" +
               "<p>" + escapeHtml(pub.resumen) + "</p>" +
             "</div>" +
-            '<a class="read" href="' + escapeHtml(pub.link || "#") + '">Leer →</a>' +
+            '<a class="read" href="' + escapeHtml(pub.link || "#") + '" aria-label="Leer: ' + escapeHtml(pub.titulo) + '">Leer →</a>' +
           "</div>"
         );
       })
