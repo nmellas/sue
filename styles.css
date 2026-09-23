@@ -538,6 +538,13 @@ transition:border-color .15s ease, transform .15s ease;
 .pub-archive .pub-row:hover{border-color:var(--ink);transform:translateY(-2px);}
 .pub-archive .pub-row .idx{padding-top:0;}
 .pub-archive .pub-row .read{margin-top:auto;align-self:flex-start;}
+.pub-thumb{display:none;}
+.pub-archive .pub-row{overflow:hidden;}
+.pub-archive .pub-thumb{
+display:block;margin:-24px -24px 4px;aspect-ratio:16 / 9;
+background:var(--paper-2);border-bottom:1px solid var(--line);
+}
+.pub-archive .pub-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
 
 /* ============ ACTIVIDADES ============ */
 .act-showcase{
