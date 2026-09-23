@@ -14,7 +14,6 @@
     // Pega aquí el enlace CSV de la pestaña "Web"
     // (Hoja de cálculo → Archivo → Compartir → Publicar en la web → CSV).
     csvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQWtoFhLpsUyNgDMd4PHVAYud2oORz608XxJYjiLC_N6o2Q6GWWQOdq5PJvTGKA-prPNpfj5qX6mlUS/pub?gid=962256103&single=true&output=csv",
-",
     intervaloMs: 5500,     // tiempo entre fotos del carrusel
     anchoFoto: 1600,       // resolución de las fotos del carrusel
     anchoMiniatura: 800    // resolución de las miniaturas de la grilla
