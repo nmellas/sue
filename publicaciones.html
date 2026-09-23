@@ -6,44 +6,6 @@
 <title>Publicaciones — SUE, Sociedad Universitaria de Economía</title>
 <meta name="description" content="Artículos, columnas y papers elaborados por miembros de la Sociedad Universitaria de Economía, FEN Universidad de Chile.">
 <link rel="stylesheet" href="styles.css">
-<style>
-  /* Archivo de publicaciones (puede moverse a styles.css) */
-  .pub-archive-head { display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:12px 32px; margin-bottom:22px; }
-  .pub-archive-head h2 { margin:0; }
-
-  #filter-row { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 32px; }
-  #filter-row button, #filter-row a {
-    font:inherit; font-size:.9rem; cursor:pointer;
-    padding:.45em 1.05em; border-radius:999px;
-    border:1px solid color-mix(in srgb, currentColor 22%, transparent);
-    background:transparent; color:inherit; text-decoration:none;
-    transition:background-color .15s, border-color .15s;
-  }
-  #filter-row button:hover, #filter-row a:hover { border-color:currentColor; }
-  #filter-row .active, #filter-row .is-active, #filter-row [aria-pressed="true"], #filter-row [aria-selected="true"] {
-    border-color:currentColor; font-weight:600;
-    background:color-mix(in srgb, currentColor 10%, transparent);
-  }
-  #filter-row button:focus-visible, #filter-row a:focus-visible, #pub-list a:focus-visible { outline:2px solid currentColor; outline-offset:3px; }
-
-  #pub-list { display:grid; grid-template-columns:repeat(auto-fill, minmax(290px, 1fr)); gap:22px; }
-  #pub-list > * {
-    display:flex; flex-direction:column; gap:.55em;
-    margin:0; padding:26px 26px 24px;
-    border:1px solid color-mix(in srgb, currentColor 16%, transparent);
-    border-radius:12px;
-    background:color-mix(in srgb, currentColor 2.5%, transparent);
-    transition:border-color .15s, transform .15s;
-  }
-  #pub-list > *:hover { border-color:color-mix(in srgb, currentColor 45%, transparent); transform:translateY(-2px); }
-  #pub-list h3, #pub-list h4 { margin:0; line-height:1.3; }
-  #pub-list p { margin:0; }
-  #pub-list a { overflow-wrap:anywhere; }
-
-  #pub-empty { padding:40px 24px; text-align:center; border:1px dashed color-mix(in srgb, currentColor 22%, transparent); border-radius:12px; }
-
-  @media (prefers-reduced-motion: reduce) { #pub-list > * { transition:none; } #pub-list > *:hover { transform:none; } }
-</style>
 </head>
 <body data-page="publicaciones">
 
@@ -79,7 +41,7 @@
   </section>
 
   <section class="section">
-    <div class="container">
+    <div class="container pub-archive">
       <div class="pub-archive-head">
         <h2>Últimas publicaciones</h2>
       </div>
