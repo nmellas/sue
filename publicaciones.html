@@ -3,11 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SUE — Sociedad Universitaria de Economía</title>
-<meta name="description" content="Sociedad Universitaria de Economía: espacio estudiantil de investigación, debate y publicaciones sobre economía.">
+<title>Publicaciones — SUE, Sociedad Universitaria de Economía</title>
+<meta name="description" content="Artículos, columnas y papers elaborados por miembros de la Sociedad Universitaria de Economía, FEN Universidad de Chile.">
 <link rel="stylesheet" href="styles.css">
+<style>
+  /* Archivo de publicaciones (puede moverse a styles.css) */
+  .pub-archive-head { display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:12px 32px; margin-bottom:22px; }
+  .pub-archive-head h2 { margin:0; }
+
+  #filter-row { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 32px; }
+  #filter-row button, #filter-row a {
+    font:inherit; font-size:.9rem; cursor:pointer;
+    padding:.45em 1.05em; border-radius:999px;
+    border:1px solid color-mix(in srgb, currentColor 22%, transparent);
+    background:transparent; color:inherit; text-decoration:none;
+    transition:background-color .15s, border-color .15s;
+  }
+  #filter-row button:hover, #filter-row a:hover { border-color:currentColor; }
+  #filter-row .active, #filter-row .is-active, #filter-row [aria-pressed="true"], #filter-row [aria-selected="true"] {
+    border-color:currentColor; font-weight:600;
+    background:color-mix(in srgb, currentColor 10%, transparent);
+  }
+  #filter-row button:focus-visible, #filter-row a:focus-visible, #pub-list a:focus-visible { outline:2px solid currentColor; outline-offset:3px; }
+
+  #pub-list { display:grid; grid-template-columns:repeat(auto-fill, minmax(290px, 1fr)); gap:22px; }
+  #pub-list > * {
+    display:flex; flex-direction:column; gap:.55em;
+    margin:0; padding:26px 26px 24px;
+    border:1px solid color-mix(in srgb, currentColor 16%, transparent);
+    border-radius:12px;
+    background:color-mix(in srgb, currentColor 2.5%, transparent);
+    transition:border-color .15s, transform .15s;
+  }
+  #pub-list > *:hover { border-color:color-mix(in srgb, currentColor 45%, transparent); transform:translateY(-2px); }
+  #pub-list h3, #pub-list h4 { margin:0; line-height:1.3; }
+  #pub-list p { margin:0; }
+  #pub-list a { overflow-wrap:anywhere; }
+
+  #pub-empty { padding:40px 24px; text-align:center; border:1px dashed color-mix(in srgb, currentColor 22%, transparent); border-radius:12px; }
+
+  @media (prefers-reduced-motion: reduce) { #pub-list > * { transition:none; } #pub-list > *:hover { transform:none; } }
+</style>
 </head>
-<body data-page="inicio">
+<body data-page="publicaciones">
 
 <div class="ticker-bar" aria-hidden="true">
   <div class="ticker-track" id="ticker-track">
@@ -35,46 +73,17 @@
   <section class="page-head">
     <div class="container">
       <span class="eyebrow">Publicaciones</span>
-      <h1>Artículos, papers y policy briefs escritos por miembros.</h1>
-      <p>Desde 1992 publicamos análisis escritos por estudiantes, revisados por la comisión de publicaciones. Cualquier miembro puede enviar el suyo, sin necesidad de tocar el sitio ni saber programar.</p>
-      <div class="hero-actions" style="margin-top:20px;">
-        <a href="#" data-form-link target="_blank" rel="noopener" class="btn btn-primary">Enviar mi publicación</a>
-        <a href="#como-publicar" class="btn btn-ghost">¿Cómo funciona?</a>
-      </div>
+      <h1>Análisis económico escrito por estudiantes.</h1>
+      <p>Columnas, artículos y papers elaborados por miembros de la SUE y revisados por la Coordinación de Investigación y Contenidos.</p>
     </div>
   </section>
 
-  <!-- CÓMO PUBLICAR -->
-  <section class="section" id="como-publicar">
-    <div class="container section-head">
-      <span class="eyebrow">Cómo publicar</span>
-      <h2>Tres pasos, sin código</h2>
-      <p class="lede">El proceso está pensado para que cualquier miembro pueda subir su trabajo desde el celular en un par de minutos.</p>
-    </div>
+  <section class="section">
     <div class="container">
-      <div class="publish-steps">
-        <div>
-          <span class="n">01</span>
-          <h4>Completa el formulario</h4>
-          <p>Título, tipo de trabajo (artículo, paper o policy brief), autores, resumen breve y el enlace a tu documento.</p>
-        </div>
-        <div>
-          <span class="n">02</span>
-          <h4>La comisión revisa</h4>
-          <p>El equipo editorial de publicaciones da una lectura rápida antes de aprobar la publicación.</p>
-        </div>
-        <div>
-          <span class="n">03</span>
-          <h4>Aparece en la web</h4>
-          <p>Una vez aprobado, tu trabajo se suma automáticamente a esta página — nadie necesita editar el sitio.</p>
-        </div>
+      <div class="pub-archive-head">
+        <h2>Últimas publicaciones</h2>
       </div>
-    </div>
-  </section>
 
-  <section class="section" style="padding-top:0;">
-    <div class="container">
-      <span class="eyebrow">Archivo de publicaciones</span>
       <div class="filter-row" id="filter-row">
         <span>Cargando categorías…</span>
       </div>
@@ -83,31 +92,21 @@
       <div id="pub-empty" style="display:none;">No hay publicaciones en esta categoría todavía.</div>
     </div>
   </section>
-
-  <section class="band">
-    <div class="container" style="display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:center;">
-      <div style="max-width:520px;">
-        <h2 style="color:var(--paper);font-size:26px;">¿Tienes un artículo, paper o policy brief listo?</h2>
-        <p style="color:#b7bccb;margin:0;">La convocatoria está abierta todo el semestre para estudiantes de cualquier carrera.</p>
-      </div>
-      <a href="#" data-form-link target="_blank" rel="noopener" class="btn btn-primary">Enviar propuesta</a>
-    </div>
-  </section>
 </main>
 
 <footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
       <div>
-          <h4>Sociedad Universitaria de Economía</h4>
+        <h4>Sociedad Universitaria de Economía</h4>
         <p>Organización estudiantil dedicada al estudio, el debate y la difusión del pensamiento económico.</p>
       </div>
       <div>
         <h4>Navegación</h4>
         <ul class="footer-links">
           <li><a href="index.html">Inicio</a></li>
-          <li><a href="quienes-somos.html">Quiénes somos</a></li>  
-           <li><a href="actividades.html">Actividades</a></li>
+          <li><a href="quienes-somos.html">Quiénes somos</a></li>
+          <li><a href="actividades.html">Actividades</a></li>
           <li><a href="publicaciones.html">Publicaciones</a></li>
           <li><a href="contacto.html">Contacto</a></li>
         </ul>
@@ -115,7 +114,9 @@
       <div>
         <h4>Contacto</h4>
         <ul class="footer-links">
-          <li>sociedaduniversitariadeconomia@gmail.com</li>
+          <li><a href="mailto:sociedaduniversitariadeconomia@gmail.com">sociedaduniversitariadeconomia@gmail.com</a></li>
+          <li><a href="https://www.instagram.com/sue.chile/" target="_blank" rel="noopener">Instagram @sue.chile</a></li>
+          <li><a href="https://www.linkedin.com/company/suechile" target="_blank" rel="noopener">LinkedIn SUE Chile</a></li>
           <li>Facultad de Economía y Negocios, Universidad de Chile</li>
         </ul>
       </div>
