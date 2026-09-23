@@ -3,11 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SUE — Sociedad Universitaria de Economía</title>
+<title>Quiénes somos — SUE, Sociedad Universitaria de Economía</title>
 <meta name="description" content="Sociedad Universitaria de Economía: espacio estudiantil de investigación, debate y publicaciones sobre economía.">
 <link rel="stylesheet" href="styles.css">
+<style>
+  /* Directiva: grupos por coordinación (puede moverse a styles.css) */
+  .directiva-grupos { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:40px 32px; margin-top:48px; }
+  .directiva-grupo h3.grupo-nombre { margin:0 0 14px; font-size:1.05rem; }
+  .directiva-miembros { display:grid; gap:14px; }
+  .team-card .mail { display:inline-block; margin-top:.35em; font-size:.92rem; overflow-wrap:anywhere; }
+  @media (max-width: 720px) { .directiva-grupos { grid-template-columns:1fr; } }
+</style>
 </head>
-<body data-page="inicio">
+<body data-page="quienes-somos">
 
 <div class="ticker-bar" aria-hidden="true">
   <div class="ticker-track" id="ticker-track">
@@ -24,7 +32,7 @@
     <ul class="nav-links">
       <li><a href="index.html" data-page="inicio">Inicio</a></li>
       <li><a href="quienes-somos.html" data-page="quienes-somos">Quiénes somos</a></li>
-      <li><a href="historia.html" data-page="historia">Historia</a></li>
+      <li><a href="actividades.html" data-page="actividades">Actividades</a></li>
       <li><a href="publicaciones.html" data-page="publicaciones">Publicaciones</a></li>
       <li><a href="contacto.html" data-page="contacto">Contacto</a></li>
     </ul>
@@ -80,8 +88,8 @@
   <section class="section" style="padding-top:0;" id="investigacion">
     <div class="container section-head">
       <span class="eyebrow">Cómo nos organizamos</span>
-      <h2>Seis comisiones, un mismo propósito</h2>
-      <p class="lede">El trabajo de la sociedad se reparte en comisiones autónomas que se coordinan a través de la directiva.</p>
+      <h2>Cuatro coordinaciones, un mismo propósito</h2>
+      <p class="lede">El trabajo de la sociedad se reparte en cuatro coordinaciones autónomas, articuladas por la Coordinación General. Las postulaciones se realizan de forma ordinaria al inicio de cada semestre.</p>
     </div>
     <div class="container">
       <div class="card-grid">
@@ -108,12 +116,7 @@
           <p>Responsable de las relaciones con académicos, organizaciones externas, think tanks y empresas, así como de la creación de redes de networking.
 </p>
         </div>
-    
-        <div class="card" style="grid-column: span 4;">
-          <span class="idx">＋</span>
-          <h3>¿Quieres sumarte?</h3>
-          <p>Todas las comisiones reciben nuevos miembros cada semestre. No se requiere experiencia previa.</p>
-        </div>
+
       </div>
     </div>
   </section>
@@ -129,34 +132,64 @@
         <div class="team-card">
           <div class="role">1° Coordinador General</div>
           <h3>Nicolás Mella</h3>
-          <p></p>
+          <a class="mail" href="mailto:nmellas@fen.uchile.cl">nmellas@fen.uchile.cl</a>
         </div>
         <div class="team-card">
           <div class="role">2° Coordinador General</div>
           <h3>Alan Mc Coll</h3>
-          <p></p>
+          <a class="mail" href="mailto:amccoll@fen.uchile.cl">amccoll@fen.uchile.cl</a>
         </div>
       </div>
-      <div class="team-grid-bottom">
-        <div class="team-card">
-          <div class="role">Coordinador de Alianzas y Extensión Laboral</div>
-          <h3>Juan Tank</h3>
-          <p></p>
+      <div class="directiva-grupos">
+        <div class="directiva-grupo">
+          <h3 class="grupo-nombre">Investigación y Contenidos</h3>
+          <div class="directiva-miembros">
+            <div class="team-card">
+              <div class="role">Coordinadora</div>
+              <h3>Manuela Fernández</h3>
+              <a class="mail" href="mailto:manfernand@fen.uchile.cl">manfernand@fen.uchile.cl</a>
+            </div>
+            <div class="team-card">
+              <div class="role">Coordinador</div>
+              <h3>Diego Peñailillo</h3>
+              <a class="mail" href="mailto:dpenailill@fen.uchile.cl">dpenailill@fen.uchile.cl</a>
+            </div>
+          </div>
         </div>
-        <div class="team-card">
-          <div class="role">Coordinador de investigación y Contenidos</div>
-          <h3>Diego Peñailillo</h3>
-          <p></p>
+        <div class="directiva-grupo">
+          <h3 class="grupo-nombre">Comunicaciones</h3>
+          <div class="directiva-miembros">
+            <div class="team-card">
+              <div class="role">Coordinadora</div>
+              <h3>Isidora Ibáñez</h3>
+              <a class="mail" href="mailto:iibanez@fen.uchile.cl">iibanez@fen.uchile.cl</a>
+            </div>
+          </div>
         </div>
-        <div class="team-card">
-          <div class="role">Coordinadora de Comunicaciones</div>
-          <h3>Manuela Fernández</h3>
-          <p></p>
+        <div class="directiva-grupo">
+          <h3 class="grupo-nombre">Alianzas y Extensión Laboral</h3>
+          <div class="directiva-miembros">
+            <div class="team-card">
+              <div class="role">Coordinador</div>
+              <h3>Juan Tank</h3>
+              <a class="mail" href="mailto:jtank@fen.uchile.cl">jtank@fen.uchile.cl</a>
+            </div>
+            <div class="team-card">
+              <div class="role">Coordinadora</div>
+              <h3>Isidora Uribe</h3>
+              <a class="mail" href="mailto:iuribe@fen.uchile.cl">iuribe@fen.uchile.cl</a>
+            </div>
+          </div>
         </div>
-        <div class="team-card">
-          <div class="role">Coordinador de Programación y Actividades</div>
-          <h3>Nicolás Sanzana</h3>
-          <p></p>
+        <div class="directiva-grupo">
+          <h3 class="grupo-nombre">Programación y Actividades</h3>
+          <div class="directiva-miembros">
+            <div class="team-card">
+              <div class="role">Coordinador</div>
+              <h3>Nicolás Sanzana</h3>
+              <a class="mail" href="mailto:nsanzana@fen.uchile.cl">nsanzana@fen.uchile.cl</a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -167,7 +200,7 @@
   <div class="container">
     <div class="footer-grid">
       <div>
-              <h4>Sociedad Universitaria de Economía</h4>
+        <h4>Sociedad Universitaria de Economía</h4>
         <p>Organización estudiantil dedicada al estudio, el debate y la difusión del pensamiento económico.</p>
       </div>
       <div>
@@ -175,7 +208,7 @@
         <ul class="footer-links">
           <li><a href="index.html">Inicio</a></li>
           <li><a href="quienes-somos.html">Quiénes somos</a></li>
-          <li><a href="historia.html">Historia</a></li>
+          <li><a href="actividades.html">Actividades</a></li>
           <li><a href="publicaciones.html">Publicaciones</a></li>
           <li><a href="contacto.html">Contacto</a></li>
         </ul>
@@ -183,7 +216,9 @@
       <div>
         <h4>Contacto</h4>
         <ul class="footer-links">
-          <li>sociedaduniversitariadeconomia@gmail.com</li>
+          <li><a href="mailto:sociedaduniversitariadeconomia@gmail.com">sociedaduniversitariadeconomia@gmail.com</a></li>
+          <li><a href="https://www.instagram.com/sue.chile/" target="_blank" rel="noopener">Instagram @sue.chile</a></li>
+          <li><a href="https://www.linkedin.com/company/suechile" target="_blank" rel="noopener">LinkedIn SUE Chile</a></li>
           <li>Facultad de Economía y Negocios, Universidad de Chile</li>
         </ul>
       </div>
