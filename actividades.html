@@ -6,77 +6,7 @@
 <title>Actividades — SUE, Sociedad Universitaria de Economía</title>
 <meta name="description" content="Conversatorios, debates y formaciones de la Sociedad Universitaria de Economía, FEN Universidad de Chile.">
 <link rel="stylesheet" href="styles.css">
-<style>
-  /* Actividades (puede moverse a styles.css) */
-  .act-showcase { display:grid; grid-template-columns:minmax(0,1.55fr) minmax(0,1fr); gap:40px; align-items:center; scroll-margin-top:90px; }
-  .act-stage {
-    position:relative; aspect-ratio:3 / 2; border-radius:14px; overflow:hidden;
-    background:color-mix(in srgb, currentColor 7%, transparent);
-  }
-  .act-stage:focus-visible { outline:2px solid currentColor; outline-offset:4px; }
-  .act-slides { position:absolute; inset:0; }
-  .act-slide { position:absolute; inset:0; opacity:0; transition:opacity .9s ease; }
-  .act-slide.is-active { opacity:1; z-index:1; }
-  .act-slide img { width:100%; height:100%; object-fit:cover; display:block; }
-  .act-sin-fotos { position:absolute; inset:0; display:grid; place-items:center; margin:0; opacity:.6; }
-
-  .act-arrow {
-    position:absolute; top:50%; transform:translateY(-50%); z-index:3;
-    width:44px; height:44px; border-radius:50%; border:0; cursor:pointer;
-    background:rgba(0,0,0,.45); color:#fff; font-size:26px; line-height:1;
-    opacity:0; transition:opacity .2s;
-  }
-  .act-prev { left:14px; } .act-next { right:14px; }
-  .act-stage:hover .act-arrow, .act-stage:focus-within .act-arrow { opacity:1; }
-  .act-arrow:focus-visible, .act-pausa:focus-visible, .act-dots button:focus-visible { outline:2px solid #fff; outline-offset:2px; }
-
-  .act-bar {
-    position:absolute; left:0; right:0; bottom:0; z-index:2;
-    display:flex; align-items:center; justify-content:space-between; gap:12px;
-    padding:36px 16px 14px; background:linear-gradient(transparent, rgba(0,0,0,.55));
-  }
-  .act-dots { display:flex; flex-wrap:wrap; gap:2px; }
-  .act-dots button { width:20px; height:20px; padding:0; border:0; background:none; cursor:pointer; display:grid; place-items:center; }
-  .act-dots button::before { content:""; width:8px; height:8px; border-radius:4px; background:rgba(255,255,255,.55); transition:width .3s, background-color .3s; }
-  .act-dots button[aria-current="true"] { width:30px; }
-  .act-dots button[aria-current="true"]::before { width:24px; background:#fff; }
-  .act-pausa {
-    font:inherit; font-size:.8rem; color:#fff; cursor:pointer;
-    background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.55); border-radius:999px; padding:.3em .95em;
-  }
-  .act-stage.is-empty .act-arrow, .act-stage.is-empty .act-bar,
-  .act-stage.is-single .act-arrow, .act-stage.is-single .act-bar { display:none; }
-
-  .act-info h2 { margin:.25em 0 .2em; }
-  .act-fecha { display:block; opacity:.7; margin:0 0 1.1em; }
-  .act-desc { white-space:pre-line; margin:0; }
-  .act-contador { font-size:.85rem; opacity:.6; margin:1.4em 0 0; font-variant-numeric:tabular-nums; }
-
-  .act-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:24px; }
-  .act-card {
-    display:flex; flex-direction:column; overflow:hidden; border-radius:12px;
-    border:1px solid color-mix(in srgb, currentColor 16%, transparent);
-    background:color-mix(in srgb, currentColor 2.5%, transparent);
-  }
-  .act-card-media { position:relative; aspect-ratio:3 / 2; background:color-mix(in srgb, currentColor 7%, transparent); }
-  .act-card-media img { width:100%; height:100%; object-fit:cover; display:block; }
-  .act-badge { position:absolute; right:10px; bottom:10px; font-size:.75rem; color:#fff; background:rgba(0,0,0,.55); padding:.2em .65em; border-radius:999px; }
-  .act-card-body { display:flex; flex-direction:column; gap:.45em; flex:1; padding:20px 22px 22px; }
-  .act-card time { font-size:.85rem; opacity:.7; }
-  .act-card h3 { margin:0; line-height:1.3; }
-  .act-card-desc { margin:0; white-space:pre-line; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
-  .act-card.is-expanded .act-card-desc { display:block; -webkit-line-clamp:unset; }
-  .act-card-actions { display:flex; flex-wrap:wrap; gap:18px; margin-top:auto; padding-top:.7em; }
-  .act-link { font:inherit; font-size:.9rem; color:inherit; background:none; border:0; padding:0; cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
-  .act-link:focus-visible { outline:2px solid currentColor; outline-offset:3px; }
-
-  .act-aviso { padding:40px 28px; text-align:center; border:1px dashed color-mix(in srgb, currentColor 22%, transparent); border-radius:12px; }
-  .act-aviso p { margin:0 auto; max-width:52ch; }
-
-  @media (hover:none) { .act-arrow { opacity:1; } }
-  @media (max-width: 820px) { .act-showcase { grid-template-columns:1fr; gap:24px; } }
-  @media (prefers-reduced-motion: reduce) { .act-slide, .act-dots button::before { transition:none; } }
-</style>
+<link rel="stylesheet" href="actividades.css">
 </head>
 <body data-page="actividades">
 
@@ -106,7 +36,7 @@
   <section class="page-head">
     <div class="container">
       <span class="eyebrow">Actividades</span>
-      <h1>Conversatorios, debates y formaciones abiertos a toda la comunidad.</h1>
+      <h1>Conversatorios, debates y formaciones abiertos a toda la facultad.</h1>
       <p>Un registro de lo que hemos organizado como sociedad. Las convocatorias y próximas fechas se anuncian en nuestras redes.</p>
     </div>
   </section>
@@ -199,11 +129,21 @@
       <div>
         <h4>Contacto</h4>
         <ul class="footer-links">
-          <li><a href="mailto:sociedaduniversitariadeconomia@gmail.com">sociedaduniversitariadeconomia@gmail.com</a></li>
-          <li><a href="https://www.instagram.com/sue.chile/" target="_blank" rel="noopener">Instagram @sue.chile</a></li>
-          <li><a href="https://www.linkedin.com/company/suechile" target="_blank" rel="noopener">LinkedIn SUE Chile</a></li>
-          <li>Facultad de Economía y Negocios, Universidad de Chile</li>
+          <li class="footer-small"><a href="mailto:sociedaduniversitariadeconomia@gmail.com">sociedaduniversitariadeconomia@gmail.com</a></li>
+          <li class="footer-small">Facultad de Economía y Negocios, Universidad de Chile</li>
         </ul>
+        <div class="footer-social">
+          <a href="https://www.instagram.com/sue.chile/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de SUE">
+            <svg viewBox="0 0 24 24" width="27" height="27" fill="currentColor" aria-hidden="true">
+              <path d="M12 2c2.717.01 3.056.06 4.122.06 1.065.05 1.79.217 2.428.465.66.256 1.216.6 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.05 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.05-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.01 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.065.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.363-.415 2.428-.465C8.944 2.01 9.283 2 12 2zm0 1.802c-2.67 0-2.986.01-4.04.059-.976.045-1.505.207-1.858.344-.466.181-.8.398-1.15.748-.35.35-.566.684-.747 1.15-.137.353-.3.882-.344 1.857-.05 1.055-.06 1.37-.06 4.04 0 2.67.01 2.986.06 4.04.045.976.207 1.505.344 1.858.181.466.397.8.747 1.15.35.35.684.566 1.15.747.353.137.882.3 1.857.344 1.054.05 1.37.06 4.04.06 2.671 0 2.987-.01 4.041-.06.976-.045 1.505-.207 1.858-.344.466-.181.8-.397 1.15-.747.35-.35.566-.684.747-1.15.137-.353.3-.882.344-1.857.05-1.055.06-1.37.06-4.041 0-2.67-.01-2.986-.06-4.04-.045-.976-.207-1.505-.344-1.858a3.09 3.09 0 0 0-.747-1.15 3.098 3.098 0 0 0-1.15-.747c-.353-.137-.882-.3-1.857-.344-1.055-.05-1.37-.06-4.041-.06zM12 6.865a5.135 5.135 0 1 1 0 10.27 5.135 5.135 0 0 1 0-10.27zm0 1.802a3.333 3.333 0 1 0 0 6.666 3.333 3.333 0 0 0 0-6.666zm6.538-1.995a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0z"/>
+            </svg>
+          </a>
+          <a href="https://www.linkedin.com/company/suechile" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn de SUE">
+            <svg viewBox="0 0 24 24" width="27" height="27" fill="currentColor" aria-hidden="true">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.124 2.062 2.062 0 0 1 0 4.124zM7.114 20.452H3.558V9h3.556v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </a>
+        </div>
       </div>
     </div>
     <div class="footer-bottom">
