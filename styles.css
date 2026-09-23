@@ -538,6 +538,11 @@ transition:border-color .15s ease, transform .15s ease;
 .pub-archive .pub-row:hover{border-color:var(--ink);transform:translateY(-2px);}
 .pub-archive .pub-row .idx{padding-top:0;}
 .pub-archive .pub-row .read{margin-top:auto;align-self:flex-start;}
+/* Toda la tarjeta abre el artículo: el enlace "Leer" se estira sobre la tarjeta */
+.pub-archive .pub-row{position:relative;cursor:pointer;}
+.pub-archive .pub-row .read::after{content:"";position:absolute;inset:0;z-index:1;}
+.pub-archive .pub-row .read:focus-visible{outline:none;}
+.pub-archive .pub-row:has(.read:focus-visible){outline:2px solid var(--brick);outline-offset:3px;}
 .pub-thumb{display:none;}
 .pub-archive .pub-row{overflow:hidden;}
 .pub-archive .pub-thumb{
