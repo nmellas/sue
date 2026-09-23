@@ -6,6 +6,77 @@
 <title>Actividades — SUE, Sociedad Universitaria de Economía</title>
 <meta name="description" content="Conversatorios, debates y formaciones de la Sociedad Universitaria de Economía, FEN Universidad de Chile.">
 <link rel="stylesheet" href="styles.css">
+<style>
+  /* Actividades (puede moverse a styles.css) */
+  .act-showcase { display:grid; grid-template-columns:minmax(0,1.55fr) minmax(0,1fr); gap:40px; align-items:center; scroll-margin-top:90px; }
+  .act-stage {
+    position:relative; aspect-ratio:3 / 2; border-radius:14px; overflow:hidden;
+    background:color-mix(in srgb, currentColor 7%, transparent);
+  }
+  .act-stage:focus-visible { outline:2px solid currentColor; outline-offset:4px; }
+  .act-slides { position:absolute; inset:0; }
+  .act-slide { position:absolute; inset:0; opacity:0; transition:opacity .9s ease; }
+  .act-slide.is-active { opacity:1; z-index:1; }
+  .act-slide img { width:100%; height:100%; object-fit:cover; display:block; }
+  .act-sin-fotos { position:absolute; inset:0; display:grid; place-items:center; margin:0; opacity:.6; }
+
+  .act-arrow {
+    position:absolute; top:50%; transform:translateY(-50%); z-index:3;
+    width:44px; height:44px; border-radius:50%; border:0; cursor:pointer;
+    background:rgba(0,0,0,.45); color:#fff; font-size:26px; line-height:1;
+    opacity:0; transition:opacity .2s;
+  }
+  .act-prev { left:14px; } .act-next { right:14px; }
+  .act-stage:hover .act-arrow, .act-stage:focus-within .act-arrow { opacity:1; }
+  .act-arrow:focus-visible, .act-pausa:focus-visible, .act-dots button:focus-visible { outline:2px solid #fff; outline-offset:2px; }
+
+  .act-bar {
+    position:absolute; left:0; right:0; bottom:0; z-index:2;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:36px 16px 14px; background:linear-gradient(transparent, rgba(0,0,0,.55));
+  }
+  .act-dots { display:flex; flex-wrap:wrap; gap:2px; }
+  .act-dots button { width:20px; height:20px; padding:0; border:0; background:none; cursor:pointer; display:grid; place-items:center; }
+  .act-dots button::before { content:""; width:8px; height:8px; border-radius:4px; background:rgba(255,255,255,.55); transition:width .3s, background-color .3s; }
+  .act-dots button[aria-current="true"] { width:30px; }
+  .act-dots button[aria-current="true"]::before { width:24px; background:#fff; }
+  .act-pausa {
+    font:inherit; font-size:.8rem; color:#fff; cursor:pointer;
+    background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.55); border-radius:999px; padding:.3em .95em;
+  }
+  .act-stage.is-empty .act-arrow, .act-stage.is-empty .act-bar,
+  .act-stage.is-single .act-arrow, .act-stage.is-single .act-bar { display:none; }
+
+  .act-info h2 { margin:.25em 0 .2em; }
+  .act-fecha { display:block; opacity:.7; margin:0 0 1.1em; }
+  .act-desc { white-space:pre-line; margin:0; }
+  .act-contador { font-size:.85rem; opacity:.6; margin:1.4em 0 0; font-variant-numeric:tabular-nums; }
+
+  .act-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:24px; }
+  .act-card {
+    display:flex; flex-direction:column; overflow:hidden; border-radius:12px;
+    border:1px solid color-mix(in srgb, currentColor 16%, transparent);
+    background:color-mix(in srgb, currentColor 2.5%, transparent);
+  }
+  .act-card-media { position:relative; aspect-ratio:3 / 2; background:color-mix(in srgb, currentColor 7%, transparent); }
+  .act-card-media img { width:100%; height:100%; object-fit:cover; display:block; }
+  .act-badge { position:absolute; right:10px; bottom:10px; font-size:.75rem; color:#fff; background:rgba(0,0,0,.55); padding:.2em .65em; border-radius:999px; }
+  .act-card-body { display:flex; flex-direction:column; gap:.45em; flex:1; padding:20px 22px 22px; }
+  .act-card time { font-size:.85rem; opacity:.7; }
+  .act-card h3 { margin:0; line-height:1.3; }
+  .act-card-desc { margin:0; white-space:pre-line; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
+  .act-card.is-expanded .act-card-desc { display:block; -webkit-line-clamp:unset; }
+  .act-card-actions { display:flex; flex-wrap:wrap; gap:18px; margin-top:auto; padding-top:.7em; }
+  .act-link { font:inherit; font-size:.9rem; color:inherit; background:none; border:0; padding:0; cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
+  .act-link:focus-visible { outline:2px solid currentColor; outline-offset:3px; }
+
+  .act-aviso { padding:40px 28px; text-align:center; border:1px dashed color-mix(in srgb, currentColor 22%, transparent); border-radius:12px; }
+  .act-aviso p { margin:0 auto; max-width:52ch; }
+
+  @media (hover:none) { .act-arrow { opacity:1; } }
+  @media (max-width: 820px) { .act-showcase { grid-template-columns:1fr; gap:24px; } }
+  @media (prefers-reduced-motion: reduce) { .act-slide, .act-dots button::before { transition:none; } }
+</style>
 </head>
 <body data-page="actividades">
 
@@ -36,11 +107,57 @@
     <div class="container">
       <span class="eyebrow">Actividades</span>
       <h1>Conversatorios, debates y formaciones abiertos a toda la facultad.</h1>
-      <p>Anunciamos cada actividad en nuestras redes: fechas, invitados e inscripciones. Ahí también puedes ver lo que ya hemos realizado.</p>
+      <p>Un registro de lo que hemos organizado como sociedad. Las convocatorias y próximas fechas se anuncian en nuestras redes.</p>
     </div>
   </section>
 
   <section class="section">
+    <div class="container">
+      <p id="act-estado" class="act-contador" role="status">Cargando actividades…</p>
+
+      <!-- Última actividad: carrusel de fotos -->
+      <div class="act-showcase" id="act-showcase" hidden>
+        <div class="act-stage" id="act-stage" tabindex="0" aria-roledescription="carrusel" aria-label="Fotos de la actividad">
+          <div class="act-slides" id="act-slides"></div>
+          <button type="button" class="act-arrow act-prev" id="act-prev" aria-label="Foto anterior">&#8249;</button>
+          <button type="button" class="act-arrow act-next" id="act-next" aria-label="Foto siguiente">&#8250;</button>
+          <div class="act-bar">
+            <div class="act-dots" id="act-dots"></div>
+            <button type="button" class="act-pausa" id="act-pausa" aria-pressed="false">Pausar</button>
+          </div>
+        </div>
+        <div class="act-info">
+          <span class="eyebrow" id="act-etiqueta">Última actividad</span>
+          <h2 id="act-titulo"></h2>
+          <time class="act-fecha" id="act-fecha"></time>
+          <p class="act-desc" id="act-desc"></p>
+          <p class="act-contador" id="act-contador" aria-live="polite"></p>
+        </div>
+      </div>
+
+      <!-- Sin datos todavía -->
+      <div class="act-aviso" id="act-sin-datos" hidden>
+        <p>Pronto publicaremos aquí el registro de nuestras actividades. Mientras tanto, puedes revisarlas en Instagram y LinkedIn.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Todas las actividades -->
+  <section class="section" id="act-archivo" style="padding-top:0;" hidden>
+    <div class="container section-head">
+      <h2>Todas las actividades</h2>
+    </div>
+    <div class="container">
+      <div class="act-grid" id="act-grid"></div>
+    </div>
+  </section>
+
+  <!-- Redes -->
+  <section class="section" style="padding-top:0;">
+    <div class="container section-head">
+      <h2>Anuncios y próximas actividades</h2>
+      <p class="lede">Las convocatorias, fechas e invitados se publican primero en nuestras redes.</p>
+    </div>
     <div class="container contact-grid">
       <div class="info-block">
         <span class="eyebrow">Instagram</span>
@@ -95,7 +212,9 @@
   </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script src="indicators.js"></script>
+<script src="actividades-data.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
