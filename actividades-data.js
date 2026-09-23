@@ -4,6 +4,7 @@
    como CSV (alimentada por un Google Form) y arma:
      1) un carrusel con las fotos de la actividad más reciente
      2) una grilla con todas las actividades (título, fecha, resumen)
+   En index.html solo se muestra el carrusel (sin grilla).
    Ver TUTORIAL-actividades.md para la configuración.
    ========================================================================== */
 (function () {
@@ -12,7 +13,7 @@
   var CONFIG = {
     // Pega aquí el enlace CSV de la pestaña "Web"
     // (Hoja de cálculo → Archivo → Compartir → Publicar en la web → CSV).
-    csvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQWtoFhLpsUyNgDMd4PHVAYud2oORz608XxJYjiLC_N6o2Q6GWWQOdq5PJvTGKA-prPNpfj5qX6mlUS/pub?gid=962256103&single=true&output=csv",
+    csvUrl: "",
     intervaloMs: 5500,     // tiempo entre fotos del carrusel
     anchoFoto: 1600,       // resolución de las fotos del carrusel
     anchoMiniatura: 800    // resolución de las miniaturas de la grilla
@@ -284,39 +285,46 @@
 
   /* ---------- Estados ---------- */
 
+  // Muestra u oculta un elemento solo si existe en la página actual
+  function mostrar(id, visible) {
+    var n = $(id);
+    if (n) n.hidden = !visible;
+  }
+
   function estado(mensaje) {
     var e = $("act-estado");
+    if (!e) return;
     e.textContent = mensaje;
     e.hidden = false;
   }
 
   function sinActividades() {
-    $("act-showcase").hidden = true;
-    $("act-archivo").hidden = true;
-    $("act-sin-datos").hidden = false;
+    mostrar("act-estado", false);
+    mostrar("act-showcase", false);
+    mostrar("act-archivo", false);
+    mostrar("act-sin-datos", true);   // aviso en actividades.html
+    mostrar("act-home", false);       // en el inicio se oculta la sección completa
   }
 
   function render(lista) {
-    $("act-estado").hidden = true;
+    mostrar("act-estado", false);
     if (!lista.length) return sinActividades();
 
-    $("act-showcase").hidden = false;
-    $("act-archivo").hidden = false;
+    mostrar("act-home", true);
+    mostrar("act-showcase", true);
+    mostrar("act-archivo", true);
     mostrarActividad(lista[0], true);
 
     var grid = $("act-grid");
+    if (!grid) return;
     grid.textContent = "";
     lista.forEach(function (a, i) { grid.appendChild(tarjeta(a, i === 0)); });
   }
 
   function cargar() {
-    if (!CONFIG.csvUrl) {
-      $("act-estado").hidden = true;
-      return sinActividades();
-    }
+    if (!CONFIG.csvUrl) return sinActividades();
     if (!window.Papa) {
       console.error("Actividades: falta la librería PapaParse.");
-      $("act-estado").hidden = true;
       return sinActividades();
     }
     var url = CONFIG.csvUrl + (CONFIG.csvUrl.indexOf("?") === -1 ? "?" : "&") + "t=" + Date.now();
@@ -327,7 +335,6 @@
       complete: function (r) { render(procesar(r.data || [])); },
       error: function (err) {
         console.error("Actividades: no se pudo leer la hoja.", err);
-        $("act-estado").hidden = true;
         sinActividades();
       }
     });
