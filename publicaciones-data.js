@@ -21,11 +21,11 @@
 var CONFIG = {
   // Pega aquí el enlace CSV publicado de la Google Sheet de respuestas.
   // Ejemplo: "https://docs.google.com/spreadsheets/d/e/XXXXX/pub?output=csv"
-  CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTMkfD6_sIOPrrsX4kHJp2Xrwn5TbcA-okC831-t9ZJB2O0wRe4BvjBnC1SdOyzLrPQCWZbA9vek3AV/pub?gid=439785421&single=true&output=csv",
+  CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQjt6eQhpe3H-Xg5KY_TA8BMFXaSWR_JSDsI3Q1WxGESnFJ2ua14ekwptDkDLc2lJDVByhnm8A-uqe_/pub?gid=2048697698&single=true&output=csv",
 
   // Pega aquí el enlace del Google Form para que el botón
   // "Enviar mi publicación" funcione.
-  FORM_URL: "https://docs.google.com/forms/d/e/1FAIpQLSeyn8K_IyiogET0SfjAN3QtnSD-OzMrl2S5O4TJTppPW0HG7w/viewform?usp=dialog"
+  FORM_URL: "https://docs.google.com/forms/d/e/1FAIpQLSe7qdoZAF3cw2brBkoNei5-PN8UnXJ4EA_RvGfvmnUh0x-bYg/viewform?usp=dialog"
 };
 
 // Publicaciones de ejemplo (se usan solo si CONFIG.CSV_URL está vacío)
