@@ -38,7 +38,7 @@
       <div>
         <span class="eyebrow">Sociedad Universitaria de Economía</span>
         <h1>Donde la teoría se <em>discute</em>, se <em>cuestiona</em> y se pone a prueba.</h1>
-        <p class="hero-sub">Somos una asociación estudiantil independiente y pluralista que investiga, publica y debate sobre los problemas económicos que nos rodean, dentro y fuera del aula. Tenemos sede en la FEN de la Universidad de Chile y estamos abiertos a estudiantes de cualquier carrera o institución.</p>
+        <p class="hero-sub">Somos una asociación estudiantil independiente y pluralista de la FEN, Universidad de Chile. Investigamos, publicamos y debatimos sobre economía, abiertos a estudiantes de cualquier carrera.</p>
         <div class="hero-actions">
           <a href="quienes-somos.html" class="btn btn-primary">Conoce la sociedad</a>
           <a href="publicaciones.html" class="btn btn-ghost">Leer publicaciones</a>
@@ -51,8 +51,8 @@
           <!-- ejes -->
           <line x1="40" y1="20" x2="40" y2="260" stroke="#172340" stroke-width="1.5"/>
           <line x1="40" y1="260" x2="360" y2="260" stroke="#172340" stroke-width="1.5"/>
-          <text x="10" y="24" font-family="IBM Plex Mono" font-size="11" fill="#3d4a63">Precio</text>
-          <text x="330" y="278" font-family="IBM Plex Mono" font-size="11" fill="#3d4a63">Cantidad</text>
+          <text x="10" y="24" font-family="Montserrat" font-size="11" fill="#3d4a63">Precio</text>
+          <text x="330" y="278" font-family="Montserrat" font-size="11" fill="#3d4a63">Cantidad</text>
 
           <!-- curva de demanda (baja) -->
           <path class="curve curve-demand" d="M 60 50 L 340 230" fill="none" stroke="#a83b2c" stroke-width="2.5"/>
@@ -65,8 +65,8 @@
           <line x1="40" y1="140" x2="200" y2="140" stroke="#172340" stroke-width="1" stroke-dasharray="3 4"/>
           <text x="206" y="132" font-family="Fraunces" font-style="italic" font-size="16" fill="#172340">E</text>
 
-          <text x="270" y="70" font-family="IBM Plex Mono" font-size="11" fill="#b98a1f">Oferta</text>
-          <text x="270" y="222" font-family="IBM Plex Mono" font-size="11" fill="#a83b2c">Demanda</text>
+          <text x="270" y="70" font-family="Montserrat" font-size="11" fill="#b98a1f">Oferta</text>
+          <text x="270" y="222" font-family="Montserrat" font-size="11" fill="#a83b2c">Demanda</text>
         </svg>
         <div class="cap">
           <span>FIG. 01 — MODELO DE MERCADO</span>
@@ -86,6 +86,33 @@
       <div class="stat">
         <span class="num">70+</span>
         <span class="label">Miembros activos</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÚLTIMA ACTIVIDAD (se oculta sola si todavía no hay actividades) -->
+  <section class="section" id="act-home" hidden>
+    <div class="container">
+      <div class="act-showcase" id="act-showcase">
+        <div class="act-stage" id="act-stage" tabindex="0" aria-roledescription="carrusel" aria-label="Fotos de la última actividad">
+          <div class="act-slides" id="act-slides"></div>
+          <button type="button" class="act-arrow act-prev" id="act-prev" aria-label="Foto anterior">&#8249;</button>
+          <button type="button" class="act-arrow act-next" id="act-next" aria-label="Foto siguiente">&#8250;</button>
+          <div class="act-bar">
+            <div class="act-dots" id="act-dots"></div>
+            <button type="button" class="act-pausa" id="act-pausa" aria-pressed="false">Pausar</button>
+          </div>
+        </div>
+        <div class="act-info">
+          <span class="eyebrow" id="act-etiqueta">Última actividad</span>
+          <h2 id="act-titulo"></h2>
+          <time class="act-fecha" id="act-fecha"></time>
+          <p class="act-desc" id="act-desc"></p>
+          <p class="act-contador" id="act-contador" aria-live="polite"></p>
+          <p style="margin-top:1.4em;">
+            <a href="actividades.html" class="btn btn-ghost">Ver todas las actividades</a>
+          </p>
+        </div>
       </div>
     </div>
   </section>
@@ -149,32 +176,6 @@
     </div>
   </section>
 
-  <!-- ÚLTIMA ACTIVIDAD (se oculta sola si todavía no hay actividades) -->
-  <section class="section" id="act-home" style="padding-top:0;" hidden>
-    <div class="container">
-      <div class="act-showcase" id="act-showcase">
-        <div class="act-stage" id="act-stage" tabindex="0" aria-roledescription="carrusel" aria-label="Fotos de la última actividad">
-          <div class="act-slides" id="act-slides"></div>
-          <button type="button" class="act-arrow act-prev" id="act-prev" aria-label="Foto anterior">&#8249;</button>
-          <button type="button" class="act-arrow act-next" id="act-next" aria-label="Foto siguiente">&#8250;</button>
-          <div class="act-bar">
-            <div class="act-dots" id="act-dots"></div>
-            <button type="button" class="act-pausa" id="act-pausa" aria-pressed="false">Pausar</button>
-          </div>
-        </div>
-        <div class="act-info">
-          <span class="eyebrow" id="act-etiqueta">Última actividad</span>
-          <h2 id="act-titulo"></h2>
-          <time class="act-fecha" id="act-fecha"></time>
-          <p class="act-desc" id="act-desc"></p>
-          <p class="act-contador" id="act-contador" aria-live="polite"></p>
-          <p style="margin-top:1.4em;">
-            <a href="actividades.html" class="btn btn-ghost">Ver todas las actividades</a>
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
 </main>
 
 <footer class="site-footer">
