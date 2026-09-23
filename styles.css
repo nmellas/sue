@@ -315,6 +315,7 @@ text-decoration:none;color:var(--ink);
 transition:background .15s ease;
 }
 .card:hover{background:var(--paper-2);}
+.card--static:hover{background:var(--white);} /* tarjeta informativa, sin enlace */
 .card .idx{font-family:var(--font-mono);font-size:12px;color:var(--gold);}
 .card h3{font-size:18px;}
 .card p{font-size:14px;margin:0;}
@@ -434,6 +435,38 @@ transition:border-color .15s ease;
 .team-card .mail:hover{border-bottom-color:var(--brick);}
 @media (max-width:720px){
 .directiva-grupos, .directiva-grupo--general .directiva-miembros{grid-template-columns:1fr;}
+}
+
+/* ============ ORGANIZACIONES Y ESTATUTOS (quienes somos) ============ */
+.org-logos{
+list-style:none;margin:0;padding:0;
+display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;
+}
+.org-logos a{
+display:flex;align-items:center;justify-content:center;
+height:140px;padding:28px 32px;
+background:var(--white);border:1px solid var(--line);border-radius:6px;
+transition:border-color .15s ease;
+}
+.org-logos a:hover{border-color:var(--ink);}
+/* Todos los logos ocupan la misma caja: los anchos llenan el ancho,
+   los altos o cuadrados llenan el alto, sin deformarse */
+.org-logos img{
+width:100%;max-width:190px;height:72px;
+object-fit:contain;object-position:center;
+}
+
+.doc-teaser{
+display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;
+padding:26px 28px;
+background:var(--white);border:1.5px solid var(--ink);border-radius:6px;
+box-shadow:6px 6px 0 var(--line);
+}
+.doc-teaser h3{font-size:19px;margin-bottom:6px;}
+.doc-teaser p{font-size:14.5px;margin:0;}
+@media (max-width:640px){
+.doc-teaser{grid-template-columns:1fr;}
+.doc-teaser .btn{justify-self:start;}
 }
 
 /* ============ PUBLICATIONS LIST ============ */
