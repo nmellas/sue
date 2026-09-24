@@ -329,8 +329,15 @@
       .then(function (csvText) {
         var parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
 
-        // Fila correspondiente al ID (posición en la hoja)
-        var row = parsed[id];
+        // Fila correspondiente: primero por la "Marca temporal" (no cambia aunque se muevan
+        // las filas); si no, por la posición en la hoja
+        var row = null;
+        if (window.ARTICULO_CLAVE) {
+          for (var k = 0; k < parsed.length; k++) {
+            if (getField(parsed[k], ["Marca temporal", "Timestamp"]) === window.ARTICULO_CLAVE) { row = parsed[k]; break; }
+          }
+        }
+        if (!row) row = parsed[id];
 
         if (!row || getField(row, ["Estado"]).toLowerCase() !== "publicado") {
           document.getElementById("loading").innerText = "Artículo no disponible o no publicado.";
