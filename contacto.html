@@ -44,6 +44,13 @@
     <div class="container contact-grid">
       <div>
         <div class="info-block">
+          <span class="eyebrow">Correo</span>
+          <div class="val" style="overflow-wrap:anywhere;">
+            <a href="mailto:sociedaduniversitariadeconomia@gmail.com">sociedaduniversitariadeconomia@gmail.com</a>
+          </div>
+          <p>También puedes escribirnos directamente a esta dirección.</p>
+        </div>
+        <div class="info-block">
           <span class="eyebrow">Dónde estamos</span>
           <div class="val">Facultad de Economía y Negocios, Universidad de Chile</div>
           <p>Somos una organización estudiantil de la FEN, abierta a cualquier estudiante interesado.</p>
@@ -56,16 +63,35 @@
       </div>
 
       <div>
-        <div class="info-block">
-          <span class="eyebrow">Correo</span>
-          <div class="val" style="overflow-wrap:anywhere;">
-            <a href="mailto:sociedaduniversitariadeconomia@gmail.com">sociedaduniversitariadeconomia@gmail.com</a>
+        <form id="sue-contacto" class="contact-form" novalidate>
+          <span class="eyebrow">Envíanos un mensaje</span>
+
+          <div class="form-field">
+            <label for="cf-nombre">Nombre</label>
+            <input type="text" id="cf-nombre" name="nombre" autocomplete="name" maxlength="100" required>
           </div>
-          <p>Cuéntanos quién eres y en qué podemos ayudarte: una alianza, una invitación o cualquier consulta. Respondemos dentro de dos días hábiles.</p>
-          <p style="margin-top:1.2em;">
-            <a class="btn btn-primary" href="mailto:sociedaduniversitariadeconomia@gmail.com">Escribir un correo</a>
-          </p>
-        </div>
+          <div class="form-field">
+            <label for="cf-correo">Correo electrónico</label>
+            <input type="email" id="cf-correo" name="correo" autocomplete="email" maxlength="150" required>
+          </div>
+          <div class="form-field">
+            <label for="cf-asunto">Asunto</label>
+            <input type="text" id="cf-asunto" name="asunto" maxlength="150" required>
+          </div>
+          <div class="form-field">
+            <label for="cf-mensaje">Mensaje</label>
+            <textarea id="cf-mensaje" name="mensaje" rows="6" maxlength="5000" required></textarea>
+          </div>
+
+          <!-- Trampa para bots: las personas no ven ni llenan este campo -->
+          <div class="hp" aria-hidden="true">
+            <label for="cf-website">No llenar</label>
+            <input type="text" id="cf-website" name="website" tabindex="-1" autocomplete="off">
+          </div>
+
+          <button type="submit" class="btn btn-primary">Enviar mensaje</button>
+          <p id="sue-contacto-estado" class="form-msg" role="status" aria-live="polite" hidden></p>
+        </form>
       </div>
     </div>
   </section>
@@ -116,5 +142,6 @@
 
 <script src="indicators.js"></script>
 <script src="script.js"></script>
+<script src="contacto.js"></script>
 </body>
 </html>
