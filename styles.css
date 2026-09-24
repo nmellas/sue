@@ -265,11 +265,12 @@ margin-top:6px;letter-spacing:.02em;
    Mismo resplandor rojo del hero del inicio: arriba a la derecha y abajo
    a la izquierda del contenido. Quedan detrás de todo (z-index:-1) y
    recortados dentro de <main>, para no invadir el footer ni generar scroll. */
+html, body{overflow-x:clip;} /* evita scroll horizontal por los degradados (en html y body para que Safari también lo respete) */
 main{
 position:relative;
 isolation:isolate;
-overflow:hidden;
-overflow:clip;
+overflow-x:visible;
+overflow-y:clip; /* se recortan solo arriba y abajo (no invaden el footer) */
 }
 main::before,
 main::after{
@@ -282,14 +283,18 @@ filter:blur(40px);
 pointer-events:none;
 z-index:-1;
 }
-main::before{ top:-160px; right:-160px; }
-main::after{ bottom:-160px; left:-160px; }
+/* Se ubican respecto al borde de la pantalla, aunque el contenido sea angosto
+   (p. ej. en los artículos, donde <main> mide 900px) */
+main::before{ top:-160px; right:calc((100% - 100vw) / 2 - 160px); }
+main::after{ bottom:-160px; left:calc((100% - 100vw) / 2 - 160px); }
 /* En el inicio el hero ya tiene su resplandor superior */
 body[data-page="inicio"] main::before{ display:none; }
 @media (max-width:700px){
 main::before, main::after, .hero::before, .hero::after{ width:320px;height:320px; }
-main::before, .hero::before{ top:-120px; right:-140px; }
-main::after, .hero::after{ bottom:-120px; left:-140px; }
+main::before{ top:-120px; right:calc((100% - 100vw) / 2 - 140px); }
+main::after{ bottom:-120px; left:calc((100% - 100vw) / 2 - 140px); }
+.hero::before{ top:-120px; right:-140px; }
+.hero::after{ bottom:-120px; left:-140px; }
 }
 
 .curve{
@@ -338,16 +343,16 @@ text-transform:uppercase;letter-spacing:.08em;
 
 /* ============ CARDS GRID (areas) ============ */
 .card-grid{
-display:grid;grid-template-columns:repeat(4,1fr);gap:20px;
+display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+background:var(--line);border:1px solid var(--line);
 }
 .card{
 background:var(--white);padding:28px 22px;
-border:1px solid var(--line);border-radius:6px;
 display:flex;flex-direction:column;gap:10px;
 text-decoration:none;color:var(--ink);
-transition:background .15s ease, border-color .15s ease;
+transition:background .15s ease;
 }
-a.card:hover{background:var(--paper-2);border-color:var(--ink);} /* solo las tarjetas con enlace reaccionan */
+a.card:hover{background:var(--paper-2);} /* solo las tarjetas con enlace reaccionan */
 .card .idx{font-family:var(--font-mono);font-size:12px;color:var(--gold);}
 .card h3{font-size:18px;}
 .card p{font-size:14px;margin:0;}
@@ -806,7 +811,6 @@ object-fit:cover;
 object-position:center;
 background:var(--paper-2);
 border:1.5px solid var(--ink);border-radius:6px;
-box-shadow:6px 6px 0 var(--line);
 margin-bottom:44px;
 }
 
@@ -814,7 +818,6 @@ margin-bottom:44px;
 .article-body-image{
 display:block;width:100%;height:auto;
 border:1.5px solid var(--ink);border-radius:6px;
-box-shadow:6px 6px 0 var(--line);
 }
 .article-body-figure figcaption{
 font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);
