@@ -262,40 +262,54 @@ margin-top:6px;letter-spacing:.02em;
 }
 
 /* ============ DEGRADADOS CIRCULARES (todas las páginas) ============
-   Mismo resplandor rojo del hero del inicio: arriba a la derecha y abajo
-   a la izquierda del contenido. Quedan detrás de todo (z-index:-1) y
-   recortados dentro de <main>, para no invadir el footer ni generar scroll. */
-html, body{overflow-x:clip;} /* evita scroll horizontal por los degradados (en html y body para que Safari también lo respete) */
+   Resplandor rojo arriba a la derecha y abajo a la izquierda del contenido.
+   Cada capa queda COMPLETAMENTE dentro de la pantalla: el brillo se dibuja
+   con el centro en la esquina, sin nada que sobresalga. Así el celular no
+   permite arrastrar la página hacia los lados. */
+html, body{overflow-x:clip;} /* resguardo adicional contra scroll lateral */
 main{
 position:relative;
 isolation:isolate;
-overflow-x:visible;
-overflow-y:clip; /* se recortan solo arriba y abajo (no invaden el footer) */
+overflow-y:clip; /* no invaden el footer */
 }
 main::before,
 main::after{
 content:"";
 position:absolute;
-width:480px;height:480px;
-border-radius:50%;
-background:radial-gradient(circle, rgba(168,59,44,0.38) 0%, rgba(168,59,44,0.14) 45%, transparent 72%);
-filter:blur(40px);
+width:340px;height:340px;
 pointer-events:none;
 z-index:-1;
 }
-/* Se ubican respecto al borde de la pantalla, aunque el contenido sea angosto
+/* Pegados al borde de la pantalla aunque el contenido sea angosto
    (p. ej. en los artículos, donde <main> mide 900px) */
-main::before{ top:-160px; right:calc((100% - 100vw) / 2 - 160px); }
-main::after{ bottom:-160px; left:calc((100% - 100vw) / 2 - 160px); }
+main::before{
+top:0;right:max(0px, (100% - 100vw) / 2);
+background:radial-gradient(circle 250px at calc(100% - 80px) 80px,
+  rgba(168,59,44,0.34) 0%, rgba(168,59,44,0.20) 35%, rgba(168,59,44,0.08) 70%, transparent 100%);
+}
+main::after{
+bottom:0;left:max(0px, (100% - 100vw) / 2);
+background:radial-gradient(circle 250px at 80px calc(100% - 80px),
+  rgba(168,59,44,0.34) 0%, rgba(168,59,44,0.20) 35%, rgba(168,59,44,0.08) 70%, transparent 100%);
+}
 /* En el inicio el hero ya tiene su resplandor superior */
 body[data-page="inicio"] main::before{ display:none; }
 @media (max-width:700px){
-main::before, main::after, .hero::before, .hero::after{ width:320px;height:320px; }
-main::before{ top:-120px; right:calc((100% - 100vw) / 2 - 140px); }
-main::after{ bottom:-120px; left:calc((100% - 100vw) / 2 - 140px); }
+main::before, main::after{ width:230px;height:230px; }
+main::before{ background:radial-gradient(circle 170px at calc(100% - 55px) 55px,
+  rgba(168,59,44,0.34) 0%, rgba(168,59,44,0.20) 35%, rgba(168,59,44,0.08) 70%, transparent 100%); }
+main::after{ background:radial-gradient(circle 170px at 55px calc(100% - 55px),
+  rgba(168,59,44,0.34) 0%, rgba(168,59,44,0.20) 35%, rgba(168,59,44,0.08) 70%, transparent 100%); }
+.hero::before, .hero::after{ width:320px;height:320px; }
 .hero::before{ top:-120px; right:-140px; }
 .hero::after{ bottom:-120px; left:-140px; }
 }
+
+/* Otros resguardos contra desborde lateral en celular */
+.site-header .nav{gap:12px;}
+.brand{min-width:0;}
+.brand .logo-img{max-width:100%;}
+.article-body .katex-display{overflow-x:auto;overflow-y:hidden;} /* ecuaciones largas: scroll propio */
 
 .curve{
 stroke-dasharray:420;
