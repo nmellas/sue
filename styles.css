@@ -712,6 +712,18 @@ font-family:var(--font-mono);font-size:13px;margin-top:10px;display:none;
 }
 #form-status.ok{display:block;color:#1f7a3d;}
 
+/* ---- formulario de contacto ---- */
+.contact-form{
+background:var(--white);border:1px solid var(--line);border-radius:6px;
+padding:28px 28px 24px;
+}
+.contact-form .eyebrow{margin-bottom:1.2em;}
+.contact-form .btn[disabled]{opacity:.6;cursor:wait;transform:none;}
+.form-msg{margin:14px 0 0;font-size:14px;}
+.form-msg.is-ok{color:#1f7a3d;}
+.form-msg.is-error{color:var(--brick-dark);}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
+
 @media (max-width:820px){.contact-grid{grid-template-columns:1fr;}}
 
 /* ============ FOOTER ============ */
