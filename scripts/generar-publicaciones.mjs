@@ -1,0 +1,33 @@
+# Genera una página por publicación (carpeta p/) para que cada una tenga
+# su propia vista previa al compartirla. Corre cada hora y también a mano
+# desde la pestaña Actions → "Páginas de publicaciones" → Run workflow.
+name: Páginas de publicaciones
+
+on:
+  schedule:
+    - cron: "15 * * * *"   # cada hora, al minuto 15
+  workflow_dispatch:        # botón para ejecutarlo a mano
+  push:
+    paths:
+      - "articulo.html"
+      - "publicaciones-data.js"
+      - "scripts/generar-publicaciones.mjs"
+
+permissions:
+  contents: write
+
+jobs:
+  generar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: node scripts/generar-publicaciones.mjs
+      - name: Guardar cambios (solo si hay)
+        run: |
+          git config user.name "SUE bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A p
+          git diff --staged --quiet || (git commit -m "Actualizar páginas de publicaciones" && git push)
