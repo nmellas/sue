@@ -6,6 +6,7 @@
 <title>Sé el Banco Central — SUE, Sociedad Universitaria de Economía</title>
 <meta name="description" content="Decide la tasa de interés durante dos años, enfrenta shocks de la economía chilena y lleva la inflación a la meta. Un simulador de la Sociedad Universitaria de Economía.">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="simulador.css?v=2">
 <!-- Ícono de la pestaña -->
 <link rel="icon" type="image/png" href="favicon.png?v=2">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
@@ -52,74 +53,117 @@
     <div class="container">
       <span class="eyebrow">Simulador</span>
       <h1>Sé el Banco Central.</h1>
-      <p>Durante dos años decides la Tasa de Política Monetaria (TPM). Cada trimestre llega un shock a la economía chilena: tu misión es llevar la inflación a la meta de 3% sin hundir la actividad ni perder credibilidad.</p>
+      <p>Presides el Consejo durante dos años. Cada trimestre llega un shock a la economía chilena y decides la Tasa de Política Monetaria (TPM). Tu misión: llevar la inflación a la meta de 3% sin hundir la actividad ni perder credibilidad.</p>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section sim">
     <div class="container">
 
-      <!-- INTRO -->
-      <div class="sim-intro" id="sim-intro">
-        <div class="sim-partida">
-          <div><span class="sim-lbl">Inflación anual</span><span class="sim-num" id="sim-ini-inf">…</span></div>
-          <div><span class="sim-lbl">TPM</span><span class="sim-num" id="sim-ini-tpm">…</span></div>
-          <div><span class="sim-lbl">Meta</span><span class="sim-num">3,0%</span></div>
+      <!-- INTRO: elegir escenario -->
+      <div id="sim-intro">
+        <div class="sim-bloque-titulo">
+          <span class="sim-paso">1</span>
+          <h2>Elige un escenario</h2>
         </div>
-        <p class="sim-fuente" id="sim-ini-fuente">Cargando el punto de partida…</p>
-        <ul class="sim-reglas">
-          <li><strong>8 trimestres.</strong> En cada uno lees un shock y decides si subes, bajas o mantienes la tasa.</li>
-          <li><strong>La tasa actúa con rezago.</strong> Subirla enfría la economía y aprecia el peso; bajarla hace lo contrario.</li>
-          <li><strong>La credibilidad importa.</strong> Si la inflación se aleja mucho de la meta, las expectativas se desanclan y cuesta más controlarla.</li>
-        </ul>
-        <button type="button" class="btn btn-primary" id="sim-empezar" disabled>Asumir la presidencia del Consejo</button>
+        <div class="sim-escenarios" id="sim-escenarios"></div>
+
+        <div class="sim-inicio">
+          <div class="sim-inicio-texto">
+            <div class="sim-bloque-titulo">
+              <span class="sim-paso">2</span>
+              <h2>Revisa la situación inicial</h2>
+            </div>
+            <p id="sim-esc-desc"></p>
+            <div class="sim-partida">
+              <div class="sim-dato"><div class="sim-lbl">Inflación anual</div><div class="sim-num" id="sim-ini-inf">…</div></div>
+              <div class="sim-dato"><div class="sim-lbl">TPM</div><div class="sim-num" id="sim-ini-tpm">…</div></div>
+              <div class="sim-dato"><div class="sim-lbl">Actividad</div><div class="sim-num" id="sim-ini-act">…</div></div>
+              <div class="sim-dato"><div class="sim-lbl">Meta</div><div class="sim-num">3,0%</div></div>
+            </div>
+          </div>
+          <div class="sim-reglas">
+            <div class="sim-regla"><span>↑</span><p><strong>Subir la tasa</strong> enfría la demanda y aprecia el peso: baja la inflación, pero también la actividad.</p></div>
+            <div class="sim-regla"><span>↓</span><p><strong>Bajar la tasa</strong> reactiva la economía, pero puede encender los precios.</p></div>
+            <div class="sim-regla"><span>◎</span><p><strong>La credibilidad importa.</strong> Si la inflación sale del rango de 2%–4%, las expectativas se desanclan y cuesta más controlarla.</p></div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary sim-cta" id="sim-empezar" disabled>Asumir la presidencia del Consejo →</button>
       </div>
 
       <!-- JUEGO -->
       <div class="sim-juego" id="sim-juego" hidden>
-        <div class="sim-col">
-          <span class="eyebrow" id="sim-trimestre">Trimestre 1 de 8</span>
-          <div class="sim-evento">
-            <h2 id="sim-ev-titulo"></h2>
-            <p id="sim-ev-texto"></p>
-            <div class="sim-pistas" id="sim-ev-pistas"></div>
+        <div class="sim-juego-cab">
+          <div>
+            <span class="eyebrow" id="sim-trimestre">Trimestre 1 de 8</span>
+            <div class="sim-juego-esc" id="sim-juego-esc"></div>
           </div>
-          <p class="sim-pregunta">¿Qué decide el Consejo?</p>
-          <div class="sim-botones" id="sim-botones"></div>
-          <p class="sim-informe" id="sim-informe" aria-live="polite"></p>
+          <div class="sim-progreso" id="sim-progreso" aria-hidden="true"></div>
         </div>
 
-        <div class="sim-col">
-          <div class="sim-tablero">
-            <div><span class="sim-lbl">TPM</span><span class="sim-num" id="sim-tpm"></span></div>
-            <div><span class="sim-lbl">Inflación anual</span><span class="sim-num" id="sim-inf"></span></div>
-            <div><span class="sim-lbl">Actividad</span><span class="sim-num" id="sim-act"></span><span class="sim-sub" id="sim-act-txt"></span></div>
-            <div><span class="sim-lbl">Credibilidad</span><span class="sim-num" id="sim-cred-txt"></span><span class="sim-barra"><span id="sim-cred"></span></span></div>
+        <div class="sim-juego-grid">
+          <div>
+            <article class="sim-evento">
+              <span class="sim-ev-tipo" id="sim-ev-tipo"></span>
+              <h2 id="sim-ev-titulo"></h2>
+              <p id="sim-ev-texto"></p>
+              <div class="sim-pistas" id="sim-ev-pistas"></div>
+            </article>
+
+            <div class="sim-decision">
+              <div class="sim-decision-cab">
+                <span class="sim-pregunta">¿Qué decide el Consejo?</span>
+                <span class="sim-preview" id="sim-preview"></span>
+              </div>
+              <div class="sim-botones" id="sim-botones"></div>
+              <div class="sim-botones-leyenda"><span>← Bajar (pb)</span><span>Subir (pb) →</span></div>
+            </div>
+
+            <p class="sim-informe" id="sim-informe" aria-live="polite"></p>
           </div>
-          <div class="sim-grafico" id="sim-grafico"></div>
-          <div class="sim-leyenda">
-            <span><i class="l-pi"></i>Inflación</span><span><i class="l-tpm"></i>TPM</span><span><i class="l-rango"></i>Rango meta (2%–4%)</span>
+
+          <div>
+            <div class="sim-tablero">
+              <div class="sim-dato"><div class="sim-lbl">TPM</div><div class="sim-num" id="sim-tpm"></div></div>
+              <div class="sim-dato"><div class="sim-lbl">Inflación anual</div><div class="sim-num" id="sim-inf"></div></div>
+              <div class="sim-dato"><div class="sim-lbl">Actividad</div><div class="sim-num" id="sim-act"></div><div class="sim-sub" id="sim-act-txt"></div></div>
+              <div class="sim-dato"><div class="sim-lbl">Credibilidad</div><div class="sim-num" id="sim-cred-txt"></div><div class="sim-barra"><span id="sim-cred"></span></div></div>
+            </div>
+            <div class="sim-grafico" id="sim-grafico"></div>
+            <div class="sim-leyenda">
+              <span><i style="background:#CD1729"></i>Inflación</span>
+              <span><i style="background:#172340"></i>TPM</span>
+              <span><i class="rango"></i>Rango meta 2%–4%</span>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- RESULTADO -->
       <div class="sim-final" id="sim-final" hidden>
-        <span class="eyebrow">Fin de tu mandato</span>
+        <span class="eyebrow">Fin de tu mandato · <span id="sim-final-esc"></span></span>
         <div class="sim-puntaje"><span id="sim-puntaje">0</span><small>/100</small></div>
         <h2 id="sim-titulo-final"></h2>
-        <p id="sim-resumen"></p>
-        <div class="sim-grafico sim-grafico-final" id="sim-grafico-final"></div>
+        <p class="sim-record" id="sim-record"></p>
+        <p class="sim-resumen" id="sim-resumen"></p>
+        <div class="sim-grafico" id="sim-grafico-final"></div>
+        <div class="sim-leyenda sim-leyenda-final">
+          <span><i style="background:#CD1729"></i>Tu inflación</span>
+          <span><i class="piloto"></i>Piloto automático</span>
+          <span><i style="background:#172340"></i>Tu TPM</span>
+        </div>
         <div class="sim-acciones">
           <button type="button" class="btn btn-primary" id="sim-compartir">Compartir resultado</button>
-          <button type="button" class="btn btn-ghost" id="sim-otra">Jugar de nuevo</button>
+          <button type="button" class="btn btn-ghost" id="sim-otra">Repetir escenario</button>
+          <button type="button" class="btn btn-ghost" id="sim-menu">Probar otro escenario</button>
         </div>
       </div>
 
       <details class="sim-como">
         <summary>¿Cómo funciona el modelo?</summary>
-        <p>Es un modelo macroeconómico trimestral simplificado. La <strong>actividad</strong> cae cuando la tasa real (TPM menos inflación esperada) supera su nivel neutral. La <strong>inflación</strong> es persistente, sube con la actividad y los shocks de costos, y baja cuando subir la tasa aprecia el peso. Las <strong>expectativas</strong> se anclan a la meta según la credibilidad del Banco Central. El puntaje premia mantener la inflación cerca de 3%, la actividad cerca de su potencial y mover la tasa sin brusquedades.</p>
-        <p>Tiene fines educativos: no representa las proyecciones ni los modelos del Banco Central de Chile. Los datos de partida provienen de mindicador.cl.</p>
+        <p>Es un modelo macroeconómico trimestral simplificado. La <strong>actividad</strong> cae cuando la tasa real (TPM menos inflación esperada) supera su nivel neutral. La <strong>inflación</strong> es persistente, sube con la actividad y con los shocks de costos, y baja cuando la TPM sube, por menor demanda y un peso más apreciado. Las <strong>expectativas</strong> se anclan a la meta según la credibilidad del Banco Central.</p>
+        <p>El <strong>puntaje</strong> compara tu gestión con un "piloto automático", un Banco Central que enfrenta exactamente los mismos shocks sin mover la tasa y que obtiene 50 puntos. Se premia mantener la inflación cerca de 3%, la actividad cerca de su potencial y mover la tasa sin brusquedades innecesarias.</p>
+        <p>Los escenarios están inspirados en episodios reales de la economía chilena, pero sus cifras son aproximadas. El simulador tiene fines educativos y no representa las proyecciones ni los modelos del Banco Central de Chile.</p>
       </details>
     </div>
   </section>
@@ -171,6 +215,6 @@
 <script src="ticker-cache.js"></script>
 <script src="indicators.js"></script>
 <script src="script.js"></script>
-<script src="simulador.js"></script>
+<script src="simulador.js?v=2"></script>
 </body>
 </html>
