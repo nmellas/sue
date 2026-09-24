@@ -195,7 +195,7 @@ var SUE_IMAGEN = (function () {
           categoria: getField(row, ["Categoría", "Categoria"]),
           resumen: getField(row, ["Resumen"]),
           imagen: getFieldLike(row, ["imagen", "portada"]),
-          link: "articulo.html?id=" + entry.originalIndex
+          link: "p/" + entry.originalIndex + ".html"
         };
       })
       .reverse(); // las respuestas más nuevas quedan primero
