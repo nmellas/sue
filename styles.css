@@ -112,7 +112,9 @@ font-family:var(--font-mono);
 font-size:12px;
 letter-spacing:.04em;
 }
-.ticker-bar:hover .ticker-track{animation-play-state:paused;}
+/* Ya no se pausa al pasar el mouse: el retraso negativo que usa indicators.js
+   para retomar la animación entre páginas podía hacer que, al reanudarse,
+   la cinta saltara a una posición distinta de la que tenía al pausarse. */
 .ticker-track span{opacity:.9;}
 .ticker-track span b{color:var(--gold);font-weight:600;}
 @keyframes ticker{
