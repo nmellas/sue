@@ -682,6 +682,8 @@ border:1px dashed var(--line);border-radius:6px;padding:36px 28px;text-align:cen
 
 @media (hover:none){.act-arrow{opacity:1;}}
 @media (max-width:820px){.act-showcase{grid-template-columns:1fr;gap:28px;}}
+/* Inicio en celular: la última actividad muestra solo el título (sin descripción) */
+@media (max-width:820px){#act-home .act-desc{display:none;}}
 
 /* ============ CONTACT ============ */
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;}
