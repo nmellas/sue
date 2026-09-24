@@ -1,84 +1,163 @@
-/* ==========================================================================
-   contacto.js — Formulario de contacto de la SUE
-   Envía los datos al backend (Google Apps Script de la cuenta de la SUE),
-   que manda el correo a sociedaduniversitariadeconomia@gmail.com.
-   Ver TUTORIAL-contacto.md.
-   ========================================================================== */
-(function () {
-  "use strict";
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contacto — SUE, Sociedad Universitaria de Economía</title>
+<meta name="description" content="Escríbenos para coordinar una alianza, invitarnos a una actividad o hacernos una consulta.">
+<link rel="stylesheet" href="styles.css">
+<!-- Ícono de la pestaña -->
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<!-- Vista previa al compartir (WhatsApp, LinkedIn, Instagram, X). Si cambia el dominio, reemplazar https://nmellas.github.io/sue/ -->
+<link rel="canonical" href="https://nmellas.github.io/sue/contacto.html">
+<meta property="og:url" content="https://nmellas.github.io/sue/contacto.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SUE — Sociedad Universitaria de Economía">
+<meta property="og:locale" content="es_CL">
+<meta property="og:title" content="Contacto — SUE">
+<meta property="og:description" content="Escríbenos para coordinar una alianza, invitarnos a una actividad o hacernos una consulta.">
+<meta property="og:image" content="https://nmellas.github.io/sue/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Sociedad Universitaria de Economía">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body data-page="contacto">
 
-  var CONFIG = {
-    // Pega aquí la URL de la App web (termina en /exec)
-    endpoint: "https://script.google.com/macros/s/AKfycbxpJzGg30UALlaVzoqMquVlRfNrA1CpOzaZVYwmLeDQ3P0u_dkt4gSMde3j91FTjcYY/exec",
-    correoSue: "sociedaduniversitariadeconomia@gmail.com"
-  };
+<div class="ticker-bar" aria-hidden="true">
+  <div class="ticker-track" id="ticker-track">
+    <span>CARGANDO INDICADORES ECONÓMICOS…</span>
+  </div>
+</div>
 
-  var form = document.getElementById("sue-contacto");
-  if (!form) return;
+<header class="site-header">
+  <nav class="nav">
+    <a href="index.html" class="brand">
+  <img src="logofinal_sue.png" alt="Sociedad Universitaria de Economía" class="logo-img">
+</a>
+    <button class="nav-toggle" aria-expanded="false" aria-label="Abrir menú">☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html" data-page="inicio">Inicio</a></li>
+      <li><a href="quienes-somos.html" data-page="quienes-somos">Quiénes somos</a></li>
+      <li><a href="actividades.html" data-page="actividades">Actividades</a></li>
+      <li><a href="publicaciones.html" data-page="publicaciones">Publicaciones</a></li>
+      <li><a href="contacto.html" data-page="contacto">Contacto</a></li>
+    </ul>
+  </nav>
+</header>
 
-  var estado = document.getElementById("sue-contacto-estado");
-  var boton = form.querySelector("button[type=submit]");
-  var textoBoton = boton.textContent;
-  var t0 = Date.now();
+<main>
+  <section class="page-head">
+    <div class="container">
+      <span class="eyebrow">Contacto</span>
+      <h1>Escríbenos. Leemos cada mensaje.</h1>
+      <p>Ya sea que quieras coordinar una alianza, invitarnos a una actividad o hacernos una consulta, este es el lugar para empezar.</p>
+    </div>
+  </section>
 
-  function mostrar(tipo, texto) {
-    estado.className = "form-msg " + (tipo === "ok" ? "is-ok" : tipo === "error" ? "is-error" : "");
-    estado.textContent = texto;
-    estado.hidden = false;
-  }
+  <section class="section">
+    <div class="container contact-grid">
+      <div>
+        <div class="info-block">
+          <span class="eyebrow">Correo</span>
+          <div class="val" style="overflow-wrap:anywhere;">
+            <a href="mailto:sociedaduniversitariadeconomia@gmail.com">sociedaduniversitariadeconomia@gmail.com</a>
+          </div>
+          <p>También puedes escribirnos directamente a esta dirección.</p>
+        </div>
+        <div class="info-block">
+          <span class="eyebrow">Dónde estamos</span>
+          <div class="val">Facultad de Economía y Negocios, Universidad de Chile</div>
+          <p>Somos una organización estudiantil de la FEN, abierta a cualquier estudiante interesado.</p>
+        </div>
+        <div class="info-block">
+          <span class="eyebrow">Redes</span>
+          <div class="val"><a href="https://www.instagram.com/sue.chile/" target="_blank" rel="noopener">@sue.chile</a></div>
+          <p>En Instagram y <a href="https://www.linkedin.com/company/suechile" target="_blank" rel="noopener">LinkedIn</a> anunciamos conversatorios, convocatorias y nuevas actividades.</p>
+        </div>
+      </div>
 
-  function enviando(activo) {
-    boton.disabled = activo;
-    boton.textContent = activo ? "Enviando…" : textoBoton;
-    form.setAttribute("aria-busy", activo ? "true" : "false");
-  }
+      <div>
+        <form id="sue-contacto" class="contact-form" novalidate>
+          <span class="eyebrow">Envíanos un mensaje</span>
 
-  // Si el backend no está configurado, abre el programa de correo con todo prellenado
-  function abrirCorreo(datos) {
-    var cuerpo = datos.get("mensaje") + "\n\n— " + datos.get("nombre") + " (" + datos.get("correo") + ")";
-    window.location.href = "mailto:" + CONFIG.correoSue +
-      "?subject=" + encodeURIComponent(datos.get("asunto")) +
-      "&body=" + encodeURIComponent(cuerpo);
-  }
+          <div class="form-field">
+            <label for="cf-nombre">Nombre</label>
+            <input type="text" id="cf-nombre" name="nombre" autocomplete="name" maxlength="100" required>
+          </div>
+          <div class="form-field">
+            <label for="cf-correo">Correo electrónico</label>
+            <input type="email" id="cf-correo" name="correo" autocomplete="email" maxlength="150" required>
+          </div>
+          <div class="form-field">
+            <label for="cf-asunto">Asunto</label>
+            <input type="text" id="cf-asunto" name="asunto" maxlength="150" required>
+          </div>
+          <div class="form-field">
+            <label for="cf-mensaje">Mensaje</label>
+            <textarea id="cf-mensaje" name="mensaje" rows="6" maxlength="5000" required></textarea>
+          </div>
 
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
+          <!-- Trampa para bots: las personas no ven ni llenan este campo -->
+          <div class="hp" aria-hidden="true">
+            <label for="cf-website">No llenar</label>
+            <input type="text" id="cf-website" name="website" tabindex="-1" autocomplete="off">
+          </div>
 
-    // Validación del navegador (campos obligatorios y formato de correo)
-    if (!form.checkValidity()) {
-      form.reportValidity();
-      return;
-    }
+          <button type="submit" class="btn btn-primary">Enviar mensaje</button>
+          <p id="sue-contacto-estado" class="form-msg" role="status" aria-live="polite" hidden></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
 
-    var datos = new FormData(form);
-    datos.set("t0", String(t0));
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>Sociedad Universitaria de Economía</h4>
+        <p>Organización estudiantil dedicada al estudio, el debate y la difusión del pensamiento económico.</p>
+      </div>
+      <div>
+        <h4>Navegación</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="quienes-somos.html">Quiénes somos</a></li>
+          <li><a href="actividades.html">Actividades</a></li>
+          <li><a href="publicaciones.html">Publicaciones</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <ul class="footer-links">
+          <li class="footer-small"><a href="mailto:sociedaduniversitariadeconomia@gmail.com">sociedaduniversitariadeconomia@gmail.com</a></li>
+          <li class="footer-small">Facultad de Economía y Negocios, Universidad de Chile</li>
+        </ul>
+        <div class="footer-social">
+          <a href="https://www.instagram.com/sue.chile/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de SUE">
+            <svg viewBox="0 0 24 24" width="27" height="27" fill="currentColor" aria-hidden="true">
+              <path d="M12 2c2.717.01 3.056.06 4.122.06 1.065.05 1.79.217 2.428.465.66.256 1.216.6 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.05 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.05-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.01 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.065.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.363-.415 2.428-.465C8.944 2.01 9.283 2 12 2zm0 1.802c-2.67 0-2.986.01-4.04.059-.976.045-1.505.207-1.858.344-.466.181-.8.398-1.15.748-.35.35-.566.684-.747 1.15-.137.353-.3.882-.344 1.857-.05 1.055-.06 1.37-.06 4.04 0 2.67.01 2.986.06 4.04.045.976.207 1.505.344 1.858.181.466.397.8.747 1.15.35.35.684.566 1.15.747.353.137.882.3 1.857.344 1.054.05 1.37.06 4.04.06 2.671 0 2.987-.01 4.041-.06.976-.045 1.505-.207 1.858-.344.466-.181.8-.397 1.15-.747.35-.35.566-.684.747-1.15.137-.353.3-.882.344-1.857.05-1.055.06-1.37.06-4.041 0-2.67-.01-2.986-.06-4.04-.045-.976-.207-1.505-.344-1.858a3.09 3.09 0 0 0-.747-1.15 3.098 3.098 0 0 0-1.15-.747c-.353-.137-.882-.3-1.857-.344-1.055-.05-1.37-.06-4.041-.06zM12 6.865a5.135 5.135 0 1 1 0 10.27 5.135 5.135 0 0 1 0-10.27zm0 1.802a3.333 3.333 0 1 0 0 6.666 3.333 3.333 0 0 0 0-6.666zm6.538-1.995a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0z"/>
+            </svg>
+          </a>
+          <a href="https://www.linkedin.com/company/suechile" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn de SUE">
+            <svg viewBox="0 0 24 24" width="27" height="27" fill="currentColor" aria-hidden="true">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.124 2.062 2.062 0 0 1 0 4.124zM7.114 20.452H3.558V9h3.556v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Sociedad Universitaria de Economía</span>
+    </div>
+  </div>
+</footer>
 
-    if (!CONFIG.endpoint) {
-      abrirCorreo(datos);
-      return;
-    }
-
-    enviando(true);
-    mostrar("", "Enviando tu mensaje…");
-
-    fetch(CONFIG.endpoint, {
-      method: "POST",
-      body: new URLSearchParams(datos) // formato simple: evita bloqueos entre dominios
-    })
-      .then(function (res) { return res.json(); })
-      .then(function (r) {
-        if (r && r.ok) {
-          form.reset();
-          t0 = Date.now();
-          mostrar("ok", r.mensaje || "¡Gracias! Recibimos tu mensaje.");
-        } else {
-          mostrar("error", (r && r.mensaje) || "No pudimos enviar el mensaje. Intenta de nuevo.");
-        }
-      })
-      .catch(function (err) {
-        console.error("Contacto:", err);
-        mostrar("error", "No pudimos enviar el mensaje. Intenta de nuevo o escríbenos directo a " + CONFIG.correoSue + ".");
-      })
-      .then(function () { enviando(false); });
-  });
-})();
+<script src="indicators.js"></script>
+<script src="script.js"></script>
+<script src="contacto.js"></script>
+</body>
+</html>
