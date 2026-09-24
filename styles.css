@@ -451,10 +451,10 @@ background:var(--line);border:1px solid var(--line);
 display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:24px;
 }
 .directiva-grupo{
-background:var(--white);border:1px solid var(--line);border-radius:6px;
+background:var(--white);border:1px solid var(--line);border-radius:0;
 padding:26px 28px 24px;
 }
-.directiva-grupo--general{border:1.5px solid var(--ink);box-shadow:6px 6px 0 var(--line);}
+.directiva-grupo--general{border:1.5px solid var(--ink);}
 .directiva-grupo .grupo-nombre{
 font-size:18px;margin:0 0 18px;padding-bottom:14px;border-bottom:1px solid var(--line);
 }
@@ -479,7 +479,7 @@ display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;
 .org-logos a{
 display:flex;align-items:center;justify-content:center;
 height:140px;padding:28px 32px;
-background:var(--white);border:1px solid var(--line);border-radius:6px;
+background:var(--white);border:1px solid var(--line);border-radius:0;
 transition:border-color .15s ease;
 }
 .org-logos a:hover{border-color:var(--ink);}
@@ -493,8 +493,7 @@ object-fit:contain;object-position:center;
 .doc-teaser{
 display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;
 padding:26px 28px;
-background:var(--white);border:1.5px solid var(--ink);border-radius:6px;
-box-shadow:6px 6px 0 var(--line);
+background:var(--white);border:1.5px solid var(--ink);border-radius:0;
 }
 .doc-teaser h3{font-size:19px;margin-bottom:6px;}
 .doc-teaser p{font-size:14.5px;margin:0;}
