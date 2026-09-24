@@ -682,7 +682,13 @@ display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hi
 .act-card.is-expanded .act-card-desc{display:block;-webkit-line-clamp:unset;}
 .act-card-actions{display:flex;flex-wrap:wrap;gap:18px;margin-top:auto;padding-top:10px;}
 /* Inicio: línea divisoria bajo la última actividad (desaparece con la sección si no hay actividades) */
-#act-home{border-bottom:1px solid var(--line);}
+#act-home{border-bottom:1px solid var(--line);padding:56px 0 48px;}
+#act-home + .section{padding-top:56px;} /* espacio más compacto hacia "Qué hacemos" */
+@media (max-width:820px){
+#act-home{padding:44px 0 36px;}
+#act-home + .section{padding-top:44px;}
+#act-home .act-info > p:last-child{margin-top:1em !important;}
+}
 
 .act-link{
 font-family:var(--font-mono);font-size:12.5px;color:var(--brick);cursor:pointer;
