@@ -9,7 +9,7 @@
 <!-- Ícono de la pestaña -->
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <!-- Vista previa al compartir (WhatsApp, LinkedIn, Instagram, X). Si cambia el dominio, reemplazar https://nmellas.github.io/sue/ -->
+<!-- Vista previa al compartir (WhatsApp, LinkedIn, Instagram, X). Si cambia el dominio, reemplazar https://nmellas.github.io/sue/ -->
 <link rel="canonical" href="https://nmellas.github.io/sue/">
 <meta property="og:url" content="https://nmellas.github.io/sue/">
 <meta property="og:type" content="website">
@@ -239,6 +239,7 @@
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="ticker-cache.js"></script>
 <script src="indicators.js"></script>
 <script src="publicaciones-data.js"></script>
 <script src="actividades-data.js"></script>
@@ -319,7 +320,7 @@
           tipo: getField(row, ["Tipo"]) || "Artículo",
           titulo: getField(row, ["Título", "Titulo"]) || "Sin título",
           resumen: getField(row, ["Resumen"]),
-          link: "articulo.html?id=" + entry.originalIndex
+          link: "p/" + entry.originalIndex + ".html"
         });
       })
       .catch(fromFallback);
