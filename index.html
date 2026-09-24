@@ -239,6 +239,7 @@
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="ticker-cache.js"></script>
 <script src="indicators.js"></script>
 <script src="publicaciones-data.js"></script>
 <script src="actividades-data.js"></script>
@@ -311,15 +312,21 @@
 
         if (!publicados.length) { fromFallback(); return; }
 
+        // Direcciones legibles (misma regla que publicaciones.html y el generador)
+        var slugs = window.SUE_ASIGNAR_SLUGS
+          ? window.SUE_ASIGNAR_SLUGS(publicados.map(function (e) { return { tituloBruto: getField(e.row, ["Título", "Titulo"]) }; }))
+          : [];
+
         // La última fila publicada = la más reciente
         var entry = publicados[publicados.length - 1];
         var row = entry.row;
+        var slug = slugs.length ? slugs[slugs.length - 1].slug : "";
 
         renderLatest({
           tipo: getField(row, ["Tipo"]) || "Artículo",
           titulo: getField(row, ["Título", "Titulo"]) || "Sin título",
           resumen: getField(row, ["Resumen"]),
-          link: "p/" + entry.originalIndex + ".html"
+          link: slug ? "p/" + slug + ".html" : "articulo.html?id=" + entry.originalIndex
         });
       })
       .catch(fromFallback);
