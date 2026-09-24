@@ -22,6 +22,7 @@
 
 var CONFIG = {
   // Enlace CSV publicado de la Google Sheet de respuestas.
+  // ⚠️ Pega aquí el MISMO enlace que tienes hoy en GitHub.
   CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQjt6eQhpe3H-Xg5KY_TA8BMFXaSWR_JSDsI3Q1WxGESnFJ2ua14ekwptDkDLc2lJDVByhnm8A-uqe_/pub?gid=2048697698&single=true&output=csv",
 
   // Enlace del Google Form (uso interno; el sitio ya no muestra un botón público).
@@ -36,6 +37,26 @@ var FALLBACK_PUBLICATIONS = [];
    navegador pueda mostrar. Google Forms guarda los archivos subidos como
    enlaces de Drive ("https://drive.google.com/open?id=…"), que no se
    pueden usar directo en un <img>. Disponible como window.SUE_IMAGEN. */
+/* Direcciones legibles para cada publicación: p/el-titulo-en-minusculas.html
+   IMPORTANTE: scripts/generar-publicaciones.mjs usa exactamente la misma regla. */
+function SUE_SLUGIFY(titulo) {
+  var s = String(titulo || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  if (s.length > 70) { s = s.slice(0, 70); var i = s.lastIndexOf("-"); if (i > 30) s = s.slice(0, i); }
+  return s || "publicacion";
+}
+// Recorre las publicaciones en el orden de la hoja; si dos títulos coinciden, agrega -2, -3…
+function SUE_ASIGNAR_SLUGS(items) {
+  var usados = {};
+  items.forEach(function (it) {
+    var base = SUE_SLUGIFY(it.tituloBruto), slug = base, n = 2;
+    while (usados[slug]) slug = base + "-" + (n++);
+    usados[slug] = true;
+    it.slug = slug;
+  });
+  return items;
+}
+
 var SUE_IMAGEN = (function () {
   function idDrive(url) {
     var m = String(url || "").match(/[?&]id=([\w-]{10,})/) || String(url || "").match(/\/d\/([\w-]{10,})/);
@@ -178,7 +199,7 @@ var SUE_IMAGEN = (function () {
 
     // Guardamos la posición original de cada fila (antes de filtrar)
     // porque articulo.html usa esa misma posición como su "id" en la URL.
-    return parsed.data
+    var items = parsed.data
       .map(function (row, originalIndex) {
         return { row: row, originalIndex: originalIndex };
       })
@@ -188,6 +209,8 @@ var SUE_IMAGEN = (function () {
       .map(function (entry) {
         var row = entry.row;
         return {
+          originalIndex: entry.originalIndex,
+          tituloBruto: getField(row, ["Título", "Titulo"]),
           tipo: getField(row, ["Tipo"]) || "Artículo",
           titulo: getField(row, ["Título", "Titulo"]) || "Sin título",
           autor: getField(row, ["Autor", "Autor(es)"]),
@@ -195,10 +218,13 @@ var SUE_IMAGEN = (function () {
           categoria: getField(row, ["Categoría", "Categoria"]),
           resumen: getField(row, ["Resumen"]),
           imagen: getFieldLike(row, ["imagen", "portada"]),
-          link: "p/" + entry.originalIndex + ".html"
+          link: ""
         };
-      })
-      .reverse(); // las respuestas más nuevas quedan primero
+      });
+
+    // Dirección legible (misma regla que el generador), luego las más nuevas primero
+    SUE_ASIGNAR_SLUGS(items).forEach(function (it) { it.link = "p/" + it.slug + ".html"; });
+    return items.reverse();
   }
 
   function init() {
@@ -223,4 +249,6 @@ var SUE_IMAGEN = (function () {
 
   document.addEventListener("DOMContentLoaded", init);
   window.SUE_IMAGEN = SUE_IMAGEN;
+  window.SUE_SLUGIFY = SUE_SLUGIFY;
+  window.SUE_ASIGNAR_SLUGS = SUE_ASIGNAR_SLUGS;
 })();
