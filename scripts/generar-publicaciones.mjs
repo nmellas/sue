@@ -1,6 +1,6 @@
 /* ==========================================================================
    generar-publicaciones.mjs — SUE
-   Crea una página estática por publicación (p/0.html, p/1.html, …) con su
+   Crea una página estática por publicación (p/el-titulo.html) con su
    título, resumen y portada en las etiquetas Open Graph, para que WhatsApp,
    Instagram y LinkedIn muestren la vista previa de CADA publicación.
 
@@ -9,6 +9,8 @@
    - Lee la dirección del sitio desde el <link rel="canonical"> de index.html.
    - Usa articulo.html como plantilla: la página generada muestra el mismo
      artículo, solo que con las etiquetas ya escritas.
+   - Si se corrige un título, la dirección anterior se mantiene activa
+     (historial en p/_direcciones.json), para no romper enlaces compartidos.
    ========================================================================== */
 import { readFile, writeFile, rm, mkdir } from "node:fs/promises";
 
@@ -62,6 +64,12 @@ function imagenUrl(raw) {
   if (id) return `https://drive.google.com/thumbnail?id=${id}&sz=w1200`;
   return /^https?:\/\//i.test(u) ? u : "";
 }
+function slugify(titulo) {
+  let s = String(titulo || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  if (s.length > 70) { s = s.slice(0, 70); const i = s.lastIndexOf("-"); if (i > 30) s = s.slice(0, i); }
+  return s || "publicacion";
+}
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const recortar = (s, n) => (s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, "") + "…" : s);
 
@@ -71,19 +79,33 @@ if (!res.ok) throw new Error("No se pudo leer la hoja: " + res.status);
 const filas = parseCSV(await res.text());
 const plantilla = await leer("articulo.html");
 
+// Historial de direcciones: clave estable (Marca temporal) → direcciones que ha tenido
+let historial = {};
+try { historial = JSON.parse(await leer("p/_direcciones.json")); } catch { historial = {}; }
+
 await rm(new URL("p/", RAIZ), { recursive: true, force: true });
 await mkdir(new URL("p/", RAIZ), { recursive: true });
 
 let total = 0;
+const usados = new Set();
+const nuevoHistorial = {};
 for (const [id, fila] of filas.entries()) {
   if (campo(fila, ["Estado"]).toLowerCase() !== "publicado") continue;
 
-  const titulo = campo(fila, ["Título", "Titulo"]) || "Publicación";
+  const tituloBruto = campo(fila, ["Título", "Titulo"]);
+  const titulo = tituloBruto || "Publicación";
+  // Dirección legible, única (misma regla que el sitio)
+  const base = slugify(tituloBruto);
+  let slug = base, n = 2;
+  while (usados.has(slug)) slug = `${base}-${n++}`;
+  usados.add(slug);
+  // Clave estable para reconocer la publicación aunque cambie su título o su fila
+  const clave = campo(fila, ["Marca temporal", "Timestamp"]) || `fila-${id}`;
   const resumen = recortar(campo(fila, ["Resumen"]) || "Publicación de la Sociedad Universitaria de Economía.", 200);
   const tipo = campo(fila, ["Tipo"]) || "Artículo";
   const autor = campo(fila, ["Autor", "Autor(es)"]);
   const imagen = imagenUrl(campoParecido(fila, ["imagen", "portada", "grafico"])) || BASE + "og-image.jpg";
-  const url = `${BASE}p/${id}.html`;
+  const url = `${BASE}p/${slug}.html`;
 
   const etiquetas = [
     `<link rel="canonical" href="${url}">`,
@@ -107,9 +129,14 @@ for (const [id, fila] of filas.entries()) {
     .replace(/<meta name="description" content="[^"]*">/i, `<meta name="description" content="${esc(resumen)}">`)
     // quita las etiquetas genéricas de la plantilla
     .replace(/^.*(og:|twitter:|rel="canonical"|Vista previa al compartir).*\n/gim, "")
-    .replace("</head>", `${etiquetas}\n<script>window.ARTICULO_ID = ${id};</script>\n</head>`);
+    .replace("</head>", `${etiquetas}\n<script>window.ARTICULO_ID = ${id}; window.ARTICULO_CLAVE = ${JSON.stringify(clave)};</script>\n</head>`);
 
-  await writeFile(new URL(`p/${id}.html`, RAIZ), html);
+  // Dirección actual + direcciones anteriores de esta misma publicación (mismo contenido,
+  // con la dirección actual como canónica)
+  const direcciones = [slug, ...((historial[clave] || []).filter((d) => d !== slug))];
+  for (const d of direcciones) await writeFile(new URL(`p/${d}.html`, RAIZ), html);
+  nuevoHistorial[clave] = direcciones;
   total++;
 }
-console.log(`Páginas generadas: ${total}`);
+await writeFile(new URL("p/_direcciones.json", RAIZ), JSON.stringify(nuevoHistorial, null, 2) + "\n");
+console.log(`Publicaciones generadas: ${total}`);
