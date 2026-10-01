@@ -53,9 +53,15 @@ const campo = (fila, candidatos) => {
   return "";
 };
 const sinTildes = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-const campoParecido = (fila, claves) => {
-  for (const k of Object.keys(fila)) for (const c of claves)
-    if (sinTildes(k).includes(c) && fila[k].trim()) return fila[k].trim();
+// Grupos de claves en orden de prioridad: se revisan TODAS las columnas
+// buscando el primer grupo antes de pasar al siguiente. Así, una columna
+// "Imagen de portada" (contiene "portada") siempre gana sobre una "Imagen"
+// genérica, sin importar en qué orden aparezcan en la hoja.
+const campoParecido = (fila, gruposDeClaves) => {
+  for (const claves of gruposDeClaves)
+    for (const k of Object.keys(fila))
+      for (const c of claves)
+        if (sinTildes(k).includes(c) && fila[k].trim()) return fila[k].trim();
   return "";
 };
 function imagenUrl(raw) {
@@ -104,7 +110,7 @@ for (const [id, fila] of filas.entries()) {
   const resumen = recortar(campo(fila, ["Resumen"]) || "Publicación de la Sociedad Universitaria de Economía.", 200);
   const tipo = campo(fila, ["Tipo"]) || "Artículo";
   const autor = campo(fila, ["Autor", "Autor(es)"]);
-  const imagen = imagenUrl(campoParecido(fila, ["imagen", "portada", "grafico"])) || BASE + "og-image.jpg";
+  const imagen = imagenUrl(campoParecido(fila, [["portada"], ["imagen"], ["grafico"]])) || BASE + "og-image.jpg";
   const url = `${BASE}p/${slug}.html`;
 
   const etiquetas = [
