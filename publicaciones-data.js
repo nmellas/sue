@@ -24,7 +24,6 @@ var CONFIG = {
   // Enlace CSV publicado de la Google Sheet de respuestas.
   // ⚠️ Pega aquí el MISMO enlace que tienes hoy en GitHub.
   CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQjt6eQhpe3H-Xg5KY_TA8BMFXaSWR_JSDsI3Q1WxGESnFJ2ua14ekwptDkDLc2lJDVByhnm8A-uqe_/pub?gid=2048697698&single=true&output=csv",
-
 };
 
 // Sin publicaciones de ejemplo: si no hay nada publicado, la página
@@ -197,6 +196,23 @@ var SUE_IMAGEN = (function () {
     return "";
   }
 
+  // Convierte "Marca temporal" o "Fecha" en un objeto Date para poder ordenar
+  // publicaciones de la más nueva a la más antigua. Soporta ISO (2026-10-01)
+  // y el formato D/M/AAAA [hora] que usan los formularios de Google con
+  // configuración regional de Chile (misma regla que usa actividades-data.js
+  // para sus fechas, con hora opcional para desempatar publicaciones del
+  // mismo día).
+  function parseFechaHora(txt) {
+    if (!txt) return null;
+    txt = String(txt).trim();
+    var m = txt.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+    if (m) return new Date(+m[1], +m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0), +(m[6] || 0));
+    m = txt.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})(?:[ ,]+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+    if (m) return new Date(+m[3], +m[2] - 1, +m[1], +(m[4] || 0), +(m[5] || 0), +(m[6] || 0));
+    var d = new Date(txt);
+    return isNaN(d) ? null : d;
+  }
+
   function parseCsvRows(csvText) {
     var parsed = window.Papa
       ? Papa.parse(csvText, { header: true, skipEmptyLines: true })
@@ -223,13 +239,23 @@ var SUE_IMAGEN = (function () {
           categoria: getField(row, ["Categoría", "Categoria"]),
           resumen: getField(row, ["Resumen"]),
           imagen: getFieldLike(row, [["portada"], ["imagen"]]),
+          _ts: parseFechaHora(getField(row, ["Fecha", "Marca temporal"])),
           link: ""
         };
       });
 
-    // Dirección legible (misma regla que el generador), luego las más nuevas primero
+    // Dirección legible (misma regla que el generador, que procesa las filas en
+    // su orden original de la hoja) — se asigna ANTES de reordenar por fecha.
     SUE_ASIGNAR_SLUGS(items).forEach(function (it) { it.link = "p/" + it.slug + ".html"; });
-    return items.reverse();
+
+    // Las más nuevas primero, sin importar el orden en que aparezcan en la hoja.
+    // Las publicaciones sin fecha reconocible quedan al final.
+    items.sort(function (a, b) {
+      if (!a._ts) return 1;
+      if (!b._ts) return -1;
+      return b._ts - a._ts;
+    });
+    return items;
   }
 
   function init() {
@@ -256,4 +282,5 @@ var SUE_IMAGEN = (function () {
   window.SUE_IMAGEN = SUE_IMAGEN;
   window.SUE_SLUGIFY = SUE_SLUGIFY;
   window.SUE_ASIGNAR_SLUGS = SUE_ASIGNAR_SLUGS;
+  window.SUE_PARSE_FECHA = parseFechaHora;
 })();
