@@ -202,6 +202,19 @@
           );
         }
 
+        // Tabla: filas con | y una línea separadora ---|---|---
+        var tLines = trimmed.split("\n");
+        if (tLines.length >= 2 && tLines[0].indexOf("|") !== -1 && /^[\s|:-]+$/.test(tLines[1]) && tLines[1].indexOf("-") !== -1) {
+          var celdas = function (l) { return l.trim().replace(/^\||\|$/g, "").split("|").map(function (c) { return c.trim(); }); };
+          var encab = celdas(tLines[0]);
+          var filas = tLines.slice(2).map(celdas);
+          var thead = "<tr>" + encab.map(function (c) { return "<th>" + applyInlineMarkdown(escapeHtml(c)) + "</th>"; }).join("") + "</tr>";
+          var tbody = filas.map(function (f) {
+            return "<tr>" + f.map(function (c) { return "<td>" + applyInlineMarkdown(escapeHtml(c)) + "</td>"; }).join("") + "</tr>";
+          }).join("");
+          return '<div class="article-table-wrap"><table class="article-table"><thead>' + thead + "</thead><tbody>" + tbody + "</tbody></table></div>";
+        }
+
         // Línea divisoria: ---  ***  ___
         if (/^(-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
           return '<hr class="article-hr">';
@@ -220,8 +233,19 @@
         // Cita: todas las líneas empiezan con >
         var isBlockquote = lines.every(function (l) { return /^>\s?/.test(l.trim()); });
         if (isBlockquote) {
-          var quoteText = lines.map(function (l) { return l.trim().replace(/^>\s?/, ""); }).join("\n");
-          var quoteHtml = applyInlineMarkdown(escapeHtml(quoteText)).replace(/\n/g, "<br>");
+          var quoteLines = lines.map(function (l) { return l.trim().replace(/^>\s?/, ""); });
+
+          // Recuadro destacado: > [RECUADRO] Título de la caja
+          var cajaMatch = quoteLines[0].match(/^\[RECUADRO\]\s*(.*)$/i);
+          if (cajaMatch) {
+            var cajaTitulo = applyInlineMarkdown(escapeHtml(cajaMatch[1]));
+            var cajaTexto = applyInlineMarkdown(escapeHtml(quoteLines.slice(1).join("\n"))).replace(/\n/g, "<br>");
+            return '<aside class="article-recuadro">' +
+              (cajaTitulo ? "<h4>" + cajaTitulo + "</h4>" : "") +
+              "<p>" + cajaTexto + "</p></aside>";
+          }
+
+          var quoteHtml = applyInlineMarkdown(escapeHtml(quoteLines.join("\n"))).replace(/\n/g, "<br>");
           return '<blockquote class="article-quote"><p>' + quoteHtml + "</p></blockquote>";
         }
 
