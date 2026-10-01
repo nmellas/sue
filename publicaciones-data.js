@@ -23,7 +23,7 @@
 var CONFIG = {
   // Enlace CSV publicado de la Google Sheet de respuestas.
   // ⚠️ Pega aquí el MISMO enlace que tienes hoy en GitHub.
-  CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQjt6eQhpe3H-Xg5KY_TA8BMFXaSWR_JSDsI3Q1WxGESnFJ2ua14ekwptDkDLc2lJDVByhnm8A-uqe_/pub?gid=2048697698&single=true&output=csv",
+  CSV_URL: "PEGA_AQUI_TU_ENLACE_CSV",
 
   // Enlace del Google Form (uso interno; el sitio ya no muestra un botón público).
   FORM_URL: "https://docs.google.com/forms/d/e/1FAIpQLSe7qdoZAF3cw2brBkoNei5-PN8UnXJ4EA_RvGfvmnUh0x-bYg/viewform?usp=dialog"
@@ -177,15 +177,22 @@ var SUE_IMAGEN = (function () {
     return "";
   }
 
-  // Primera columna no vacía cuyo encabezado contenga alguna de las claves
-  function getFieldLike(row, claves) {
+  // Busca una columna cuyo encabezado contenga alguna de las claves. Recibe
+  // GRUPOS de claves en orden de prioridad: se revisan todas las columnas
+  // buscando el primer grupo primero, y solo si ninguna tiene valor se pasa
+  // al siguiente. Así, una columna "Imagen de portada" (contiene "portada")
+  // siempre gana sobre una "Imagen" genérica, sin importar su orden en la hoja.
+  function getFieldLike(row, gruposDeClaves) {
     var keys = Object.keys(row);
-    for (var j = 0; j < keys.length; j++) {
-      var k = keys[j].normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-      for (var i = 0; i < claves.length; i++) {
-        if (k.indexOf(claves[i]) !== -1) {
-          var val = row[keys[j]];
-          if (val && val.trim() !== "") return val.trim();
+    for (var g = 0; g < gruposDeClaves.length; g++) {
+      var claves = gruposDeClaves[g];
+      for (var j = 0; j < keys.length; j++) {
+        var k = keys[j].normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        for (var i = 0; i < claves.length; i++) {
+          if (k.indexOf(claves[i]) !== -1) {
+            var val = row[keys[j]];
+            if (val && val.trim() !== "") return val.trim();
+          }
         }
       }
     }
@@ -217,7 +224,7 @@ var SUE_IMAGEN = (function () {
           fecha: getField(row, ["Fecha", "Marca temporal"]),
           categoria: getField(row, ["Categoría", "Categoria"]),
           resumen: getField(row, ["Resumen"]),
-          imagen: getFieldLike(row, ["imagen", "portada"]),
+          imagen: getFieldLike(row, [["portada"], ["imagen"]]),
           link: ""
         };
       });
