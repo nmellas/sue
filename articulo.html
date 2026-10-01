@@ -293,16 +293,24 @@
     return "";
   }
 
-  // Primera columna no vacía cuyo encabezado contenga alguna de las claves
+  // Busca una columna cuyo encabezado contenga alguna de las claves. Recibe
+  // GRUPOS de claves en orden de prioridad: se revisan todas las columnas
+  // buscando el primer grupo primero, y solo si ninguna columna de ese grupo
+  // tiene valor se pasa al siguiente. Así, si hay una columna "Imagen" y otra
+  // "Imagen de portada", esta última (que contiene "portada") siempre gana,
+  // sin importar en qué orden aparezcan en la hoja.
   // (misma regla que usa publicaciones-data.js para la miniatura).
-  function getFieldLike(row, claves) {
+  function getFieldLike(row, gruposDeClaves) {
     var keys = Object.keys(row);
-    for (var j = 0; j < keys.length; j++) {
-      var k = keys[j].normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-      for (var i = 0; i < claves.length; i++) {
-        if (k.indexOf(claves[i]) !== -1) {
-          var val = row[keys[j]];
-          if (val && val.trim() !== "") return val.trim();
+    for (var g = 0; g < gruposDeClaves.length; g++) {
+      var claves = gruposDeClaves[g];
+      for (var j = 0; j < keys.length; j++) {
+        var k = keys[j].normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        for (var i = 0; i < claves.length; i++) {
+          if (k.indexOf(claves[i]) !== -1) {
+            var val = row[keys[j]];
+            if (val && val.trim() !== "") return val.trim();
+          }
         }
       }
     }
@@ -378,7 +386,7 @@
         document.getElementById("art-body").innerHTML = renderBody(getField(row, ["Contenido", "Texto", "Cuerpo"]));
 
         // Portada: archivo subido por el formulario (Drive) o enlace directo
-        mostrarPortada(getFieldLike(row, ["imagen", "portada", "grafico"]), titulo);
+        mostrarPortada(getFieldLike(row, [["portada"], ["imagen"], ["grafico"]]), titulo);
 
         document.getElementById("loading").style.display = "none";
         document.getElementById("article-content").style.display = "block";
