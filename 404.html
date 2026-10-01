@@ -4,23 +4,64 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Página no encontrada — SUE</title>
-<script>
-  /* Si alguien abre p/N.html antes de que se genere (tarda hasta una hora),
-     se le lleva al artículo normal para que igual pueda leerlo. */
-  (function () {
-    var m = location.pathname.match(/^(.*\/)p\/(\d+)\.html$/);
-    if (m) location.replace(m[1] + "articulo.html?id=" + m[2]);
-  })();
-</script>
-<link rel="stylesheet" href="/sue/styles.css">
-<link rel="icon" type="image/png" href="/sue/favicon.png">
+<link rel="stylesheet" href="/styles.css">
+<link rel="icon" type="image/png" href="/favicon.png?v=2">
 </head>
 <body>
 <main class="article-container" style="text-align:center;padding-top:120px;">
-  <span class="eyebrow">Error 404</span>
-  <h1>No encontramos esta página</h1>
-  <p style="margin:0 auto 28px;max-width:44ch;">Puede que el enlace esté incompleto o que la página ya no exista.</p>
-  <a class="btn btn-primary" href="/sue/index.html">Volver al inicio</a>
+  <div id="buscando" class="article-status" hidden>Abriendo la publicación…</div>
+  <div id="no-encontrada">
+    <span class="eyebrow">Error 404</span>
+    <h1>No encontramos esta página</h1>
+    <p style="margin:0 auto 28px;max-width:44ch;">Puede que el enlace esté incompleto o que la página ya no exista.</p>
+    <a class="btn btn-primary" href="/index.html">Volver al inicio</a>
+  </div>
 </main>
+
+<!-- Si alguien abre una publicación antes de que se genere su página (tarda hasta
+     una hora), se busca en la hoja y se le lleva al artículo para que igual pueda leerlo. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="/publicaciones-data.js"></script>
+<script>
+(function () {
+  var m = location.pathname.match(/^(.*\/)p\/([^\/]+)\.html$/);
+  if (!m) return;
+  var raiz = m[1], nombre = decodeURIComponent(m[2]);
+
+  // Enlaces antiguos con número (p/0.html)
+  if (/^\d+$/.test(nombre)) { location.replace(raiz + "articulo.html?id=" + nombre); return; }
+
+  if (!window.CONFIG || !window.CONFIG.CSV_URL || !window.Papa || !window.SUE_ASIGNAR_SLUGS) return;
+  document.getElementById("no-encontrada").hidden = true;
+  document.getElementById("buscando").hidden = false;
+
+  function campo(fila, candidatos) {
+    for (var i = 0; i < candidatos.length; i++)
+      for (var k in fila) if (k.trim().toLowerCase() === candidatos[i].toLowerCase() && String(fila[k]).trim()) return String(fila[k]).trim();
+    return "";
+  }
+  function noEncontrada() {
+    document.getElementById("buscando").hidden = true;
+    document.getElementById("no-encontrada").hidden = false;
+  }
+
+  fetch(CONFIG.CSV_URL + (CONFIG.CSV_URL.indexOf("?") > -1 ? "&" : "?") + "t=" + Date.now())
+    .then(function (r) { return r.text(); })
+    .then(function (texto) {
+      var filas = Papa.parse(texto, { header: true, skipEmptyLines: true }).data;
+      var publicadas = [];
+      filas.forEach(function (f, i) {
+        if (campo(f, ["Estado"]).toLowerCase() === "publicado")
+          publicadas.push({ originalIndex: i, tituloBruto: campo(f, ["Título", "Titulo"]) });
+      });
+      SUE_ASIGNAR_SLUGS(publicadas);
+      for (var j = 0; j < publicadas.length; j++) {
+        if (publicadas[j].slug === nombre) { location.replace(raiz + "articulo.html?id=" + publicadas[j].originalIndex); return; }
+      }
+      noEncontrada();
+    })
+    .catch(noEncontrada);
+})();
+</script>
 </body>
 </html>
