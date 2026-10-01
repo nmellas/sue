@@ -23,10 +23,8 @@
 var CONFIG = {
   // Enlace CSV publicado de la Google Sheet de respuestas.
   // ⚠️ Pega aquí el MISMO enlace que tienes hoy en GitHub.
-  CSV_URL: "PEGA_AQUI_TU_ENLACE_CSV",
+  CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQjt6eQhpe3H-Xg5KY_TA8BMFXaSWR_JSDsI3Q1WxGESnFJ2ua14ekwptDkDLc2lJDVByhnm8A-uqe_/pub?gid=2048697698&single=true&output=csv",
 
-  // Enlace del Google Form (uso interno; el sitio ya no muestra un botón público).
-  FORM_URL: "https://docs.google.com/forms/d/e/1FAIpQLSe7qdoZAF3cw2brBkoNei5-PN8UnXJ4EA_RvGfvmnUh0x-bYg/viewform?usp=dialog"
 };
 
 // Sin publicaciones de ejemplo: si no hay nada publicado, la página
