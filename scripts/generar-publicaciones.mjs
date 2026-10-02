@@ -11,6 +11,10 @@
      artículo, solo que con las etiquetas ya escritas.
    - Si se corrige un título, la dirección anterior se mantiene activa
      (historial en p/_direcciones.json), para no romper enlaces compartidos.
+   - También regenera sitemap.xml (páginas fijas del sitio + cada publicación,
+     con su dirección canónica y la fecha de "Marca temporal" como lastmod),
+     para que Google encuentre las publicaciones nuevas sin esperar a que
+     alguien avise. Ver TUTORIAL-seo.md para activarlo en Search Console.
    ========================================================================== */
 import { readFile, writeFile, rm, mkdir } from "node:fs/promises";
 
@@ -79,6 +83,43 @@ function slugify(titulo) {
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const recortar = (s, n) => (s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, "") + "…" : s);
 
+// Convierte "Marca temporal" (D/M/AAAA [hora], misma convención que el resto
+// del sitio) o una fecha ISO en "AAAA-MM-DD" para el lastmod del sitemap.
+function fechaISO(txt) {
+  if (!txt) return null;
+  let m = txt.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (m) return `${m[1]}-${m[2].padStart(2, "0")}-${m[3].padStart(2, "0")}`;
+  m = txt.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/);
+  if (m) return `${m[3]}-${m[2].padStart(2, "0")}-${m[1].padStart(2, "0")}`;
+  const d = new Date(txt);
+  return isNaN(d) ? null : d.toISOString().slice(0, 10);
+}
+
+const escXml = (s) => String(s).replace(/&/g, "&amp;");
+
+function construirSitemap(base, articulos) {
+  const hoy = new Date().toISOString().slice(0, 10);
+  // Páginas fijas del sitio (no incluye articulo.html ni 404.html: la primera
+  // es solo la plantilla que usan las páginas de publicaciones, y no se
+  // visita directamente; la segunda no debe indexarse).
+  const fijas = [
+    { loc: base, changefreq: "daily", priority: "1.0" },
+    { loc: base + "publicaciones.html", changefreq: "daily", priority: "0.8" },
+    { loc: base + "actividades.html", changefreq: "weekly", priority: "0.7" },
+    { loc: base + "quienes-somos.html", changefreq: "monthly", priority: "0.6" },
+    { loc: base + "simulador.html", changefreq: "monthly", priority: "0.6" },
+    { loc: base + "contacto.html", changefreq: "yearly", priority: "0.4" },
+  ].map((p) => ({ ...p, lastmod: hoy }));
+
+  const entradas = [...fijas, ...articulos].map((u) =>
+    `  <url>\n    <loc>${escXml(u.loc)}</loc>\n` +
+    (u.lastmod ? `    <lastmod>${u.lastmod}</lastmod>\n` : "") +
+    `    <changefreq>${u.changefreq}</changefreq>\n    <priority>${u.priority}</priority>\n  </url>`
+  ).join("\n");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entradas}\n</urlset>\n`;
+}
+
 /* ---------- Generación ---------- */
 const res = await fetch(CSV_URL + (CSV_URL.includes("?") ? "&" : "?") + "t=" + Date.now());
 if (!res.ok) throw new Error("No se pudo leer la hoja: " + res.status);
@@ -95,6 +136,7 @@ await mkdir(new URL("p/", RAIZ), { recursive: true });
 let total = 0;
 const usados = new Set();
 const nuevoHistorial = {};
+const articulosParaSitemap = [];
 for (const [id, fila] of filas.entries()) {
   if (campo(fila, ["Estado"]).toLowerCase() !== "publicado") continue;
 
@@ -143,6 +185,12 @@ for (const [id, fila] of filas.entries()) {
   for (const d of direcciones) await writeFile(new URL(`p/${d}.html`, RAIZ), html);
   nuevoHistorial[clave] = direcciones;
   total++;
+
+  // Solo la dirección canónica va al sitemap (las direcciones antiguas llevan
+  // su <link rel="canonical"> apuntando a esta, así que no deben indexarse aparte).
+  articulosParaSitemap.push({ loc: url, lastmod: fechaISO(clave), changefreq: "monthly", priority: "0.6" });
 }
 await writeFile(new URL("p/_direcciones.json", RAIZ), JSON.stringify(nuevoHistorial, null, 2) + "\n");
+await writeFile(new URL("sitemap.xml", RAIZ), construirSitemap(BASE, articulosParaSitemap));
 console.log(`Publicaciones generadas: ${total}`);
+console.log("sitemap.xml actualizado.");
