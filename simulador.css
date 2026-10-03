@@ -87,6 +87,7 @@
 .sim-informe strong{display:block;font-family:var(--sim-mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--sim-rojo);margin-bottom:6px;}
 
 .sim-tablero{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--sim-linea);border:1px solid var(--sim-linea);border-radius:6px;overflow:hidden;margin-bottom:16px;}
+.sim-tablero .sim-dato:last-child{grid-column:span 2;}
 .sim-tablero .is-alerta .sim-num{color:var(--sim-rojo);}
 .sim-barra{height:6px;background:var(--sim-papel2);border-radius:3px;margin-top:10px;overflow:hidden;}
 .sim-barra span{display:block;height:100%;background:var(--sim-rojo);border-radius:3px;transition:width .4s ease;}
@@ -125,18 +126,6 @@
 .sim-radar span{font-family:var(--sim-mono);font-size:12px;font-weight:600;color:var(--sim-suave);background:var(--sim-blanco);border:1px solid var(--sim-linea);border-radius:20px;padding:3px 11px;}
 .sim-radar em{font-size:11.5px;color:var(--sim-tenue);font-style:normal;margin-left:auto;}
 
-.sim-op.is-elegida{background:var(--sim-negro);border-color:var(--sim-negro);color:#fff;box-shadow:0 0 0 3px rgba(185,138,31,.35);}
-.sim-op.is-elegida.is-sube{background:var(--sim-rojo);border-color:var(--sim-rojo);}
-.sim-op.is-elegida.is-baja{background:#1f4a73;border-color:#1f4a73;}
-
-.sim-efecto{margin-top:14px;padding:14px 16px;background:var(--sim-blanco);border:1px solid var(--sim-linea);border-radius:6px;font-size:14px;line-height:1.55;min-height:6.4em;}
-.sim-efecto strong{display:block;font-family:var(--sim-display);font-size:16.5px;color:var(--sim-negro);margin-bottom:4px;}
-.sim-efecto span{display:block;color:var(--sim-suave);}
-.sim-efecto .sim-ef-linea b{font-family:var(--sim-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--sim-oro);margin-right:4px;}
-.sim-efecto-vacio{color:var(--sim-tenue) !important;}
-.sim-confirmar{width:100%;justify-content:center;margin-top:12px;padding:14px 20px;font-size:14px;}
-.sim-confirmar[disabled]{opacity:.45;cursor:not-allowed;transform:none;}
-
 .sim-costo{display:block;margin-top:8px;font-family:var(--sim-mono);font-size:12.5px;font-weight:600;color:var(--sim-suave);}
 .sim-costo.ok{color:#1f7a3d;}
 .sim-costo.alto{color:var(--sim-rojo);}
@@ -151,17 +140,6 @@
 /* ---- Leyenda del resultado ---- */
 .sim-leyenda i.optimo{background:repeating-linear-gradient(90deg,#1f7a3d 0 6px,transparent 6px 10px);height:3px;}
 .sim-leyenda i.optimo-tpm{background:repeating-linear-gradient(90deg,rgba(23,35,64,.5) 0 2px,transparent 2px 6px);height:3px;}
-
-/* ---- Tabla de decisiones ---- */
-.sim-tabla-titulo{font-size:19px;margin:34px 0 12px;text-align:left;}
-.sim-tabla-wrap{overflow-x:auto;border:1px solid var(--sim-linea);border-radius:6px;text-align:left;}
-.sim-tabla{width:100%;border-collapse:collapse;font-size:13.5px;}
-.sim-tabla th,.sim-tabla td{padding:9px 12px;border-bottom:1px solid var(--sim-linea);white-space:nowrap;}
-.sim-tabla th{font-family:var(--sim-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--sim-tenue);background:var(--sim-papel2);text-align:left;}
-.sim-tabla td.sim-t-ev{white-space:normal;min-width:190px;}
-.sim-tabla tbody tr:last-child td{border-bottom:none;}
-.sim-tabla td.igual{color:#1f7a3d;font-weight:600;}
-.sim-nota{font-size:12.5px;color:var(--sim-tenue);text-align:left;margin:12px 0 0;}
 
 /* ---- Modelo para los más busquillas ---- */
 .sim-como-cuerpo{margin-top:6px;}
@@ -196,3 +174,7 @@
   .sim-final{padding:30px 18px;}
 }
 @media (prefers-reduced-motion:reduce){.sim-esc,.sim-barra span{transition:none;}}
+
+/* ---- Advertencia (siempre visible) ---- */
+.sim-aviso{margin:44px 0 0;padding:14px 18px;border:1px solid var(--sim-linea);border-left:3px solid var(--sim-oro);border-radius:6px;background:var(--sim-papel2);font-size:13px;line-height:1.55;color:var(--sim-suave);max-width:860px;}
+.sim-aviso strong{color:var(--sim-negro);}
