@@ -6,7 +6,7 @@
 <title>Sé el Banco Central — SUE, Sociedad Universitaria de Economía</title>
 <meta name="description" content="Decide la tasa de interés durante dos o cuatro años, enfrenta shocks de la economía chilena y lleva la inflación a la meta. Un simulador de la Sociedad Universitaria de Economía.">
 <link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="simulador.css?v=5">
+<link rel="stylesheet" href="simulador.css?v=6">
 <!-- Ícono de la pestaña -->
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="shortcut icon" href="/favicon.ico">
@@ -53,7 +53,7 @@
   <section class="page-head">
     <div class="container">
       <span class="eyebrow">Simulador</span>
-      <h1>Sé el Banco Central.</h1>
+      <h1><a href="simulador.html" id="sim-titulo-link" title="Volver a los escenarios">Sé el Banco Central.</a></h1>
       <p>Presides el Consejo durante dos o cuatro años. Cada trimestre llega un shock a la economía chilena y decides la Tasa de Política Monetaria (TPM). Tu misión: llevar la inflación a la meta de 3% sin hundir la actividad ni perder credibilidad.</p>
     </div>
   </section>
@@ -144,10 +144,6 @@
         </details>
 
         <p class="sim-aviso"><strong>Solo es una simulación.</strong> Es un juego con fines educativos creado por la Sociedad Universitaria de Economía. No representa las proyecciones, los modelos ni las opiniones del Banco Central de Chile, ni anticipa decisiones reales de política monetaria. Los escenarios históricos están inspirados en episodios reales, con cifras aproximadas.</p>
-
-        <div class="sim-volver-fila">
-          <a class="sim-volver" href="index.html" aria-label="Volver al inicio del sitio">← Volver</a>
-        </div>
       </div>
 
       <div class="sim-cargando" id="sim-cargando" role="status" hidden>
@@ -204,6 +200,10 @@
               <span><i class="rango"></i>Rango meta 2%–4%</span>
             </div>
           </div>
+        </div>
+
+        <div class="sim-volver-fila">
+          <button type="button" class="sim-volver" id="sim-volver">← Volver</button>
         </div>
       </div>
 
@@ -280,6 +280,6 @@
 <script src="ticker-cache.js"></script>
 <script src="indicators.js"></script>
 <script src="script.js"></script>
-<script src="simulador.js?v=5"></script>
+<script src="simulador.js?v=6"></script>
 </body>
 </html>
