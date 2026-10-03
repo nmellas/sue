@@ -24,7 +24,7 @@
   var EN_NAVEGADOR = typeof document !== "undefined";
 
   /* ======================= 1. MODELO ======================= */
-  var META = 3, RSTAR = 1, I_NEUTRAL = META + RSTAR, IMIN = 0.5, IMAX = 20, U_NAT = 7.8;
+  var META = 3, RSTAR = 1, I_NEUTRAL = META + RSTAR, IMIN = 0.5, IMAX = 20;
   var ACCIONES = [-150, -100, -50, -25, 0, 25, 50, 100, 150]; // puntos base
   var PAR = {
     rhoY: 0.6, sigma: 0.7, eta: 0.12,          // IS: persistencia, sensibilidad a la tasa real, efecto cambiario
@@ -194,15 +194,15 @@ const ESC = [
   { id: "diario", n: "Reto del día", T: 8, escala: 1.6, ini: { pi: 4.0, i: 4.75, y: 0, cred: 0.7 }, azar: true, diario: true, tag: "Igual para todos hoy", dif: 2, desc: "Mismos shocks para todos los jugadores del día: compara tu puntaje con tus compañeros. Se renueva cada medianoche." },
   { id: "hoy", tag: "Datos actuales", dif: 2, desc: "Partes con la inflación y la TPM de hoy. Los shocks cambian en cada partida: ningún mandato es igual a otro.",  n: "Chile hoy", T: 8, escala: 1.6, ini: { pi: 4.0, i: 4.75, y: 0, cred: 0.7 }, azar: true },
   { id: "hoy4", tag: "Datos actuales · 4 años", dif: 3, desc: "El mismo punto de partida de hoy, pero con un mandato completo: 16 trimestres para construir (o perder) credibilidad.",  n: "Chile hoy, a largo plazo", T: 16, escala: 1.5, ini: { pi: 4.0, i: 4.75, y: 0, cred: 0.7 }, azar: true },
-  { id: "2007", tag: "Inspirado en 2007–2010", dif: 3, desc: "Primero el boom de las materias primas y la inflación; después la peor crisis financiera en décadas y el terremoto. Cuatro años de giros.", anio0: 2007, trim0: 1,  n: "Del boom a la crisis global", T: 16, ini: { pi: 2.6, i: 5.0, y: 0.5, cred: 0.85, q: -1 },
+  { id: "2007", tag: "Inspirado en 2007–2010", dif: 3, desc: "Comienza 2007: la inflación es baja, la tasa está en 5,0% y la economía opera algo sobre su potencial. Tienes cuatro años de mandato por delante.", anio0: 2007, trim0: 1,  n: "Del boom a la crisis global", T: 16, ini: { pi: 2.6, i: 5.0, y: 0.5, cred: 0.85, q: -1 },
     mazo: ["boomCobre","alimentos07","subprime","petroleo100","energiaAlza","petroleoRecord","lehman","creditoCongelado","comercio","commoditiesCaen","estimuloGlobal","recuperacion","terremoto","reconstruccion","cobreRecord","alimentos10"] },
-  { id: "2010", tag: "Inspirado en 2010–2011", dif: 2, desc: "Un terremoto golpea al país y luego el cobre vive precios récord. La tasa está en mínimos: ¿cuándo normalizarla?", anio0: 2010, trim0: 1,  n: "Terremoto y superciclo del cobre", T: 8, ini: { pi: 1.5, i: 0.75, y: -1.5, cred: 0.8 },
+  { id: "2010", tag: "Inspirado en 2010–2011", dif: 2, desc: "Comienza 2010: la inflación está bajo la meta, la tasa en un mínimo de 0,75% y la economía opera bajo su potencial. Tienes dos años de mandato por delante.", anio0: 2010, trim0: 1,  n: "Terremoto y superciclo del cobre", T: 8, ini: { pi: 1.5, i: 0.75, y: -1.5, cred: 0.8 },
     mazo: ["terremoto","reconstruccion","cobreRecord","inversion","alimentos","euro","externa","tranquilo"] },
-  { id: "2013", tag: "Inspirado en 2013–2016", dif: 2, desc: "Termina el superciclo del cobre: el peso se deprecia y la inflación sube justo cuando la economía se debilita. ¿Combatir los precios o sostener la actividad?", anio0: 2013, trim0: 1,  n: "El fin del superciclo", T: 16, ini: { pi: 1.8, i: 5.0, y: 1.0, cred: 0.85 },
+  { id: "2013", tag: "Inspirado en 2013–2016", dif: 2, desc: "Comienza 2013: la economía crece con fuerza, la inflación es baja y la tasa está en 5,0%. Tienes cuatro años de mandato por delante.", anio0: 2013, trim0: 1,  n: "El fin del superciclo", T: 16, ini: { pi: 1.8, i: 5.0, y: 1.0, cred: 0.85 },
     mazo: ["demandaVigorosa","taper","cobreBaja13","pesoDebil","inversionBaja","chinaFrena","dolarAlto","petroleoDerrumbe","cobreMinimos","serviciosCaros","turbulenciaChina","dolarSigueAlto","sequiaAlimentos","pesoAprecia","cobreEstable","eleccionEEUU"] },
-  { id: "2020", tag: "Inspirado en 2020–2021", dif: 3, desc: "La economía se cierra de golpe. Después llegan los retiros de fondos de pensiones y la reapertura. Evita la recesión sin desatar la inflación.", anio0: 2020, trim0: 1,  n: "Pandemia", T: 8, ini: { pi: 3.0, i: 1.75, y: -1.0, cred: 0.8, q: 1.5 },
+  { id: "2020", tag: "Inspirado en 2020–2021", dif: 3, desc: "Comienza 2020: la inflación está en la meta, la tasa en 1,75% y la economía opera bajo su potencial. Tienes dos años de mandato por delante.", anio0: 2020, trim0: 1,  n: "Pandemia", T: 8, ini: { pi: 3.0, i: 1.75, y: -1.0, cred: 0.8, q: 1.5 },
     mazo: ["confinamiento","dolarPanico","cierre","retiro","retiro2","retiro3","reapertura21","cuellos21"] },
-  { id: "2021", tag: "Inspirado en 2021–2024", dif: 4, desc: "Liquidez récord, reapertura y shocks de costos globales con la tasa en el suelo. Recupera el control de los precios y luego administra la desinflación.", anio0: 2021, trim0: 1,  n: "La gran inflación", T: 16, ini: { pi: 3.0, i: 0.5, y: -1.5, cred: 0.8, q: 0.5 },
+  { id: "2021", tag: "Inspirado en 2021–2024", dif: 4, desc: "Comienza 2021: la tasa está en su mínimo de 0,5%, la inflación en 3,0% y la economía opera bajo su potencial. Tienes cuatro años de mandato por delante.", anio0: 2021, trim0: 1,  n: "La gran inflación", T: 16, ini: { pi: 3.0, i: 0.5, y: -1.5, cred: 0.8, q: 0.5 },
     mazo: ["retiro2","retiro3","cuellos21","dolarFuerte21","ucrania22","consumoElevado","dolar1000","tasaMundial","consumoEnfria","combustiblesBajan","estancamiento","pesoAprecia23","desinflacion","tarifas","dolarSube","inversionLenta"] }
 ];
 
@@ -237,7 +237,6 @@ const ESC = [
     if (p >= 35) return "Gestión errática";
     return "Se convoca reunión extraordinaria";
   }
-  function textoDecision(pb) { return pb === 0 ? "Mantener" : (pb > 0 ? "+" : "−") + Math.abs(pb) + " pb"; }
   var ORD = ["1er", "2.º", "3er", "4.º"];
   function fechaTrim(esc, t) {
     if (!esc.anio0) return "";
@@ -258,7 +257,7 @@ const ESC = [
   /* ======================= 5. PARTIDA ======================= */
   var $ = function (id) { return document.getElementById(id); };
   var CLAVE_RECORDS = "sue-simulador-records-v2";
-  var ESCENARIO = ESC[1], P = null, ELEGIDA = null;
+  var ESCENARIO = ESC[1], P = null;
 
   function records() { try { return JSON.parse(localStorage.getItem(CLAVE_RECORDS)) || {}; } catch (e) { return {}; } }
   function claveRecord(e) { return e.diario ? "diario-" + claveDia() : e.id; }
@@ -287,14 +286,6 @@ const ESC = [
     P.refActs = mejor.acts; P.peorActs = peor.acts; P.refTray = [P.ini].concat(sm.tray); P.Lb = sm.loss; P.Lw = sp.loss; P.Vstar = sm.loss;
   }
   var puntaje = function (L) { return puntajeDe(L, P.Lb, P.Lw); };
-
-  /* ---------- Efecto estimado de una decisión (no revela el shock) ---------- */
-  function efectoDe(a) {
-    var arr = P.t === 0 ? NEUTRO : P.eventos[P.t - 1];
-    var h = paso(P.e, 0, NEUTRO, arr, CERO), x = paso(P.e, a, NEUTRO, arr, CERO), h1 = h, x1 = x;
-    for (var k = 0; k < 3; k++) { h1 = paso(h1, 0, NEUTRO, NEUTRO, CERO); x1 = paso(x1, 0, NEUTRO, NEUTRO, CERO); }
-    return { pi: x.pi - h.pi, y: x.y - h.y, q: x.q - h.q, pi4: x1.pi - h1.pi, y4: x1.y - h1.y, i: x.i };
-  }
 
   /* ---------- Gráfico (colores escritos en el SVG) ---------- */
   function grafico(cont, o) {
@@ -337,7 +328,7 @@ const ESC = [
   function flecha(n, v) { var d = n - v; return Math.abs(d) < 0.05 ? "" : (d > 0 ? " ↑" : " ↓"); }
 
   function tablero(antes) {
-    var e = P.e, u = clamp(U_NAT - 0.4 * e.y, 3, 16);
+    var e = P.e;
     $("sim-tpm").textContent = fmt(e.i, 2) + "%" + (antes ? flecha(e.i, antes.i) : "");
     $("sim-inf").textContent = fmt(e.pi) + "%" + (antes ? flecha(e.pi, antes.pi) : "");
     $("sim-inf").parentNode.classList.toggle("is-alerta", Math.abs(e.pi - META) > 1);
@@ -345,7 +336,6 @@ const ESC = [
     $("sim-act-txt").textContent = textoActividad(e.y);
     $("sim-cred").style.width = Math.round(e.c * 100) + "%";
     $("sim-cred-txt").textContent = Math.round(e.c * 100) + "%";
-    $("sim-des").textContent = fmt(u) + "%" + (antes ? flecha(u, clamp(U_NAT - 0.4 * antes.y, 3, 16)) : "");
     $("sim-peso").textContent = signo(e.q) + "%";
     $("sim-peso-txt").textContent = e.q > 1 ? "Peso depreciado" : e.q < -1 ? "Peso apreciado" : "Peso en equilibrio";
     $("sim-grafico").innerHTML = grafico($("sim-grafico"), { hist: P.hist, piloto: P.histPiloto });
@@ -354,43 +344,20 @@ const ESC = [
 
   function mostrarEvento() {
     var ev = P.eventos[P.t];
-    ELEGIDA = null;
     $("sim-trimestre").textContent = "Trimestre " + (P.t + 1) + " de " + P.T;
     $("sim-fecha").textContent = fechaTrim(P.esc, P.t);
     $("sim-ev-tipo").textContent = ev.tipo;
     $("sim-ev-titulo").textContent = ev.t;
     $("sim-ev-texto").textContent = ev.x;
-    $("sim-ev-pistas").innerHTML = pistas(ev).map(function (p) { return "<span>" + p + "</span>"; }).join("");
+    $("sim-ev-pistas").innerHTML = pistas(ev).map(function (p) { return "<span>" + p + "</span>"; }).join(" ");
     var rd = P.radar[P.t];
-    $("sim-radar").innerHTML = rd ? '<b>Radar del próximo trimestre</b>' + rd.map(function (p) { return "<span>" + p + "</span>"; }).join("") + '<em>señal probable, no segura</em>'
+    $("sim-radar").innerHTML = rd ? "<b>Radar del próximo trimestre:</b> " + rd.map(function (p) { return "<span>" + p + "</span>"; }).join(" ") + " <em>(señal probable, no segura)</em>"
                                   : "<b>Último trimestre de tu mandato</b>";
-    $("sim-botones").querySelectorAll("button").forEach(function (b) {
-      b.disabled = !valida(P.e, Number(b.dataset.pb)); b.classList.remove("is-elegida"); b.setAttribute("aria-pressed", "false");
-    });
-    $("sim-efecto").innerHTML = '<span class="sim-efecto-vacio">Elige una decisión para ver su efecto estimado.</span>';
-    $("sim-confirmar").disabled = true;
+    $("sim-botones").querySelectorAll("button").forEach(function (b) { b.disabled = !valida(P.e, Number(b.dataset.pb)); });
   }
 
-  function elegir(pb) {
-    ELEGIDA = pb;
-    $("sim-botones").querySelectorAll("button").forEach(function (b) {
-      var on = Number(b.dataset.pb) === pb; b.classList.toggle("is-elegida", on); b.setAttribute("aria-pressed", on ? "true" : "false");
-    });
-    var f = efectoDe(pb), flechaTxt = function (v, unidad) { return Math.abs(v) < 0.05 ? "sin cambio" : signo(v, 1) + " " + unidad; };
-    if (pb === 0) {
-      $("sim-efecto").innerHTML = "<strong>La TPM se mantiene en " + fmt(P.e.i, 2) + "%.</strong> <span>La economía sigue su curso; los shocks del trimestre te llegarán sin amortiguador.</span>";
-    } else {
-      $("sim-efecto").innerHTML = "<strong>Nueva TPM: " + fmt(f.i, 2) + "%</strong>" +
-        '<span class="sim-ef-linea"><b>Este trimestre</b> (vs. mantener): inflación ' + flechaTxt(f.pi, "pp") + " · actividad " + flechaTxt(f.y, "pp") +
-        " · peso " + (f.q < -0.1 ? "se aprecia" : f.q > 0.1 ? "se deprecia" : "igual") + "</span>" +
-        '<span class="sim-ef-linea"><b>En un año</b>: inflación ' + flechaTxt(f.pi4, "pp") + " · actividad " + flechaTxt(f.y4, "pp") + "</span>";
-    }
-    $("sim-confirmar").disabled = false;
-  }
-
-  function confirmar() {
-    if (ELEGIDA == null) return;
-    var pb = ELEGIDA, t = P.t, ev = P.eventos[t], r = P.ruido[t], antes = P.e, arr = t === 0 ? NEUTRO : P.eventos[t - 1];
+  function decidir(pb) {
+    var t = P.t, ev = P.eventos[t], r = P.ruido[t], antes = P.e, arr = t === 0 ? NEUTRO : P.eventos[t - 1];
     var nuevo = paso(antes, pb, ev, arr, r), sin = paso(antes, 0, ev, arr, r), pil = paso(P.piloto, 0, ev, arr, r);
     var perdidaPrev = P.perdida;
     P.e = nuevo; P.piloto = pil; P.t++; P.perdida += nuevo.perdida;
@@ -432,11 +399,6 @@ const ESC = [
       "Con una visión perfecta del futuro, el recorrido óptimo la habría mantenido en rango " +
       P.refTray.slice(1).filter(function (h) { return Math.abs(h.pi - META) <= 1; }).length + " de " + P.T + " veces.";
     $("sim-grafico-final").innerHTML = grafico($("sim-grafico-final"), { hist: P.hist, optimo: P.refTray });
-    $("sim-tabla").innerHTML = P.eventos.map(function (ev, t) {
-      var igual = P.decisiones[t] === P.refActs[t], c = Math.round(P.costos[t]);
-      return "<tr><td>" + (t + 1) + '</td><td class="sim-t-ev">' + ev.t + "</td><td>" + textoDecision(P.decisiones[t]) + "</td><td" + (igual ? ' class="igual"' : "") + ">" +
-        textoDecision(P.refActs[t]) + (igual ? " ✓" : "") + "</td><td>" + (c < 1 ? "—" : "−" + c) + "</td></tr>";
-    }).join("");
     $("sim-final").dataset.puntaje = p;
     renderEscenarios();
     $("sim-final").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -508,12 +470,10 @@ const ESC = [
   /* ---------- Inicio ---------- */
   document.addEventListener("DOMContentLoaded", function () {
     $("sim-botones").innerHTML = ACCIONES.map(function (pb) {
-      return '<button type="button" class="sim-op' + (pb === 0 ? " is-mantener" : pb > 0 ? " is-sube" : " is-baja") + '" data-pb="' + pb + '" aria-pressed="false" aria-label="' +
+      return '<button type="button" class="sim-op' + (pb === 0 ? " is-mantener" : pb > 0 ? " is-sube" : " is-baja") + '" data-pb="' + pb + '" aria-label="' +
         (pb === 0 ? "Mantener la tasa" : (pb > 0 ? "Subir " : "Bajar ") + Math.abs(pb) + " puntos base") + '">' + (pb === 0 ? "Mantener" : (pb > 0 ? "+" : "−") + Math.abs(pb)) + "</button>";
     }).join("");
-    $("sim-botones").addEventListener("click", function (ev) { var b = ev.target.closest("button"); if (b && !b.disabled) elegir(Number(b.dataset.pb)); });
-    $("sim-confirmar").addEventListener("click", confirmar);
-    document.addEventListener("keydown", function (ev) { if (ev.key === "Enter" && P && !$("sim-juego").hidden && ELEGIDA != null && ev.target.tagName !== "BUTTON") confirmar(); });
+    $("sim-botones").addEventListener("click", function (ev) { var b = ev.target.closest("button"); if (b && !b.disabled) decidir(Number(b.dataset.pb)); });
     $("sim-escenarios").addEventListener("click", function (ev) {
       var b = ev.target.closest("button"); if (!b) return;
       ESCENARIO = ESC.filter(function (s) { return s.id === b.dataset.id; })[0] || ESCENARIO; renderEscenarios();
