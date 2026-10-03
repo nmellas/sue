@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sé el Banco Central — SUE, Sociedad Universitaria de Economía</title>
-<meta name="description" content="Decide la tasa de interés durante dos años, enfrenta shocks de la economía chilena y lleva la inflación a la meta. Un simulador de la Sociedad Universitaria de Economía.">
+<meta name="description" content="Decide la tasa de interés durante dos o cuatro años, enfrenta shocks de la economía chilena y lleva la inflación a la meta. Un simulador de la Sociedad Universitaria de Economía.">
 <link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="simulador.css?v=2">
+<link rel="stylesheet" href="simulador.css?v=3">
 <!-- Ícono de la pestaña -->
-<link rel="icon" type="image/png" href="favicon.png?v=2">
-<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <!-- Vista previa al compartir (WhatsApp, LinkedIn, Instagram, X). Si cambia el dominio, reemplazar https://suecon.cl/ -->
 <link rel="canonical" href="https://suecon.cl/simulador.html">
 <meta property="og:url" content="https://suecon.cl/simulador.html">
@@ -17,7 +18,7 @@
 <meta property="og:site_name" content="SUE — Sociedad Universitaria de Economía">
 <meta property="og:locale" content="es_CL">
 <meta property="og:title" content="Sé el Banco Central — Simulador SUE">
-<meta property="og:description" content="Decide la tasa de interés durante dos años, enfrenta shocks de la economía chilena y lleva la inflación a la meta. Un simulador de la Sociedad Universitaria de Economía.">
+<meta property="og:description" content="Decide la tasa de interés durante dos o cuatro años, enfrenta shocks de la economía chilena y lleva la inflación a la meta. Un simulador de la Sociedad Universitaria de Economía.">
 <meta property="og:image" content="https://suecon.cl/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -53,14 +54,14 @@
     <div class="container">
       <span class="eyebrow">Simulador</span>
       <h1>Sé el Banco Central.</h1>
-      <p>Presides el Consejo durante dos años. Cada trimestre llega un shock a la economía chilena y decides la Tasa de Política Monetaria (TPM). Tu misión: llevar la inflación a la meta de 3% sin hundir la actividad ni perder credibilidad.</p>
+      <p>Presides el Consejo durante dos o cuatro años. Cada trimestre llega un shock a la economía chilena y decides la Tasa de Política Monetaria (TPM). Tu misión: llevar la inflación a la meta de 3% sin hundir la actividad ni perder credibilidad.</p>
     </div>
   </section>
 
   <section class="section sim">
     <div class="container">
 
-      <!-- INTRO: elegir escenario -->
+      <!-- ANTESALA: escenario, situación inicial y modelo -->
       <div id="sim-intro">
         <div class="sim-bloque-titulo">
           <span class="sim-paso">1</span>
@@ -80,23 +81,84 @@
               <div class="sim-dato"><div class="sim-lbl">TPM</div><div class="sim-num" id="sim-ini-tpm">…</div></div>
               <div class="sim-dato"><div class="sim-lbl">Actividad</div><div class="sim-num" id="sim-ini-act">…</div></div>
               <div class="sim-dato"><div class="sim-lbl">Meta</div><div class="sim-num">3,0%</div></div>
+              <div class="sim-dato"><div class="sim-lbl">Duración</div><div class="sim-num" id="sim-ini-dur">…</div></div>
             </div>
           </div>
           <div class="sim-reglas">
             <div class="sim-regla"><span>↑</span><p><strong>Subir la tasa</strong> enfría la demanda y aprecia el peso: baja la inflación, pero también la actividad.</p></div>
-            <div class="sim-regla"><span>↓</span><p><strong>Bajar la tasa</strong> reactiva la economía, pero puede encender los precios.</p></div>
+            <div class="sim-regla"><span>↓</span><p><strong>Bajarla</strong> reactiva la economía y debilita el peso, pero puede encender los precios.</p></div>
+            <div class="sim-regla"><span>⌛</span><p><strong>Todo tarda en notarse.</strong> El efecto sobre la actividad llega con rezago: hay que anticiparse. Usa el radar.</p></div>
             <div class="sim-regla"><span>◎</span><p><strong>La credibilidad importa.</strong> Si la inflación sale del rango de 2%–4%, las expectativas se desanclan y cuesta más controlarla.</p></div>
           </div>
         </div>
         <button type="button" class="btn btn-primary sim-cta" id="sim-empezar" disabled>Asumir la presidencia del Consejo →</button>
+
+        <details class="sim-como" id="sim-modelo">
+          <summary>Para los más busquillas: el modelo detrás del juego</summary>
+          <div class="sim-como-cuerpo">
+            <p>Es un modelo macroeconómico trimestral de una economía pequeña y abierta, en la tradición del régimen de metas de inflación: una versión simplificada del marco <strong>Nuevo Keynesiano</strong>. Cada trimestre los shocks mueven la economía y tu decisión sobre la TPM la lleva en una u otra dirección. Esto es lo que ocurre por dentro (π: inflación anual; y: brecha de actividad; i: TPM; q: depreciación del peso; c: credibilidad; todo en %):</p>
+            <ol class="sim-eqs">
+              <li><h4>Expectativas</h4>
+                <p class="sim-eq">π<sup>e</sup><sub>t</sub> = c<sub>t</sub> · π* + (1 − c<sub>t</sub>) · π<sub>t−1</sub></p>
+                <p>La gente espera que la inflación vuelva a la meta (π* = 3%) en la medida en que cree en el Banco Central; si no, extrapola la inflación pasada. Es la idea de credibilidad de Barro y Gordon (1983).</p></li>
+              <li><h4>Tasa real y rezago de transmisión</h4>
+                <p class="sim-eq">r<sub>t</sub> = i<sub>t</sub> − π<sup>e</sup><sub>t</sub> &nbsp;&nbsp;·&nbsp;&nbsp; r̄<sub>t</sub> = ½ r<sub>t</sub> + ½ r<sub>t−1</sub></p>
+                <p>La actividad responde a la tasa <em>real</em>, no a la nominal, y con rezago: la mitad del efecto de una decisión llega recién el trimestre siguiente.</p></li>
+              <li><h4>Tipo de cambio</h4>
+                <p class="sim-eq">q<sub>t</sub> = 0,6 q<sub>t−1</sub> − 0,9 Δi<sub>t</sub> − 0,25 (i<sub>t</sub> − 4%) + f<sub>t</sub></p>
+                <p>Subir la tasa aprecia el peso (una versión simplificada de la paridad descubierta de intereses), y un shock externo <em>f</em> (cobre, Fed, aversión al riesgo) lo deprecia. El canal cambiario es clave en economías abiertas (Ball, 1999; para Chile, Medina y Soto, 2007).</p></li>
+              <li><h4>Curva IS dinámica</h4>
+                <p class="sim-eq">y<sub>t</sub> = 0,6 y<sub>t−1</sub> − 0,7 (r̄<sub>t</sub> − r*) + 0,12 q<sub>t</sub> + d<sub>t</sub> &nbsp;&nbsp;·&nbsp;&nbsp; r* = 1%</p>
+                <p>La brecha de actividad es persistente, cae cuando la tasa real supera su nivel neutral (r*) y sube con un peso depreciado (exportaciones más competitivas) o con shocks de demanda <em>d</em> (Clarida, Galí y Gertler, 1999).</p></li>
+              <li><h4>Curva de Phillips híbrida</h4>
+                <p class="sim-eq">π<sub>t</sub> = 0,5 π<sub>t−1</sub> + 0,5 π<sup>e</sup><sub>t</sub> + 0,25 y<sub>t</sub> + 0,2 (q<sub>t</sub> − q<sub>t−1</sub>) + s<sub>t</sub></p>
+                <p>La inflación depende de su propia inercia, de las expectativas, de qué tan caliente está la economía, del traspaso del tipo de cambio a los precios y de shocks de costos <em>s</em> (petróleo, alimentos, tarifas). Es la forma "híbrida" de Galí y Gertler (1999).</p></li>
+              <li><h4>Credibilidad</h4>
+                <p class="sim-eq">c<sub>t</sub> ↓ si |π<sub>t</sub> − 3| &gt; 1 &nbsp;&nbsp;·&nbsp;&nbsp; c<sub>t</sub> ↑ 0,04 si no &nbsp;&nbsp;·&nbsp;&nbsp; 0,30 ≤ c ≤ 0,92</p>
+                <p>Perderla es rápido (más cuanto más te alejas de la meta); recuperarla toma tiempo. Esta asimetría es lo que hace tan costoso dejar que la inflación se descontrole.</p></li>
+              <li><h4>Los shocks</h4>
+                <p class="sim-eq">d<sub>t</sub>, s<sub>t</sub>, f<sub>t</sub> &nbsp;→&nbsp; el 40% de cada uno se arrastra al trimestre siguiente</p>
+                <p>Cada evento mueve demanda, costos y tipo de cambio. En los escenarios históricos la intensidad de cada shock varía ±20% y se agrega un ruido pequeño en cada partida, para que no puedas simplemente memorizar la solución.</p></li>
+              <li><h4>Lo que busca el Consejo</h4>
+                <p class="sim-eq">L<sub>t</sub> = (π<sub>t</sub> − 3)² + 0,5 y<sub>t</sub>² + 0,25 (Δi<sub>t</sub>)²</p>
+                <p>Es el "objetivo flexible de inflación": se castiga alejarse de la meta, dejar la economía fría o recalentada, y también los vaivenes bruscos de tasa (Svensson, 1997; Rudebusch y Svensson, 1999). Tu objetivo es minimizar la suma de L<sub>t</sub> en todo el mandato.</p></li>
+              <li><h4>Desempleo (solo informativo)</h4>
+                <p class="sim-eq">u<sub>t</sub> = 7,8% − 0,4 · y<sub>t</sub></p>
+                <p>Una versión simple de la ley de Okun (1962). No entra en el puntaje: está para que la actividad se sienta cercana.</p></li>
+            </ol>
+            <h4>Cómo se calcula tu puntaje</h4>
+            <p>En cada partida el computador revisa miles de caminos posibles (una búsqueda por haz sobre las 9 decisiones de cada trimestre) y encuentra dos recorridos: el que <strong>minimiza</strong> la pérdida total, L<sub>mín</sub>, que vale <strong>100 puntos</strong>; y el que la <strong>maximiza</strong>, L<sub>máx</sub>, que vale <strong>0 puntos</strong>. Esos dos recorridos siempre existen, así que 0 y 100 siempre son alcanzables. Tu puntaje es</p>
+            <p class="sim-eq">puntaje = 100 · [ 1 − ln(1 + r / 0,1) / ln(1 + r<sub>máx</sub> / 0,1) ] &nbsp;&nbsp;·&nbsp;&nbsp; r = (L − L<sub>mín</sub>) / (L<sub>mín</sub> + 4)</p>
+            <p>Es decir, mide <em>cuántas veces peor que el óptimo</em> fue tu gestión, en escala logarítmica: los primeros errores duelen más. Ojo: el 100 corresponde al recorrido óptimo <em>con visión perfecta del futuro</em>, que nadie tiene en la vida real. Un buen jugador, sin bola de cristal, suele moverse entre 55 y 80; sobre 90 es excepcional.</p>
+            <h4>Qué simplifica este modelo</h4>
+            <p>Los parámetros son pedagógicos, no estimados con datos. No hay sector financiero, política fiscal endógena ni expectativas plenamente racionales. Los escenarios históricos están <em>inspirados</em> en episodios reales, con cifras aproximadas. Es un juego educativo: no representa las proyecciones ni los modelos del Banco Central de Chile.</p>
+            <h4>Para seguir leyendo</h4>
+            <ul class="sim-bib">
+              <li>Ball, L. (1999). Policy rules for open economies. En J. Taylor (ed.), <em>Monetary Policy Rules</em>. University of Chicago Press.</li>
+              <li>Barro, R. y Gordon, D. (1983). A positive theory of monetary policy in a natural rate model. <em>Journal of Political Economy</em>, 91(4).</li>
+              <li>Clarida, R., Galí, J. y Gertler, M. (1999). The science of monetary policy: a New Keynesian perspective. <em>Journal of Economic Literature</em>, 37(4).</li>
+              <li>Galí, J. (2008). <em>Monetary Policy, Inflation, and the Business Cycle</em>. Princeton University Press.</li>
+              <li>Galí, J. y Gertler, M. (1999). Inflation dynamics: a structural econometric analysis. <em>Journal of Monetary Economics</em>, 44(2).</li>
+              <li>Medina, J. P. y Soto, C. (2007). The Chilean business cycles through the lens of a stochastic general equilibrium model. Banco Central de Chile, Documento de Trabajo.</li>
+              <li>Okun, A. (1962). Potential GNP: its measurement and significance. <em>Proceedings of the Business and Economic Statistics Section</em>, American Statistical Association.</li>
+              <li>Rudebusch, G. y Svensson, L. (1999). Policy rules for inflation targeting. En J. Taylor (ed.), <em>Monetary Policy Rules</em>. University of Chicago Press.</li>
+              <li>Svensson, L. (1997). Inflation forecast targeting: implementing and monitoring inflation targets. <em>European Economic Review</em>, 41(6).</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+
+      <div class="sim-cargando" id="sim-cargando" role="status" hidden>
+        <span class="sim-spinner" aria-hidden="true"></span>
+        <p>Preparando el escenario…<br><small>El computador está calculando el mejor y el peor recorrido posibles.</small></p>
       </div>
 
       <!-- JUEGO -->
       <div class="sim-juego" id="sim-juego" hidden>
         <div class="sim-juego-cab">
           <div>
-            <span class="eyebrow" id="sim-trimestre">Trimestre 1 de 8</span>
-            <div class="sim-juego-esc" id="sim-juego-esc"></div>
+            <span class="eyebrow" id="sim-trimestre">Trimestre 1</span>
+            <div class="sim-juego-esc"><span id="sim-juego-esc"></span><span class="sim-fecha" id="sim-fecha"></span></div>
           </div>
           <div class="sim-progreso" id="sim-progreso" aria-hidden="true"></div>
         </div>
@@ -110,13 +172,17 @@
               <div class="sim-pistas" id="sim-ev-pistas"></div>
             </article>
 
+            <div class="sim-radar" id="sim-radar"></div>
+
             <div class="sim-decision">
               <div class="sim-decision-cab">
                 <span class="sim-pregunta">¿Qué decide el Consejo?</span>
-                <span class="sim-preview" id="sim-preview"></span>
+                <span class="sim-pregunta-sub">Elige y confirma · cambios en puntos base (pb)</span>
               </div>
               <div class="sim-botones" id="sim-botones"></div>
-              <div class="sim-botones-leyenda"><span>← Bajar (pb)</span><span>Subir (pb) →</span></div>
+              <div class="sim-botones-leyenda"><span>← Bajar la tasa</span><span>Subir la tasa →</span></div>
+              <div class="sim-efecto" id="sim-efecto" aria-live="polite"></div>
+              <button type="button" class="btn btn-primary sim-confirmar" id="sim-confirmar" disabled>Confirmar decisión</button>
             </div>
 
             <p class="sim-informe" id="sim-informe" aria-live="polite"></p>
@@ -127,12 +193,15 @@
               <div class="sim-dato"><div class="sim-lbl">TPM</div><div class="sim-num" id="sim-tpm"></div></div>
               <div class="sim-dato"><div class="sim-lbl">Inflación anual</div><div class="sim-num" id="sim-inf"></div></div>
               <div class="sim-dato"><div class="sim-lbl">Actividad</div><div class="sim-num" id="sim-act"></div><div class="sim-sub" id="sim-act-txt"></div></div>
+              <div class="sim-dato"><div class="sim-lbl">Desempleo</div><div class="sim-num" id="sim-des"></div><div class="sim-sub">Ley de Okun</div></div>
+              <div class="sim-dato"><div class="sim-lbl">Tipo de cambio</div><div class="sim-num" id="sim-peso"></div><div class="sim-sub" id="sim-peso-txt"></div></div>
               <div class="sim-dato"><div class="sim-lbl">Credibilidad</div><div class="sim-num" id="sim-cred-txt"></div><div class="sim-barra"><span id="sim-cred"></span></div></div>
             </div>
             <div class="sim-grafico" id="sim-grafico"></div>
             <div class="sim-leyenda">
               <span><i style="background:#CD1729"></i>Inflación</span>
               <span><i style="background:#172340"></i>TPM</span>
+              <span><i class="piloto"></i>Si no hubieras hecho nada</span>
               <span><i class="rango"></i>Rango meta 2%–4%</span>
             </div>
           </div>
@@ -149,9 +218,20 @@
         <div class="sim-grafico" id="sim-grafico-final"></div>
         <div class="sim-leyenda sim-leyenda-final">
           <span><i style="background:#CD1729"></i>Tu inflación</span>
-          <span><i class="piloto"></i>Piloto automático</span>
+          <span><i class="optimo"></i>Inflación en el recorrido óptimo</span>
           <span><i style="background:#172340"></i>Tu TPM</span>
+          <span><i class="optimo-tpm"></i>TPM óptima</span>
         </div>
+
+        <h3 class="sim-tabla-titulo">Tus decisiones frente al recorrido óptimo</h3>
+        <div class="sim-tabla-wrap">
+          <table class="sim-tabla">
+            <thead><tr><th>T</th><th>Shock</th><th>Tu decisión</th><th>Óptima</th><th>Costo (pts)</th></tr></thead>
+            <tbody id="sim-tabla"></tbody>
+          </table>
+        </div>
+        <p class="sim-nota">"Óptima" es la decisión del mejor recorrido posible, calculado con visión perfecta del futuro: no es una crítica a tu criterio, sino una referencia para aprender. "Costo" es cuánto te costó cada decisión, en puntos, frente a la mejor continuación disponible en ese momento.</p>
+
         <div class="sim-acciones">
           <button type="button" class="btn btn-primary" id="sim-compartir">Compartir resultado</button>
           <button type="button" class="btn btn-ghost" id="sim-otra">Repetir escenario</button>
@@ -159,12 +239,6 @@
         </div>
       </div>
 
-      <details class="sim-como">
-        <summary>¿Cómo funciona el modelo?</summary>
-        <p>Es un modelo macroeconómico trimestral simplificado. La <strong>actividad</strong> cae cuando la tasa real (TPM menos inflación esperada) supera su nivel neutral. La <strong>inflación</strong> es persistente, sube con la actividad y con los shocks de costos, y baja cuando la TPM sube, por menor demanda y un peso más apreciado. Las <strong>expectativas</strong> se anclan a la meta según la credibilidad del Banco Central.</p>
-        <p>El <strong>puntaje</strong> compara tu gestión con un "piloto automático", un Banco Central que enfrenta exactamente los mismos shocks sin mover la tasa y que obtiene 50 puntos. Se premia mantener la inflación cerca de 3%, la actividad cerca de su potencial y mover la tasa sin brusquedades innecesarias.</p>
-        <p>Los escenarios están inspirados en episodios reales de la economía chilena, pero sus cifras son aproximadas. El simulador tiene fines educativos y no representa las proyecciones ni los modelos del Banco Central de Chile.</p>
-      </details>
     </div>
   </section>
 </main>
@@ -215,6 +289,6 @@
 <script src="ticker-cache.js"></script>
 <script src="indicators.js"></script>
 <script src="script.js"></script>
-<script src="simulador.js?v=2"></script>
+<script src="simulador.js?v=3"></script>
 </body>
 </html>
