@@ -177,10 +177,14 @@
 @media (prefers-reduced-motion:reduce){.sim-esc,.sim-barra span{transition:none;}}
 
 /* ---- Advertencia (siempre visible) ---- */
-.sim-aviso{margin:84px 0 0;padding:14px 18px;border:1px solid var(--sim-linea);border-left:3px solid var(--sim-oro);border-radius:6px;background:var(--sim-papel2);font-size:13px;line-height:1.55;color:var(--sim-suave);max-width:860px;}
+.sim-aviso{margin:26px 0 0;padding:0;border:0;background:none;font-size:13px;line-height:1.6;color:var(--sim-suave);max-width:860px;}
 .sim-aviso strong{color:var(--sim-negro);}
 
-/* ---- Volver (discreto, abajo a la izquierda de la antesala) ---- */
-.sim-volver-fila{margin-top:36px;text-align:left;}
-.sim-volver{display:inline-block;font-family:var(--sim-mono);font-size:12.5px;font-weight:600;letter-spacing:.04em;color:var(--sim-tenue);text-decoration:none;padding:8px 2px;border-bottom:1px solid transparent;transition:color .15s ease,border-color .15s ease;}
+/* ---- Volver (discreto, abajo a la izquierda del juego) ---- */
+.sim-volver-fila{margin-top:30px;text-align:left;}
+.sim-volver{display:inline-block;font-family:var(--sim-mono);font-size:12.5px;font-weight:600;letter-spacing:.04em;color:var(--sim-tenue);background:none;border:0;border-bottom:1px solid transparent;cursor:pointer;padding:8px 2px;transition:color .15s ease,border-color .15s ease;}
 .sim-volver:hover,.sim-volver:focus-visible{color:var(--sim-rojo);border-bottom-color:var(--sim-rojo);}
+
+/* ---- Título clicable ("Sé el Banco Central.") ---- */
+[data-page="simulador"] .page-head h1 a{color:inherit;text-decoration:none;transition:color .15s ease;}
+[data-page="simulador"] .page-head h1 a:hover,[data-page="simulador"] .page-head h1 a:focus-visible{color:var(--brick,#CD1729);}
