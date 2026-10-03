@@ -6,7 +6,7 @@
 <title>Sé el Banco Central — SUE, Sociedad Universitaria de Economía</title>
 <meta name="description" content="Decide la tasa de interés durante dos o cuatro años, enfrenta shocks de la economía chilena y lleva la inflación a la meta. Un simulador de la Sociedad Universitaria de Economía.">
 <link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="simulador.css?v=3">
+<link rel="stylesheet" href="simulador.css?v=4">
 <!-- Ícono de la pestaña -->
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="shortcut icon" href="/favicon.ico">
@@ -94,7 +94,7 @@
         <button type="button" class="btn btn-primary sim-cta" id="sim-empezar" disabled>Asumir la presidencia del Consejo →</button>
 
         <details class="sim-como" id="sim-modelo">
-          <summary>Revisa el modelo detrás del juego</summary>
+          <summary>Conoce el modelo detrás del juego</summary>
           <div class="sim-como-cuerpo">
             <p>Es un modelo macroeconómico trimestral de una economía pequeña y abierta, en la tradición del régimen de metas de inflación: una versión simplificada del marco <strong>Nuevo Keynesiano</strong>. Cada trimestre los shocks mueven la economía y tu decisión sobre la TPM la lleva en una u otra dirección. Esto es lo que ocurre por dentro (π: inflación anual; y: brecha de actividad; i: TPM; q: depreciación del peso; c: credibilidad; todo en %):</p>
             <ol class="sim-eqs">
@@ -122,9 +122,6 @@
               <li><h4>Lo que busca el Consejo</h4>
                 <p class="sim-eq">L<sub>t</sub> = (π<sub>t</sub> − 3)² + 0,5 y<sub>t</sub>² + 0,25 (Δi<sub>t</sub>)²</p>
                 <p>Es el "objetivo flexible de inflación": se castiga alejarse de la meta, dejar la economía fría o recalentada, y también los vaivenes bruscos de tasa (Svensson, 1997; Rudebusch y Svensson, 1999). Tu objetivo es minimizar la suma de L<sub>t</sub> en todo el mandato.</p></li>
-              <li><h4>Desempleo (solo informativo)</h4>
-                <p class="sim-eq">u<sub>t</sub> = 7,8% − 0,4 · y<sub>t</sub></p>
-                <p>Una versión simple de la ley de Okun (1962). No entra en el puntaje: está para que la actividad se sienta cercana.</p></li>
             </ol>
             <h4>Cómo se calcula tu puntaje</h4>
             <p>En cada partida el computador revisa miles de caminos posibles (una búsqueda por haz sobre las 9 decisiones de cada trimestre) y encuentra dos recorridos: el que <strong>minimiza</strong> la pérdida total, L<sub>mín</sub>, que vale <strong>100 puntos</strong>; y el que la <strong>maximiza</strong>, L<sub>máx</sub>, que vale <strong>0 puntos</strong>. Esos dos recorridos siempre existen, así que 0 y 100 siempre son alcanzables. Tu puntaje es</p>
@@ -140,7 +137,6 @@
               <li>Galí, J. (2008). <em>Monetary Policy, Inflation, and the Business Cycle</em>. Princeton University Press.</li>
               <li>Galí, J. y Gertler, M. (1999). Inflation dynamics: a structural econometric analysis. <em>Journal of Monetary Economics</em>, 44(2).</li>
               <li>Medina, J. P. y Soto, C. (2007). The Chilean business cycles through the lens of a stochastic general equilibrium model. Banco Central de Chile, Documento de Trabajo.</li>
-              <li>Okun, A. (1962). Potential GNP: its measurement and significance. <em>Proceedings of the Business and Economic Statistics Section</em>, American Statistical Association.</li>
               <li>Rudebusch, G. y Svensson, L. (1999). Policy rules for inflation targeting. En J. Taylor (ed.), <em>Monetary Policy Rules</em>. University of Chicago Press.</li>
               <li>Svensson, L. (1997). Inflation forecast targeting: implementing and monitoring inflation targets. <em>European Economic Review</em>, 41(6).</li>
             </ul>
@@ -177,12 +173,10 @@
             <div class="sim-decision">
               <div class="sim-decision-cab">
                 <span class="sim-pregunta">¿Qué decide el Consejo?</span>
-                <span class="sim-pregunta-sub">Elige y confirma · cambios en puntos base (pb)</span>
+                <span class="sim-pregunta-sub">Cambios de la TPM en puntos base (pb)</span>
               </div>
               <div class="sim-botones" id="sim-botones"></div>
               <div class="sim-botones-leyenda"><span>← Bajar la tasa</span><span>Subir la tasa →</span></div>
-              <div class="sim-efecto" id="sim-efecto" aria-live="polite"></div>
-              <button type="button" class="btn btn-primary sim-confirmar" id="sim-confirmar" disabled>Confirmar decisión</button>
             </div>
 
             <p class="sim-informe" id="sim-informe" aria-live="polite"></p>
@@ -193,7 +187,6 @@
               <div class="sim-dato"><div class="sim-lbl">TPM</div><div class="sim-num" id="sim-tpm"></div></div>
               <div class="sim-dato"><div class="sim-lbl">Inflación anual</div><div class="sim-num" id="sim-inf"></div></div>
               <div class="sim-dato"><div class="sim-lbl">Actividad</div><div class="sim-num" id="sim-act"></div><div class="sim-sub" id="sim-act-txt"></div></div>
-              <div class="sim-dato"><div class="sim-lbl">Desempleo</div><div class="sim-num" id="sim-des"></div><div class="sim-sub">Ley de Okun</div></div>
               <div class="sim-dato"><div class="sim-lbl">Tipo de cambio</div><div class="sim-num" id="sim-peso"></div><div class="sim-sub" id="sim-peso-txt"></div></div>
               <div class="sim-dato"><div class="sim-lbl">Credibilidad</div><div class="sim-num" id="sim-cred-txt"></div><div class="sim-barra"><span id="sim-cred"></span></div></div>
             </div>
@@ -223,15 +216,6 @@
           <span><i class="optimo-tpm"></i>TPM óptima</span>
         </div>
 
-        <h3 class="sim-tabla-titulo">Tus decisiones frente al recorrido óptimo</h3>
-        <div class="sim-tabla-wrap">
-          <table class="sim-tabla">
-            <thead><tr><th>T</th><th>Shock</th><th>Tu decisión</th><th>Óptima</th><th>Costo (pts)</th></tr></thead>
-            <tbody id="sim-tabla"></tbody>
-          </table>
-        </div>
-        <p class="sim-nota">"Óptima" es la decisión del mejor recorrido posible, calculado con visión perfecta del futuro: no es una crítica a tu criterio, sino una referencia para aprender. "Costo" es cuánto te costó cada decisión, en puntos, frente a la mejor continuación disponible en ese momento.</p>
-
         <div class="sim-acciones">
           <button type="button" class="btn btn-primary" id="sim-compartir">Compartir resultado</button>
           <button type="button" class="btn btn-ghost" id="sim-otra">Repetir escenario</button>
@@ -239,6 +223,8 @@
         </div>
       </div>
 
+
+      <p class="sim-aviso"><strong>Solo es una simulación.</strong> Es un juego con fines educativos creado por la Sociedad Universitaria de Economía. No representa las proyecciones, los modelos ni las opiniones del Banco Central de Chile, ni anticipa decisiones reales de política monetaria. Los escenarios históricos están inspirados en episodios reales, con cifras aproximadas.</p>
     </div>
   </section>
 </main>
@@ -289,6 +275,6 @@
 <script src="ticker-cache.js"></script>
 <script src="indicators.js"></script>
 <script src="script.js"></script>
-<script src="simulador.js?v=3"></script>
+<script src="simulador.js?v=4"></script>
 </body>
 </html>
