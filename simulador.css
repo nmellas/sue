@@ -22,7 +22,7 @@
 .sim-paso{flex:none;width:32px;height:32px;border-radius:50%;background:var(--sim-rojo);color:#fff;display:grid;place-items:center;font-family:var(--sim-mono);font-weight:600;font-size:14px;}
 
 /* ---- Escenarios ---- */
-.sim-escenarios{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:44px;}
+.sim-escenarios{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:44px;}
 .sim-esc{display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;min-height:150px;
   background:var(--sim-blanco);border:1px solid var(--sim-linea);border-radius:6px;padding:16px 16px 14px;color:inherit;font:inherit;
   transition:border-color .15s ease,transform .15s ease,box-shadow .15s ease;}
@@ -39,7 +39,8 @@
 /* ---- Situación inicial ---- */
 .sim-inicio{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:40px;align-items:start;margin-bottom:30px;}
 .sim-inicio-texto > p{font-size:16px;max-width:52ch;margin:0 0 18px;}
-.sim-partida{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--sim-linea);border:1px solid var(--sim-linea);border-radius:6px;overflow:hidden;}
+.sim-partida{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--sim-linea);border:1px solid var(--sim-linea);border-radius:6px;overflow:hidden;}
+.sim-partida .sim-num{font-size:26px;white-space:nowrap;}
 .sim-reglas{display:grid;gap:12px;padding-top:4px;}
 .sim-regla{display:flex;gap:14px;align-items:flex-start;background:var(--sim-papel2);border-radius:6px;padding:14px 16px;}
 .sim-regla span{flex:none;width:30px;height:30px;border-radius:50%;background:var(--sim-blanco);border:1px solid var(--sim-linea);display:grid;place-items:center;color:var(--sim-rojo);font-weight:700;}
@@ -53,8 +54,8 @@
 .sim-juego-cab{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 24px;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--sim-linea);}
 .sim-juego-cab .eyebrow{margin-bottom:.3em;}
 .sim-juego-esc{font-family:var(--sim-display);font-size:22px;font-weight:600;color:var(--sim-negro);}
-.sim-progreso{display:flex;gap:6px;}
-.sim-progreso i{width:26px;height:6px;border-radius:3px;background:var(--sim-papel2);border:1px solid var(--sim-linea);}
+.sim-progreso{display:flex;gap:5px;flex:1;max-width:460px;min-width:140px;}
+.sim-progreso i{flex:1;max-width:28px;height:6px;border-radius:3px;background:var(--sim-papel2);border:1px solid var(--sim-linea);}
 .sim-progreso i.hecho{background:var(--sim-rojo);border-color:var(--sim-rojo);}
 .sim-progreso i.actual{background:var(--sim-oro);border-color:var(--sim-oro);}
 .sim-juego-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:36px;align-items:start;}
@@ -85,7 +86,7 @@
 .sim-informe{margin:0;padding:16px 18px;background:var(--sim-papel2);border-radius:6px;font-size:14.5px;line-height:1.6;min-height:5.2em;}
 .sim-informe strong{display:block;font-family:var(--sim-mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--sim-rojo);margin-bottom:6px;}
 
-.sim-tablero{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--sim-linea);border:1px solid var(--sim-linea);border-radius:6px;overflow:hidden;margin-bottom:16px;}
+.sim-tablero{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--sim-linea);border:1px solid var(--sim-linea);border-radius:6px;overflow:hidden;margin-bottom:16px;}
 .sim-tablero .is-alerta .sim-num{color:var(--sim-rojo);}
 .sim-barra{height:6px;background:var(--sim-papel2);border-radius:3px;margin-top:10px;overflow:hidden;}
 .sim-barra span{display:block;height:100%;background:var(--sim-rojo);border-radius:3px;transition:width .4s ease;}
@@ -109,13 +110,73 @@
 .sim-leyenda-final{justify-content:center;}
 .sim-acciones{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:26px;}
 
-.sim-como{margin-top:52px;border-top:1px solid var(--sim-linea);padding-top:18px;max-width:780px;}
+.sim-como{margin-top:44px;border-top:1px solid var(--sim-linea);padding-top:18px;max-width:860px;}
 .sim-como summary{cursor:pointer;font-family:var(--sim-mono);font-size:12.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--sim-rojo);}
 .sim-como p{font-size:14px;margin:14px 0 0;}
 
+
+/* ---- Novedades: duración, radar, efecto estimado, confirmación ---- */
+.sim-esc-dur{font-family:var(--sim-mono);font-size:11.5px;color:var(--sim-suave);}
+.sim-fecha{display:block;font-family:var(--sim-mono);font-size:12px;font-weight:500;color:var(--sim-tenue);margin-top:2px;}
+.sim-pregunta-sub{font-family:var(--sim-mono);font-size:11.5px;color:var(--sim-tenue);}
+
+.sim-radar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 8px;margin:-6px 0 20px;padding:11px 14px;background:var(--sim-papel2);border-radius:6px;font-size:13px;}
+.sim-radar b{font-family:var(--sim-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--sim-oro);margin-right:4px;}
+.sim-radar span{font-family:var(--sim-mono);font-size:12px;font-weight:600;color:var(--sim-suave);background:var(--sim-blanco);border:1px solid var(--sim-linea);border-radius:20px;padding:3px 11px;}
+.sim-radar em{font-size:11.5px;color:var(--sim-tenue);font-style:normal;margin-left:auto;}
+
+.sim-op.is-elegida{background:var(--sim-negro);border-color:var(--sim-negro);color:#fff;box-shadow:0 0 0 3px rgba(185,138,31,.35);}
+.sim-op.is-elegida.is-sube{background:var(--sim-rojo);border-color:var(--sim-rojo);}
+.sim-op.is-elegida.is-baja{background:#1f4a73;border-color:#1f4a73;}
+
+.sim-efecto{margin-top:14px;padding:14px 16px;background:var(--sim-blanco);border:1px solid var(--sim-linea);border-radius:6px;font-size:14px;line-height:1.55;min-height:6.4em;}
+.sim-efecto strong{display:block;font-family:var(--sim-display);font-size:16.5px;color:var(--sim-negro);margin-bottom:4px;}
+.sim-efecto span{display:block;color:var(--sim-suave);}
+.sim-efecto .sim-ef-linea b{font-family:var(--sim-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--sim-oro);margin-right:4px;}
+.sim-efecto-vacio{color:var(--sim-tenue) !important;}
+.sim-confirmar{width:100%;justify-content:center;margin-top:12px;padding:14px 20px;font-size:14px;}
+.sim-confirmar[disabled]{opacity:.45;cursor:not-allowed;transform:none;}
+
+.sim-costo{display:block;margin-top:8px;font-family:var(--sim-mono);font-size:12.5px;font-weight:600;color:var(--sim-suave);}
+.sim-costo.ok{color:#1f7a3d;}
+.sim-costo.alto{color:var(--sim-rojo);}
+
+/* ---- Cargando ---- */
+.sim-cargando{max-width:520px;margin:40px auto;text-align:center;}
+.sim-cargando p{margin:14px 0 0;font-family:var(--sim-display);font-size:19px;color:var(--sim-negro);}
+.sim-cargando small{font-family:var(--sim-mono);font-size:12px;color:var(--sim-tenue);}
+.sim-spinner{display:inline-block;width:34px;height:34px;border:3px solid var(--sim-linea);border-top-color:var(--sim-rojo);border-radius:50%;animation:sim-gira .9s linear infinite;}
+@keyframes sim-gira{to{transform:rotate(360deg);}}
+
+/* ---- Leyenda del resultado ---- */
+.sim-leyenda i.optimo{background:repeating-linear-gradient(90deg,#1f7a3d 0 6px,transparent 6px 10px);height:3px;}
+.sim-leyenda i.optimo-tpm{background:repeating-linear-gradient(90deg,rgba(23,35,64,.5) 0 2px,transparent 2px 6px);height:3px;}
+
+/* ---- Tabla de decisiones ---- */
+.sim-tabla-titulo{font-size:19px;margin:34px 0 12px;text-align:left;}
+.sim-tabla-wrap{overflow-x:auto;border:1px solid var(--sim-linea);border-radius:6px;text-align:left;}
+.sim-tabla{width:100%;border-collapse:collapse;font-size:13.5px;}
+.sim-tabla th,.sim-tabla td{padding:9px 12px;border-bottom:1px solid var(--sim-linea);white-space:nowrap;}
+.sim-tabla th{font-family:var(--sim-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--sim-tenue);background:var(--sim-papel2);text-align:left;}
+.sim-tabla td.sim-t-ev{white-space:normal;min-width:190px;}
+.sim-tabla tbody tr:last-child td{border-bottom:none;}
+.sim-tabla td.igual{color:#1f7a3d;font-weight:600;}
+.sim-nota{font-size:12.5px;color:var(--sim-tenue);text-align:left;margin:12px 0 0;}
+
+/* ---- Modelo para los más busquillas ---- */
+.sim-como-cuerpo{margin-top:6px;}
+.sim-como-cuerpo h4{font-family:var(--sim-display);font-size:17px;color:var(--sim-negro);margin:22px 0 4px;}
+.sim-eqs{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:4px;}
+.sim-eqs li{padding:2px 0 6px;}
+.sim-eqs h4{margin-top:10px;}
+.sim-eq{display:block;margin:6px 0 6px !important;padding:10px 14px;background:var(--sim-papel2);border-left:3px solid var(--sim-oro);border-radius:0 6px 6px 0;font-family:'Fraunces',Georgia,serif;font-style:italic;font-size:16px !important;color:var(--sim-negro) !important;overflow-x:auto;white-space:nowrap;}
+.sim-bib{margin:8px 0 0;padding-left:18px;font-size:13px;color:var(--sim-suave);}
+.sim-bib li{margin-bottom:6px;font-family:'Montserrat',sans-serif;}
+
 /* ---- Responsive ---- */
 @media (max-width:1000px){
-  .sim-escenarios{grid-template-columns:repeat(3,minmax(0,1fr));}
+  .sim-escenarios{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .sim-partida{grid-template-columns:repeat(3,1fr);}
   .sim-inicio,.sim-juego-grid{grid-template-columns:1fr;gap:28px;}
 }
 @media (max-width:620px){
@@ -123,12 +184,14 @@
   .sim-esc{min-height:0;padding:14px;}
   .sim-esc-nombre{font-size:16px;}
   .sim-partida{grid-template-columns:repeat(2,1fr);}
+  .sim-partida .sim-dato:last-child{grid-column:1 / -1;}
+  .sim-tablero{grid-template-columns:repeat(2,1fr);}
   .sim-num{font-size:25px;}
   .sim-dato{padding:14px 15px;}
   .sim-botones{grid-template-columns:repeat(4,minmax(0,1fr));}
   .sim-op.is-mantener{grid-column:1 / -1;order:-1;}
   .sim-botones-leyenda{display:none;}
-  .sim-progreso i{width:18px;}
+  .sim-progreso{gap:3px;}
   .sim-puntaje{font-size:76px;}
   .sim-final{padding:30px 18px;}
 }
