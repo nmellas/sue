@@ -444,6 +444,15 @@ const ESC = [
       $("sim-juego").scrollIntoView({ behavior: "smooth", block: "start" });
     }, 40);
   }
+  // Salir de la partida (botón "Volver" o clic en el título). Si hay avance, pide confirmación.
+  function salir(ev) {
+    if (ev) ev.preventDefault();
+    if (!$("sim-cargando").hidden) return;
+    if (!$("sim-intro").hidden) { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+    var enCurso = !$("sim-juego").hidden && P && P.t > 0 && P.t < P.T;
+    if (enCurso && !window.confirm("¿Salir de la partida? Perderás tu avance.")) return;
+    volverAlMenu();
+  }
   function volverAlMenu() {
     $("sim-final").hidden = true; $("sim-juego").hidden = true; $("sim-intro").hidden = false;
     renderEscenarios(); $("sim-intro").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -481,6 +490,8 @@ const ESC = [
     $("sim-empezar").addEventListener("click", empezar);
     $("sim-otra").addEventListener("click", empezar);
     $("sim-menu").addEventListener("click", volverAlMenu);
+    $("sim-volver").addEventListener("click", salir);
+    $("sim-titulo-link").addEventListener("click", salir);
     $("sim-compartir").addEventListener("click", compartir);
     renderEscenarios(); cargarHoy();
   });
