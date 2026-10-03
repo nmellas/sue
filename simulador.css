@@ -87,7 +87,8 @@
 .sim-informe strong{display:block;font-family:var(--sim-mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--sim-rojo);margin-bottom:6px;}
 
 .sim-tablero{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--sim-linea);border:1px solid var(--sim-linea);border-radius:6px;overflow:hidden;margin-bottom:16px;}
-.sim-tablero .sim-dato:last-child{grid-column:span 2;}
+/* Si queda un hueco en la última fila, se rellena con una celda blanca (no con el color de las líneas) */
+.sim-tablero::after{content:"";background:var(--sim-blanco);}
 .sim-tablero .is-alerta .sim-num{color:var(--sim-rojo);}
 .sim-barra{height:6px;background:var(--sim-papel2);border-radius:3px;margin-top:10px;overflow:hidden;}
 .sim-barra span{display:block;height:100%;background:var(--sim-rojo);border-radius:3px;transition:width .4s ease;}
@@ -176,5 +177,10 @@
 @media (prefers-reduced-motion:reduce){.sim-esc,.sim-barra span{transition:none;}}
 
 /* ---- Advertencia (siempre visible) ---- */
-.sim-aviso{margin:44px 0 0;padding:14px 18px;border:1px solid var(--sim-linea);border-left:3px solid var(--sim-oro);border-radius:6px;background:var(--sim-papel2);font-size:13px;line-height:1.55;color:var(--sim-suave);max-width:860px;}
+.sim-aviso{margin:84px 0 0;padding:14px 18px;border:1px solid var(--sim-linea);border-left:3px solid var(--sim-oro);border-radius:6px;background:var(--sim-papel2);font-size:13px;line-height:1.55;color:var(--sim-suave);max-width:860px;}
 .sim-aviso strong{color:var(--sim-negro);}
+
+/* ---- Volver (discreto, abajo a la izquierda de la antesala) ---- */
+.sim-volver-fila{margin-top:36px;text-align:left;}
+.sim-volver{display:inline-block;font-family:var(--sim-mono);font-size:12.5px;font-weight:600;letter-spacing:.04em;color:var(--sim-tenue);text-decoration:none;padding:8px 2px;border-bottom:1px solid transparent;transition:color .15s ease,border-color .15s ease;}
+.sim-volver:hover,.sim-volver:focus-visible{color:var(--sim-rojo);border-bottom-color:var(--sim-rojo);}
