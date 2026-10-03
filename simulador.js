@@ -378,10 +378,8 @@ const ESC = [
                fmt(Math.abs(dY)) + " pp a la actividad: sin ella, inflación " + fmt(sin.pi) + "%.";
     }
     var cred = nuevo.c < antes.c ? " Las expectativas se desanclan: la credibilidad cae." : (nuevo.c > antes.c && antes.c < PAR.credMax ? " La credibilidad se fortalece." : "");
-    var veredicto = costo < 0.5 ? '<span class="sim-costo ok">✓ Decisión óptima en retrospectiva</span>'
-                                : '<span class="sim-costo' + (costo >= 6 ? " alto" : "") + '">En retrospectiva, esta decisión te costó ' + Math.round(costo) + " pt" + (Math.round(costo) === 1 ? "" : "s") + "</span>";
     $("sim-informe").innerHTML = "<strong>Informe del trimestre " + P.t + "</strong>" + accion + ". La inflación quedó en " + fmt(nuevo.pi) +
-      "% y " + textoActividad(nuevo.y).toLowerCase() + "." + efecto + cred + veredicto;
+      "% y " + textoActividad(nuevo.y).toLowerCase() + "." + efecto + cred;
 
     if (P.t >= P.T) return finalizar();
     mostrarEvento();
