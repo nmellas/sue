@@ -295,7 +295,7 @@ const ESC = [
     var vals = [];
     o.hist.forEach(function (h) { vals.push(h.pi, h.i); });
     (o.piloto || []).forEach(function (h) { vals.push(h.pi); });
-    (o.optimo || []).forEach(function (h) { vals.push(h.pi, h.i); });
+    (o.optimo || []).forEach(function (h) { vals.push(h.pi); });
     var minY = Math.min(0, Math.floor(Math.min.apply(null, vals))), maxY = Math.max(8, Math.ceil(Math.max.apply(null, vals)));
     if ((maxY - minY) % 2) maxY++;
     var X = function (k) { return m.l + (W - m.l - m.r) * k / T; };
@@ -316,8 +316,7 @@ const ESC = [
     var meta = '<line x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + Y(3) + '" y2="' + Y(3) + '" stroke="#b98a1f" stroke-width="1.5" stroke-dasharray="5 5"/>' +
       '<text x="' + (W - m.r + 6) + '" y="' + (Y(3) + 4) + '" font-size="11" font-weight="600" fill="#9a7318" ' + fuente + '>Meta 3%</text>';
     var piloto = o.piloto ? '<path d="' + linea(o.piloto, "pi") + '" fill="none" stroke="#8a8f9c" stroke-width="2" stroke-dasharray="6 5"/>' : "";
-    var optimo = o.optimo ? '<path d="' + linea(o.optimo, "i") + '" fill="none" stroke="#172340" stroke-opacity=".45" stroke-width="2" stroke-dasharray="2 4"/>' +
-      '<path d="' + linea(o.optimo, "pi") + '" fill="none" stroke="#1f7a3d" stroke-width="2.5" stroke-dasharray="7 5" stroke-linejoin="round"/>' : "";
+    var optimo = o.optimo ? '<path d="' + linea(o.optimo, "pi") + '" fill="none" stroke="#1f7a3d" stroke-width="2.5" stroke-dasharray="7 5" stroke-linejoin="round"/>' : "";
     var tpm = '<path d="' + linea(o.hist, "i") + '" fill="none" stroke="#172340" stroke-width="2.25" stroke-linejoin="round"/>';
     var inf = '<path d="' + linea(o.hist, "pi") + '" fill="none" stroke="#CD1729" stroke-width="3" stroke-linejoin="round"/>' +
       (T <= 8 ? o.hist.map(function (h, kk) { return '<circle cx="' + X(kk) + '" cy="' + Y(h.pi) + '" r="3.8" fill="#CD1729"/>'; }).join("") : "");
@@ -387,9 +386,7 @@ const ESC = [
     $("sim-titulo-final").textContent = titulo(p);
     $("sim-record").textContent = nuevoRecord ? "¡Nuevo récord personal en este escenario!" : "Tu récord en este escenario: " + rec + "/100";
     $("sim-resumen").innerHTML = "Terminaste con una inflación de <strong>" + fmt(P.e.pi) + "%</strong> y una TPM de <strong>" + fmt(P.e.i, 2) +
-      "%</strong>. Mantuviste la inflación en el rango de 2%–4% en <strong>" + P.enRango + " de " + P.T + "</strong> trimestres. " +
-      "Con una visión perfecta del futuro, el recorrido óptimo la habría mantenido en rango " +
-      P.refTray.slice(1).filter(function (h) { return Math.abs(h.pi - META) <= 1; }).length + " de " + P.T + " veces.";
+      "%</strong>. Mantuviste la inflación en el rango de 2%–4% en <strong>" + P.enRango + " de " + P.T + "</strong> trimestres.";
     $("sim-grafico-final").innerHTML = grafico($("sim-grafico-final"), { hist: P.hist, optimo: P.refTray });
     $("sim-final").dataset.puntaje = p;
     renderEscenarios();
