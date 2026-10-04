@@ -6,7 +6,7 @@
 <title>Sé el Banco Central — SUE, Sociedad Universitaria de Economía</title>
 <meta name="description" content="Decide la tasa de interés durante dos o cuatro años, enfrenta shocks de la economía chilena y lleva la inflación a la meta. Un simulador de la Sociedad Universitaria de Economía.">
 <link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="simulador.css?v=7">
+<link rel="stylesheet" href="simulador.css?v=8">
 <!-- Ícono de la pestaña -->
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="shortcut icon" href="/favicon.ico">
@@ -126,7 +126,7 @@
             <h4>Cómo se calcula tu puntaje</h4>
             <p>En cada partida el computador revisa miles de caminos posibles (una búsqueda por haz sobre las 9 decisiones de cada trimestre) y encuentra dos recorridos: el que <strong>minimiza</strong> la pérdida total, L<sub>mín</sub>, que vale <strong>100 puntos</strong>; y el que la <strong>maximiza</strong>, L<sub>máx</sub>, que vale <strong>0 puntos</strong>. Esos dos recorridos siempre existen, así que 0 y 100 siempre son alcanzables. Tu puntaje es</p>
             <p class="sim-eq">puntaje = 100 · [ 1 − ln(1 + r / 0,3) / ln(1 + r<sub>máx</sub> / 0,3) ] &nbsp;&nbsp;·&nbsp;&nbsp; r = (L − L<sub>mín</sub>) / (L<sub>mín</sub> + T) &nbsp;(T = nº de trimestres)</p>
-            <p>Es decir, mide <em>cuántas veces peor que el óptimo</em> fue tu gestión, en escala logarítmica: los primeros errores duelen más. Ojo: el 100 corresponde al recorrido óptimo <em>con visión perfecta del futuro</em>, que nadie tiene en la vida real. Un buen jugador, sin bola de cristal, suele moverse entre 60 y 85; sobre 90 es excepcional. Al terminar, el juego te muestra cuánto de tu pérdida vino de la inflación, de la actividad y de los vaivenes de tasa.</p>
+            <p>Es decir, mide <em>cuántas veces peor que el óptimo</em> fue tu gestión, en escala logarítmica: los primeros errores duelen más. Ojo: el 100 corresponde al recorrido óptimo <em>con visión perfecta del futuro</em>, que nadie tiene en la vida real. Un buen jugador, sin bola de cristal, suele moverse entre 60 y 85; sobre 90 es excepcional.</p>
             <h4>Qué simplifica este modelo</h4>
             <p>Los parámetros son pedagógicos, no estimados con datos. No hay sector financiero, política fiscal endógena ni expectativas plenamente racionales. Los escenarios históricos están <em>inspirados</em> en episodios reales, con cifras aproximadas. Es un juego educativo: no representa las proyecciones ni los modelos del Banco Central de Chile.</p>
             <h4>Para seguir leyendo</h4>
@@ -214,7 +214,6 @@
         <h2 id="sim-titulo-final"></h2>
         <p class="sim-record" id="sim-record"></p>
         <p class="sim-resumen" id="sim-resumen"></p>
-        <p class="sim-resumen sim-detalle" id="sim-detalle"></p>
         <div class="sim-grafico" id="sim-grafico-final"></div>
         <div class="sim-leyenda sim-leyenda-final">
           <span><i style="background:#CD1729"></i>Tu inflación</span>
@@ -281,6 +280,6 @@
 <script src="ticker-cache.js"></script>
 <script src="indicators.js"></script>
 <script src="script.js"></script>
-<script src="simulador.js?v=7"></script>
+<script src="simulador.js?v=8"></script>
 </body>
 </html>
