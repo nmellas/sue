@@ -26,6 +26,7 @@ var CONFIG = {
   CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQjt6eQhpe3H-Xg5KY_TA8BMFXaSWR_JSDsI3Q1WxGESnFJ2ua14ekwptDkDLc2lJDVByhnm8A-uqe_/pub?gid=2048697698&single=true&output=csv",
 
   // Enlace del Google Form (uso interno; el sitio ya no muestra un botón público).
+  FORM_URL: "https://docs.google.com/forms/d/e/1FAIpQLSe7qdoZAF3cw2brBkoNei5-PN8UnXJ4EA_RvGfvmnUh0x-bYg/viewform?usp=dialog"
 };
 
 // Sin publicaciones de ejemplo: si no hay nada publicado, la página
@@ -95,6 +96,44 @@ var SUE_IMAGEN = (function () {
       ' onerror="if(this.dataset.r){var r=this.dataset.r;this.dataset.r=\'\';this.src=r;}else{this.parentNode.style.display=\'none\';}"></div>';
   }
 
+  /* ---------- Botón "Ver más" ---------- */
+  var POR_PAGINA = 6;   // cuántas tarjetas se ven al principio
+
+  // Estilo simple: texto rojo, sin borde ni marco. Se agrega una sola vez a la página.
+  function estiloVerMas() {
+    if (document.getElementById("sue-ver-mas-css")) return;
+    var st = document.createElement("style");
+    st.id = "sue-ver-mas-css";
+    st.textContent =
+      ".ver-mas-fila{text-align:center;margin:32px 0 8px;}" +
+      ".ver-mas{-webkit-appearance:none;appearance:none;background:none;border:0;border-radius:0;box-shadow:none;" +
+        "margin:0;padding:10px 20px;min-height:44px;font:inherit;font-weight:600;font-size:15px;letter-spacing:.02em;" +
+        "color:var(--brick,#CD1729);cursor:pointer;-webkit-tap-highlight-color:transparent;}" +
+      ".ver-mas:hover{text-decoration:underline;text-underline-offset:4px;}" +
+      ".ver-mas:focus-visible{outline:2px solid var(--brick,#CD1729);outline-offset:2px;}";
+    document.head.appendChild(st);
+  }
+
+  // Muestra (u oculta) el botón bajo la lista `contenedor`. Al pulsarlo se ejecuta alPulsar() y el botón desaparece.
+  function verMas(contenedor, hayMas, alPulsar) {
+    estiloVerMas();
+    var id = "ver-mas-" + contenedor.id;
+    var fila = document.getElementById(id);
+    if (!fila) {
+      fila = document.createElement("div");
+      fila.id = id;
+      fila.className = "ver-mas-fila";
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "ver-mas";
+      b.textContent = "Ver más";
+      fila.appendChild(b);
+      contenedor.parentNode.insertBefore(fila, contenedor.nextSibling);
+    }
+    fila.hidden = !hayMas;
+    fila.firstChild.onclick = function () { alPulsar(); fila.hidden = true; };
+  }
+
   function renderList(items) {
     var list = document.getElementById("pub-list");
     var empty = document.getElementById("pub-empty");
@@ -102,13 +141,14 @@ var SUE_IMAGEN = (function () {
 
     if (!items.length) {
       list.innerHTML = "";
+      verMas(list, false, function () {});
       if (empty) empty.style.display = "block";
       return;
     }
     if (empty) empty.style.display = "none";
 
     var total = items.length;
-    list.innerHTML = items
+    var filas = items
       .map(function (pub, i) {
         return (
           '<div class="pub-row' + (pub.imagen ? " has-thumb" : "") + '" data-tipo="' + escapeHtml(pub.tipo) + '">' +
@@ -125,8 +165,13 @@ var SUE_IMAGEN = (function () {
             '<a class="read" href="' + escapeHtml(pub.link || "#") + '" aria-label="Leer: ' + escapeHtml(pub.titulo) + '">Leer →</a>' +
           "</div>"
         );
-      })
-      .join("");
+      });
+
+    // Se ven las primeras; el resto aparece hacia abajo al pulsar "Ver más"
+    list.innerHTML = filas.slice(0, POR_PAGINA).join("");
+    verMas(list, filas.length > POR_PAGINA, function () {
+      list.insertAdjacentHTML("beforeend", filas.slice(POR_PAGINA).join(""));
+    });
   }
 
   function renderFilters(items) {
