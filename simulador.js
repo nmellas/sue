@@ -53,8 +53,8 @@
     var fuera = Math.abs(pi - META) > 1, falta = Math.min(Math.abs(pi - META) - 1, 3);
     var c = fuera ? Math.max(PAR.credMin, e.c - PAR.credDn - 0.03 * falta) : Math.min(PAR.credMax, e.c + PAR.credUp);
     var dI = i - e.i;
-    return { pi: pi, i: i, y: y, c: c, q: q, rp: r,
-      perdida: (pi - META) * (pi - META) + PAR.wY * y * y + PAR.wI * dI * dI };
+    var lp = (pi - META) * (pi - META), ly = PAR.wY * y * y, li = PAR.wI * dI * dI;
+    return { pi: pi, i: i, y: y, c: c, q: q, rp: r, perdida: lp + ly + li, lp: lp, ly: ly, li: li };
   }
   function valida(e, a) { var i = e.i + a / 100; return i >= IMIN - 1e-9 && i <= IMAX + 1e-9; }
 
@@ -101,9 +101,9 @@
   }
   // Puntaje 0–100: 100 = pérdida mínima posible, 0 = pérdida máxima posible.
   // Escala logarítmica sobre cuántas veces peor que el óptimo fue la pérdida.
-  var R0 = 0.1, KAPPA = 4;
-  function puntajeDe(L, Lb, Lw) {
-    var den = Lb + KAPPA, r = Math.max(0, (L - Lb) / den), rw = Math.max(1, (Lw - Lb) / den);
+  var R0 = 0.3, KAPPA_POR_TRIM = 1;
+  function puntajeDe(L, Lb, Lw, T) {
+    var den = Lb + KAPPA_POR_TRIM * T, r = Math.max(0, (L - Lb) / den), rw = Math.max(1, (Lw - Lb) / den);
     return clamp(100 * (1 - Math.log(1 + r / R0) / Math.log(1 + rw / R0)), 0, 100);
   }
 
@@ -191,9 +191,9 @@ const S = {
 };
 const POOL_HOY = ["cobreCae","petroleo","china","liquidez","fed","cosecha","inversion","tranquilo","sequia","externa","confianza","turismo","cuellos","pesoCae","fiscal","cobreSube","petroleoCae","desempleo","enfria","alimentos","euro","tarifas","dolarSube","ucrania"];
 const ESC = [
-  { id: "diario", n: "Reto del día", T: 8, escala: 1.6, ini: { pi: 4.0, i: 4.75, y: 0, cred: 0.7 }, azar: true, diario: true, tag: "Igual para todos hoy", dif: 2, desc: "Mismos shocks para todos los jugadores del día: compara tu puntaje con tus compañeros. Se renueva cada medianoche." },
-  { id: "hoy", tag: "Datos actuales", dif: 2, desc: "Partes con la inflación y la TPM de hoy. Los shocks cambian en cada partida: ningún mandato es igual a otro.",  n: "Chile hoy", T: 8, escala: 1.6, ini: { pi: 4.0, i: 4.75, y: 0, cred: 0.7 }, azar: true },
-  { id: "hoy4", tag: "Datos actuales · 4 años", dif: 3, desc: "El mismo punto de partida de hoy, pero con un mandato completo: 16 trimestres para construir (o perder) credibilidad.",  n: "Chile hoy, a largo plazo", T: 16, escala: 1.5, ini: { pi: 4.0, i: 4.75, y: 0, cred: 0.7 }, azar: true },
+  { id: "diario", n: "Reto del día", T: 8, escala: 2.2, ini: { pi: 4.0, i: 4.75, y: 0, cred: 0.7 }, azar: true, diario: true, tag: "Igual para todos hoy", dif: 2, desc: "Mismos shocks para todos los jugadores del día: compara tu puntaje con tus compañeros. Se renueva cada medianoche." },
+  { id: "hoy", tag: "Datos actuales", dif: 2, desc: "Partes con la inflación y la TPM de hoy. Los shocks cambian en cada partida: ningún mandato es igual a otro.",  n: "Chile hoy", T: 8, escala: 2.2, ini: { pi: 4.0, i: 4.75, y: 0, cred: 0.7 }, azar: true },
+  { id: "hoy4", tag: "Datos actuales · 4 años", dif: 3, desc: "El mismo punto de partida de hoy, pero con un mandato completo: 16 trimestres para construir (o perder) credibilidad.",  n: "Chile hoy, a largo plazo", T: 16, escala: 2.0, ini: { pi: 4.0, i: 4.75, y: 0, cred: 0.7 }, azar: true },
   { id: "2007", tag: "Inspirado en 2007–2010", dif: 3, desc: "Comienza 2007: la inflación es baja, la tasa está en 5,0% y la economía opera algo sobre su potencial. Tienes cuatro años de mandato por delante.", anio0: 2007, trim0: 1,  n: "Del boom a la crisis global", T: 16, ini: { pi: 2.6, i: 5.0, y: 0.5, cred: 0.85, q: -1 },
     mazo: ["boomCobre","alimentos07","subprime","petroleo100","energiaAlza","petroleoRecord","lehman","creditoCongelado","comercio","commoditiesCaen","estimuloGlobal","recuperacion","terremoto","reconstruccion","cobreRecord","alimentos10"] },
   { id: "2010", tag: "Inspirado en 2010–2011", dif: 2, desc: "Comienza 2010: la inflación está bajo la meta, la tasa en un mínimo de 0,75% y la economía opera bajo su potencial. Tienes dos años de mandato por delante.", anio0: 2010, trim0: 1,  n: "Terremoto y superciclo del cobre", T: 8, ini: { pi: 1.5, i: 0.75, y: -1.5, cred: 0.8 },
@@ -233,8 +233,8 @@ const ESC = [
   function titulo(p) {
     if (p >= 90) return "Gobernador/a de excepción";
     if (p >= 75) return "Consejero/a sólido/a";
-    if (p >= 55) return "Aprobado con observaciones";
-    if (p >= 35) return "Gestión errática";
+    if (p >= 60) return "Aprobado con observaciones";
+    if (p >= 40) return "Con margen de mejora";
     return "Se convoca reunión extraordinaria";
   }
   var ORD = ["1er", "2.º", "3er", "4.º"];
@@ -278,14 +278,14 @@ const ESC = [
     var radar = eventos.map(function (_, t) { return t + 1 >= eventos.length ? null : (rng() < 0.75 ? pistas(eventos[t + 1]) : ["Señales mixtas"]); });
     var ini = crearEstado(e.ini);
     return { esc: e, T: e.T, eventos: eventos, ruido: ruido, radar: radar, ini: ini, e: ini, piloto: ini,
-      hist: [ini], histPiloto: [ini], decisiones: [], costos: [], t: 0, perdida: 0, enRango: 0 };
+      hist: [ini], histPiloto: [ini], decisiones: [], t: 0, perdida: 0, enRango: 0, lp: 0, ly: 0, li: 0, brechaGrande: 0 };
   }
   function prepararReferencia() {
     var mejor = buscar(P.ini, 0, P.eventos, P.ruido, "min", 900), peor = buscar(P.ini, 0, P.eventos, P.ruido, "max", 900);
     var sm = simular(P.ini, mejor.acts, P.eventos, P.ruido), sp = simular(P.ini, peor.acts, P.eventos, P.ruido);
-    P.refActs = mejor.acts; P.peorActs = peor.acts; P.refTray = [P.ini].concat(sm.tray); P.Lb = sm.loss; P.Lw = sp.loss; P.Vstar = sm.loss;
+    P.refActs = mejor.acts; P.peorActs = peor.acts; P.refTray = [P.ini].concat(sm.tray); P.Lb = sm.loss; P.Lw = sp.loss; 
   }
-  var puntaje = function (L) { return puntajeDe(L, P.Lb, P.Lw); };
+  var puntaje = function (L) { return puntajeDe(L, P.Lb, P.Lw, P.T); };
 
   /* ---------- Gráfico (colores escritos en el SVG) ---------- */
   function grafico(cont, o) {
@@ -359,15 +359,11 @@ const ESC = [
   function decidir(pb) {
     var t = P.t, ev = P.eventos[t], r = P.ruido[t], antes = P.e, arr = t === 0 ? NEUTRO : P.eventos[t - 1];
     var nuevo = paso(antes, pb, ev, arr, r), sin = paso(antes, 0, ev, arr, r), pil = paso(P.piloto, 0, ev, arr, r);
-    var perdidaPrev = P.perdida;
-    P.e = nuevo; P.piloto = pil; P.t++; P.perdida += nuevo.perdida;
+        P.e = nuevo; P.piloto = pil; P.t++; P.perdida += nuevo.perdida;
     if (Math.abs(nuevo.pi - META) <= 1) P.enRango++;
+    if (Math.abs(nuevo.y) > 1) P.brechaGrande++;
+    P.lp += nuevo.lp; P.ly += nuevo.ly; P.li += nuevo.li;
     P.hist.push(nuevo); P.histPiloto.push(pil); P.decisiones.push(pb);
-
-    // Cuánto costó esta decisión, en puntos, frente a la mejor continuación posible
-    var Vnext = P.t >= P.T ? 0 : buscar(nuevo, P.t, P.eventos, P.ruido, "min", 350).loss;
-    var costo = Math.max(0, puntaje(perdidaPrev + P.Vstar) - puntaje(perdidaPrev + nuevo.perdida + Vnext));
-    P.costos.push(costo); P.Vstar = Vnext;
 
     tablero(antes);
     var accion = pb === 0 ? "Mantuviste la TPM en " + fmt(nuevo.i, 2) + "%" : (pb > 0 ? "Subiste" : "Bajaste") + " la TPM " + Math.abs(pb) + " pb, a " + fmt(nuevo.i, 2) + "%";
@@ -396,6 +392,12 @@ const ESC = [
       "%</strong>. Mantuviste la inflación en el rango de 2%–4% en <strong>" + P.enRango + " de " + P.T + "</strong> trimestres. " +
       "Con una visión perfecta del futuro, el recorrido óptimo la habría mantenido en rango " +
       P.refTray.slice(1).filter(function (h) { return Math.abs(h.pi - META) <= 1; }).length + " de " + P.T + " veces.";
+    var totL = (P.lp + P.ly + P.li) || 1, sPi = P.lp / totL, sY = P.ly / totL;
+    var pPi = Math.round(sPi * 100), pY = Math.round(sY * 100), pI = Math.max(0, 100 - pPi - pY);
+    var frase = sY >= 0.5 ? "La actividad pesó más que la inflación: estuvo a más de 1 pp de su potencial en " + P.brechaGrande + " de " + P.T + " trimestres."
+              : sPi >= 0.5 ? "La inflación pesó más: se alejó más de 1 pp de la meta en " + (P.T - P.enRango) + " de " + P.T + " trimestres."
+              : "Tu pérdida estuvo repartida entre inflación y actividad.";
+    $("sim-detalle").innerHTML = "<strong>Dónde se fue tu puntaje:</strong> inflación " + pPi + "% · actividad " + pY + "% · vaivenes de tasa " + pI + "%. " + frase;
     $("sim-grafico-final").innerHTML = grafico($("sim-grafico-final"), { hist: P.hist, optimo: P.refTray });
     $("sim-final").dataset.puntaje = p;
     renderEscenarios();
