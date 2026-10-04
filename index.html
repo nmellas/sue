@@ -7,8 +7,9 @@
 <meta name="description" content="Organización estudiantil universitaria, independiente y pluralista. Investigamos, publicamos y debatimos sobre economía para llevar el análisis riguroso más allá del aula.">
 <link rel="stylesheet" href="styles.css">
 <!-- Ícono de la pestaña -->
-<link rel="icon" type="image/png" href="favicon.png?v=2">
-<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <!-- Vista previa al compartir (WhatsApp, LinkedIn, Instagram, X). Si cambia el dominio, reemplazar https://suecon.cl/ -->
 <link rel="canonical" href="https://suecon.cl/">
 <meta property="og:url" content="https://suecon.cl/">
@@ -62,7 +63,7 @@
         </div>
       </div>
 
-      <div class="chart-frame">
+      <div class="chart-frame" id="hero-grafico">
         <svg viewBox="0 0 380 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="chartTitle">
           <title id="chartTitle">Gráfico de oferta y demanda con punto de equilibrio E</title>
           <!-- ejes -->
@@ -86,10 +87,12 @@
           <text x="244" y="220" font-family="Montserrat" font-size="11" fill="#a83b2c">Demanda</text>
         </svg>
         <div class="cap">
-          <span>FIG. 01 — MODELO DE MERCADO</span>
+          <span id="hero-grafico-cap">FIG. 01 — MODELO DE MERCADO</span>
           <span>SUE / 2026</span>
         </div>
       </div>
+      <!-- Cambia el gráfico en cada visita (80 % oferta y demanda). Va aquí, justo después del marco, para que el cambio ocurra antes de pintar. -->
+      <script src="grafico-hero.js?v=1"></script>
     </div>
   </section>
 
@@ -172,7 +175,7 @@
   <section class="band">
     <div class="container">
       <blockquote>
-        "En un contexto donde los desafíos sociales, políticos y económicos exigen análisis serio y fundamentado, la SUE busca constituirse como un espacio donde el debate de ideas sea el principal motor de aprendizaje y acción colectiva."
+        "Es una organización de estudiantes, para estudiantes, construida desde la convicción de que el rigor académico y la curiosidad intelectual son los mejores antídotos contra el pensamiento superficial."
         <cite>— Preámbulo, Estatutos de la SUE</cite>
       </blockquote>
     </div>
