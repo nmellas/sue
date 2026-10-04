@@ -18,7 +18,7 @@
 (function () {
   "use strict";
 
-  var PESOS = [["oferta", 0.90], ["phillips", 0.025], ["fpp", 0.025], ["lorenz", 0.025], ["consumidor", 0.025]];
+  var PESOS = [["oferta", 0.80], ["phillips", 0.05], ["fpp", 0.05], ["lorenz", 0.05], ["consumidor", 0.05]];
 
   function elegirId(r) {
     var acum = 0;
