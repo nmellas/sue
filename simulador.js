@@ -235,7 +235,7 @@ const ESC = [
     if (p >= 75) return "Consejero/a sólido/a";
     if (p >= 60) return "Aprobado con observaciones";
     if (p >= 40) return "Con margen de mejora";
-    return "Se convoca reunión extraordinaria";
+    return "El mercado pide su renuncia";
   }
   var ORD = ["1er", "2.º", "3er", "4.º"];
   function fechaTrim(esc, t) {
@@ -278,7 +278,7 @@ const ESC = [
     var radar = eventos.map(function (_, t) { return t + 1 >= eventos.length ? null : (rng() < 0.75 ? pistas(eventos[t + 1]) : ["Señales mixtas"]); });
     var ini = crearEstado(e.ini);
     return { esc: e, T: e.T, eventos: eventos, ruido: ruido, radar: radar, ini: ini, e: ini, piloto: ini,
-      hist: [ini], histPiloto: [ini], decisiones: [], t: 0, perdida: 0, enRango: 0, lp: 0, ly: 0, li: 0, brechaGrande: 0 };
+      hist: [ini], histPiloto: [ini], decisiones: [], t: 0, perdida: 0, enRango: 0 };
   }
   function prepararReferencia() {
     var mejor = buscar(P.ini, 0, P.eventos, P.ruido, "min", 900), peor = buscar(P.ini, 0, P.eventos, P.ruido, "max", 900);
@@ -361,8 +361,6 @@ const ESC = [
     var nuevo = paso(antes, pb, ev, arr, r), sin = paso(antes, 0, ev, arr, r), pil = paso(P.piloto, 0, ev, arr, r);
         P.e = nuevo; P.piloto = pil; P.t++; P.perdida += nuevo.perdida;
     if (Math.abs(nuevo.pi - META) <= 1) P.enRango++;
-    if (Math.abs(nuevo.y) > 1) P.brechaGrande++;
-    P.lp += nuevo.lp; P.ly += nuevo.ly; P.li += nuevo.li;
     P.hist.push(nuevo); P.histPiloto.push(pil); P.decisiones.push(pb);
 
     tablero(antes);
@@ -392,12 +390,6 @@ const ESC = [
       "%</strong>. Mantuviste la inflación en el rango de 2%–4% en <strong>" + P.enRango + " de " + P.T + "</strong> trimestres. " +
       "Con una visión perfecta del futuro, el recorrido óptimo la habría mantenido en rango " +
       P.refTray.slice(1).filter(function (h) { return Math.abs(h.pi - META) <= 1; }).length + " de " + P.T + " veces.";
-    var totL = (P.lp + P.ly + P.li) || 1, sPi = P.lp / totL, sY = P.ly / totL;
-    var pPi = Math.round(sPi * 100), pY = Math.round(sY * 100), pI = Math.max(0, 100 - pPi - pY);
-    var frase = sY >= 0.5 ? "La actividad pesó más que la inflación: estuvo a más de 1 pp de su potencial en " + P.brechaGrande + " de " + P.T + " trimestres."
-              : sPi >= 0.5 ? "La inflación pesó más: se alejó más de 1 pp de la meta en " + (P.T - P.enRango) + " de " + P.T + " trimestres."
-              : "Tu pérdida estuvo repartida entre inflación y actividad.";
-    $("sim-detalle").innerHTML = "<strong>Dónde se fue tu puntaje:</strong> inflación " + pPi + "% · actividad " + pY + "% · vaivenes de tasa " + pI + "%. " + frase;
     $("sim-grafico-final").innerHTML = grafico($("sim-grafico-final"), { hist: P.hist, optimo: P.refTray });
     $("sim-final").dataset.puntaje = p;
     renderEscenarios();
