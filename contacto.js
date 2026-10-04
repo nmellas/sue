@@ -10,14 +10,14 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="favicon.png">
 <!-- Vista previa al compartir (WhatsApp, LinkedIn, Instagram, X). Si cambia el dominio, reemplazar https://nmellas.github.io/sue/ -->
-<link rel="canonical" href="https://nmellas.github.io/sue/contacto.html">
-<meta property="og:url" content="https://nmellas.github.io/sue/contacto.html">
+<link rel="canonical" href="https://suecon.cl/contacto.html">
+<meta property="og:url" content="https://suecon.cl/contacto.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SUE — Sociedad Universitaria de Economía">
 <meta property="og:locale" content="es_CL">
 <meta property="og:title" content="Contacto — SUE">
 <meta property="og:description" content="Escríbenos para coordinar una alianza, invitarnos a una actividad o hacernos una consulta.">
-<meta property="og:image" content="https://nmellas.github.io/sue/og-image.jpg">
+<meta property="og:image" content="https://suecon.cl/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Sociedad Universitaria de Economía">
@@ -62,7 +62,7 @@
         <div class="info-block">
           <span class="eyebrow">Correo</span>
           <div class="val" style="overflow-wrap:anywhere;">
-            <a href="mailto:consejo@suecon.cl">consejo@suecon.cl</a>
+            <a href="mailto:contacto@suecon.cl">contacto@suecon.cl</a>
           </div>
           <p>También puedes escribirnos directamente a esta dirección.</p>
         </div>
