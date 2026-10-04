@@ -284,12 +284,15 @@
     var tag = document.getElementById("latest-pub-tag");
     var title = document.getElementById("latest-pub-title");
     var resumen = document.getElementById("latest-pub-resumen");
+    var autor = document.getElementById("latest-pub-autor");
     var link = document.getElementById("latest-pub-link");
     if (!tag || !title || !resumen || !link) return;
 
     tag.textContent = (pub.tipo || "Artículo").toUpperCase();
     title.textContent = pub.titulo || "Sin título";
     resumen.textContent = pub.resumen || "";
+    if (autor) { autor.textContent = pub.autor ? "Por " + pub.autor : ""; autor.hidden = !pub.autor; }
+    autor: getField(row, ["Autor", "Autores"]),
     link.setAttribute("href", pub.link || "publicaciones.html");
   }
 
@@ -305,7 +308,7 @@
   function fromFallback() {
     if (window.FALLBACK_PUBLICATIONS && window.FALLBACK_PUBLICATIONS.length) {
       var last = window.FALLBACK_PUBLICATIONS[0];
-      renderLatest({ tipo: last.tipo, titulo: last.titulo, resumen: last.resumen, link: "publicaciones.html" });
+      renderLatest({ tipo: last.tipo, titulo: last.titulo, autor: last.autor, resumen: last.resumen, link: "publicaciones.html" });
     } else {
       sinPublicaciones();
     }
