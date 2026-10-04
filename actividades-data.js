@@ -283,6 +283,44 @@
     return art;
   }
 
+  /* ---------- Botón "Ver más" ---------- */
+  var POR_PAGINA = 6;   // cuántas tarjetas se ven al principio
+
+  // Estilo simple: texto rojo, sin borde ni marco. Se agrega una sola vez a la página.
+  function estiloVerMas() {
+    if (document.getElementById("sue-ver-mas-css")) return;
+    var st = document.createElement("style");
+    st.id = "sue-ver-mas-css";
+    st.textContent =
+      ".ver-mas-fila{text-align:center;margin:32px 0 8px;}" +
+      ".ver-mas{-webkit-appearance:none;appearance:none;background:none;border:0;border-radius:0;box-shadow:none;" +
+        "margin:0;padding:10px 20px;min-height:44px;font:inherit;font-weight:600;font-size:15px;letter-spacing:.02em;" +
+        "color:var(--brick,#CD1729);cursor:pointer;-webkit-tap-highlight-color:transparent;}" +
+      ".ver-mas:hover{text-decoration:underline;text-underline-offset:4px;}" +
+      ".ver-mas:focus-visible{outline:2px solid var(--brick,#CD1729);outline-offset:2px;}";
+    document.head.appendChild(st);
+  }
+
+  // Muestra (u oculta) el botón bajo la lista `contenedor`. Al pulsarlo se ejecuta alPulsar() y el botón desaparece.
+  function verMas(contenedor, hayMas, alPulsar) {
+    estiloVerMas();
+    var id = "ver-mas-" + contenedor.id;
+    var fila = document.getElementById(id);
+    if (!fila) {
+      fila = document.createElement("div");
+      fila.id = id;
+      fila.className = "ver-mas-fila";
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "ver-mas";
+      b.textContent = "Ver más";
+      fila.appendChild(b);
+      contenedor.parentNode.insertBefore(fila, contenedor.nextSibling);
+    }
+    fila.hidden = !hayMas;
+    fila.firstChild.onclick = function () { alPulsar(); fila.hidden = true; };
+  }
+
   /* ---------- Estados ---------- */
 
   // Muestra u oculta un elemento solo si existe en la página actual
@@ -318,7 +356,12 @@
     var grid = $("act-grid");
     if (!grid) return;
     grid.textContent = "";
-    lista.forEach(function (a, i) { grid.appendChild(tarjeta(a, i === 0)); });
+    // Se ven las primeras; el resto se crea y aparece hacia abajo al pulsar "Ver más"
+    var primeras = lista.slice(0, POR_PAGINA), resto = lista.slice(POR_PAGINA);
+    primeras.forEach(function (a, i) { grid.appendChild(tarjeta(a, i === 0)); });
+    verMas(grid, resto.length > 0, function () {
+      resto.forEach(function (a) { grid.appendChild(tarjeta(a, false)); });
+    });
   }
 
   function cargar() {
