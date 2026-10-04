@@ -292,7 +292,6 @@
     title.textContent = pub.titulo || "Sin título";
     resumen.textContent = pub.resumen || "";
     if (autor) { autor.textContent = pub.autor ? "Por " + pub.autor : ""; autor.hidden = !pub.autor; }
-    autor: getField(row, ["Autor", "Autores"]),
     link.setAttribute("href", pub.link || "publicaciones.html");
   }
 
@@ -339,8 +338,7 @@
           ? window.SUE_ASIGNAR_SLUGS(publicados.map(function (e) { return { tituloBruto: getField(e.row, ["Título", "Titulo"]) }; }))
           : [];
 
-        // La más reciente según su fecha, no la última fila de la hoja: el orden de
-        // las filas no siempre coincide con el orden cronológico.
+        // La más reciente según su fecha, no la última fila de la hoja
         var parseFecha = window.SUE_PARSE_FECHA;
         var masNuevo = 0, mejorFecha = null;
         publicados.forEach(function (e, i) {
@@ -354,6 +352,7 @@
         renderLatest({
           tipo: getField(row, ["Tipo"]) || "Artículo",
           titulo: getField(row, ["Título", "Titulo"]) || "Sin título",
+          autor: getField(row, ["Autor", "Autores"]),
           resumen: getField(row, ["Resumen"]),
           link: slug ? "p/" + slug + ".html" : "articulo.html?id=" + entry.originalIndex
         });
