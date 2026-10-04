@@ -8,12 +8,12 @@
 <meta name="description" content="La desaceleración de la demanda interna y el deterioro del mercado laboral llevaron al Banco Central a recortar a la baja su proyección de crecimiento para 2026. ¿Qué cambió respecto de junio y qué…">
 <link rel="stylesheet" href="styles.css">
 <!-- Ícono de la pestaña -->
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<!-- Librerías para LaTeX (KaTeX) y CSV Parser (PapaParse) -->
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<!-- Librerías para fórmulas (KaTeX) y CSV Parser (PapaParse). Las fórmulas se dibujan en renderBody (ver "Fórmulas y el símbolo $"). -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <link rel="canonical" href="https://suecon.cl/p/ipom-de-septiembre-2026-menor-crecimiento-en-el-corto-plazo.html">
 <meta property="og:url" content="https://suecon.cl/p/ipom-de-septiembre-2026-menor-crecimiento-en-el-corto-plazo.html">
@@ -91,8 +91,8 @@
       <div>
         <h4>Contacto</h4>
         <ul class="footer-links">
-        <li class="footer-small"><a href="mailto:consejo@suecon.cl">consejo@suecon.cl</a></li>
-        <li class="footer-small">Facultad de Economía y Negocios, Universidad de Chile</li>
+          <li class="footer-small"><a href="mailto:consejo@suecon.cl">consejo@suecon.cl</a></li>
+          <li class="footer-small">Facultad de Economía y Negocios, Universidad de Chile</li>
         </ul>
         <div class="footer-social">
           <a href="https://www.instagram.com/sue.chile/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de SUE">
@@ -180,7 +180,7 @@
   // Convierte el texto del campo "Contenido" en HTML, interpretando
   // Markdown estándar: encabezados, listas, citas, líneas divisorias,
   // imágenes en bloque, y formato inline (negrita, cursiva, etc).
-  function renderBody(raw) {
+  function renderBodySinMath(raw) {
     if (!raw) return "";
     var blocks = raw.split(/\n\s*\n/);
 
@@ -278,6 +278,84 @@
         return "<p>" + withBreaks + "</p>";
       })
       .join("");
+  }
+
+  /* ---------- Fórmulas y el símbolo $ ----------
+     Cómo se escribe:
+       · \$ ........ un signo $ normal (siempre, pase lo que pase alrededor).
+       · $x^2$ ...... fórmula en línea.   $$x^2$$ ...... fórmula en bloque.
+     Para que los precios no se confundan con fórmulas, una fórmula en línea solo
+     se reconoce si NO hay espacio justo después del $ de apertura ni justo antes
+     del de cierre, y si el $ de cierre no va seguido de un número. Así
+     "cuesta $100 y $200" queda como texto y "$x_i + y_i$" se dibuja como fórmula.
+     Las fórmulas se sacan ANTES de aplicar Markdown (para que un _ o un * dentro
+     de una fórmula no se vuelva cursiva) y se vuelven a poner al final. */
+  var M_DOLAR = "\uE000", M_ABRE = "\uE001", M_CIERRA = "\uE002";
+
+  // Posición del $ (o $$) que cierra la fórmula que abre en `ini`, o -1 si no es una fórmula.
+  function cierreMatematica(raw, ini, display) {
+    var n = raw.length;
+    if (!display && (ini >= n || /\s/.test(raw.charAt(ini)) || raw.charAt(ini) === "$")) return -1;
+    for (var j = ini; j < n; j++) {
+      var ch = raw.charAt(j);
+      if (ch === "\\") { j++; continue; }                       // carácter escapado (p. ej. \$ dentro de la fórmula)
+      if (display) {
+        if (ch === "$" && raw.charAt(j + 1) === "$") return j > ini ? j : -1;
+      } else {
+        if (ch === "\n") return -1;                              // una fórmula en línea no cruza líneas
+        if (ch === "$") {
+          if (j === ini || /\s/.test(raw.charAt(j - 1)) || /\d/.test(raw.charAt(j + 1))) return -1;
+          return j;
+        }
+      }
+    }
+    return -1;
+  }
+
+  // Reemplaza \$ y cada fórmula por marcadores; guarda las fórmulas en `mates`.
+  function protegerMatematica(raw, mates) {
+    var out = "", i = 0, n = raw.length;
+    while (i < n) {
+      var c = raw.charAt(i);
+      if (c === "\\" && raw.charAt(i + 1) === "$") { out += M_DOLAR; i += 2; continue; }
+      if (c === "$") {
+        var display = raw.charAt(i + 1) === "$", ini = i + (display ? 2 : 1), fin = cierreMatematica(raw, ini, display);
+        if (fin !== -1) {
+          mates.push({ src: raw.slice(ini, fin), display: display });
+          out += M_ABRE + (mates.length - 1) + M_CIERRA;
+          i = fin + (display ? 2 : 1);
+          continue;
+        }
+      }
+      out += c; i++;
+    }
+    return out;
+  }
+
+  function renderMath(m) {
+    if (window.katex) {
+      try { return window.katex.renderToString(m.src, { displayMode: m.display, throwOnError: false }); } catch (e) {}
+    }
+    var d = m.display ? "$$" : "$";
+    return escapeHtml(d + m.src + d);                              // sin KaTeX: se muestra el texto tal cual
+  }
+
+  function restaurarMatematica(html, mates) {
+    var reMate = new RegExp(M_ABRE + "(\\d+)" + M_CIERRA, "g"), reDolar = new RegExp(M_DOLAR, "g");
+    return html.split(/(<[^>]*>)/).map(function (parte, k) {
+      var dentroDeEtiqueta = k % 2 === 1;                          // p. ej. el alt de una imagen: texto plano, no HTML
+      return parte.replace(reMate, function (_, idx) {
+        var m = mates[+idx]; if (!m) return "";
+        if (dentroDeEtiqueta) { var d = m.display ? "$$" : "$"; return escapeHtml(d + m.src + d); }
+        return renderMath(m);
+      }).replace(reDolar, function () { return "$"; });
+    }).join("");
+  }
+
+  function renderBody(raw) {
+    if (!raw) return "";
+    var mates = [];
+    return restaurarMatematica(renderBodySinMath(protegerMatematica(raw, mates)), mates);
   }
 
   // Busca una columna de la fila sin importar mayúsculas/minúsculas
@@ -394,16 +472,6 @@
         document.getElementById("loading").style.display = "none";
         document.getElementById("article-content").style.display = "block";
 
-        // Renderizar ecuaciones de LaTeX ($...$ para inline, $$...$$ para bloque)
-        if (window.renderMathInElement) {
-          renderMathInElement(document.getElementById("art-body"), {
-            delimiters: [
-              {left: '$$', right: '$$', display: true},
-              {left: '$', right: '$', display: false}
-            ],
-            throwOnError : false
-          });
-        }
       })
       .catch(function (err) {
         console.error(err);
