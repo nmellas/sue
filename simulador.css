@@ -127,9 +127,6 @@
 .sim-radar span{font-family:var(--sim-mono);font-size:12px;font-weight:600;color:var(--sim-suave);background:var(--sim-blanco);border:1px solid var(--sim-linea);border-radius:20px;padding:3px 11px;}
 .sim-radar em{font-size:11.5px;color:var(--sim-tenue);font-style:normal;margin-left:auto;}
 
-.sim-costo{display:block;margin-top:8px;font-family:var(--sim-mono);font-size:12.5px;font-weight:600;color:var(--sim-suave);}
-.sim-costo.ok{color:#1f7a3d;}
-.sim-costo.alto{color:var(--sim-rojo);}
 
 /* ---- Cargando ---- */
 .sim-cargando{max-width:520px;margin:40px auto;text-align:center;}
@@ -188,3 +185,7 @@
 /* ---- Título clicable ("Sé el Banco Central.") ---- */
 [data-page="simulador"] .page-head h1 a{color:inherit;text-decoration:none;transition:color .15s ease;}
 [data-page="simulador"] .page-head h1 a:hover,[data-page="simulador"] .page-head h1 a:focus-visible{color:var(--brick,#CD1729);}
+
+/* ---- Explicación del puntaje (pantalla final) ---- */
+.sim-detalle{font-size:14px;margin-top:-6px;color:var(--sim-suave);}
+.sim-detalle strong{color:var(--sim-negro);}
