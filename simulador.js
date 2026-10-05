@@ -438,6 +438,13 @@ const ESC = [
       s3 = "La credibilidad terminó en " + pct(cFinal) + ".";
     }
 
+    // Con buen puntaje, la reseña empieza reconociéndolo: lo que sigue es en qué afinar, no un reproche
+    var apertura = "";
+    if (puntaje >= 85) apertura = "Gran mandato: estuviste muy cerca de lo mejor posible en este escenario. ";
+    else if (puntaje >= 75) apertura = "Buen mandato en un escenario exigente. ";
+    else if (puntaje >= 60) apertura = "Mandato correcto, con margen para afinar. ";
+    var matiz = puntaje >= 75 ? "Para acercarte al máximo, " : "";   // enmarca lo que falta como ajuste, no como falla
+
     // Gestión casi perfecta: no hay mucho que corregir
     if (puntaje >= 90) {
       var buena = (puntaje >= 98 ? "Gestión perfecta" : "Gestión casi perfecta") + ": la inflación, la actividad y la credibilidad quedaron " +
@@ -455,7 +462,9 @@ const ESC = [
       s1 = "La inflación promedió " + fmt(j.pi) + "%, dentro del rango, pero salió de él en " + (n - j.rango) + " de " + n + " trimestres";
     } else {
       var alta = j.pi > META, intensidad = Math.abs(j.pi - META) > 2 ? "muy " : "";
-      s1 = (finalEnRango ? "Aunque terminaste con una inflación dentro del rango, en promedio la mantuviste " : "En promedio, la inflación estuvo ") +
+      s1 = (puntaje >= 75
+              ? "El punto a pulir fue la inflación: en promedio estuvo "
+              : (finalEnRango ? "Aunque terminaste con una inflación dentro del rango, en promedio la mantuviste " : "En promedio, la inflación estuvo ")) +
         intensidad + (alta ? "alta" : "baja") + " (" + fmt(j.pi) + "%)";
       if (alta && tasaBaja) { s1 += ", con una TPM baja para frenarla " + tpm; tpmDicho = true; }
       if (!alta && tasaAlta) { s1 += ", con una TPM alta que la mantuvo contenida " + tpm; tpmDicho = true; }
@@ -495,11 +504,12 @@ const ESC = [
     if (ex.act > ex[clave]) clave = "act";
     if (ex.tasa > ex[clave]) clave = "tasa";
     if (tot > 0 && ex[clave] / tot >= 0.5) {
-      if (clave === "act" && (debil || caliente)) partes.push("Lo que más puntos te costó fue la actividad.");
-      else if (clave === "inf" && (!infBuena || j.lp / n > 0.35)) partes.push("Lo que más puntos te costó fue la inflación: cuanto más cerca de la meta de 3%, mejor.");
-      else if (clave === "tasa") partes.push("Lo que más puntos te costó fueron los cambios bruscos de tasa.");
+      var dondeMejorar = matiz ? matiz + "lo que más te resta es " : "Lo que más puntos te costó fue ";
+      if (clave === "act" && (debil || caliente)) partes.push(dondeMejorar + "la actividad.");
+      else if (clave === "inf" && (!infBuena || j.lp / n > 0.35)) partes.push(dondeMejorar + "la inflación: cuanto más cerca de la meta de 3%, mejor.");
+      else if (clave === "tasa") partes.push(matiz ? matiz + "lo que más te resta son los cambios bruscos de tasa." : "Lo que más puntos te costó fueron los cambios bruscos de tasa.");
     }
-    return partes.join(" ");
+    return apertura + partes.join(" ");
   }
 
   function finalizar() {
@@ -710,15 +720,3 @@ const ESC = [
     renderEscenarios(); cargarHoy();
   });
 })();
-
-function puntajeDe(L, Lb, Lw, T) {
-  var den = Lb + KAPPA_POR_TRIM * T;
-  var r = Math.max(0, (L - Lb) / den);
-  var rw = Math.max(0.001, (Lw - Lb) / den); // Evita rw = 0
-  
-  var div = Math.log(1 + rw / R0);
-  if (!div || isNaN(div)) return 50; // Resguardo contra división por 0
-
-  var p = 100 * (1 - Math.log(1 + r / R0) / div);
-  return isNaN(p) ? 0 : clamp(p, 0, 100);
-}
