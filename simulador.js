@@ -573,6 +573,28 @@ const ESC = [
     $("sim-rk").hidden = false;
     estadoRanking(d.total > d.top.length ? "Mostrando los " + d.top.length + " mejores de " + d.total + " jugadores." : "");
   }
+  // JSONP: carga el ranking con una etiqueta <script>. Funciona en el navegador de Instagram, donde fetch() a Google suele fallar.
+  function jsonp(url, ms) {
+    return new Promise(function (ok, no) {
+      var cb = "sueRk" + Date.now() + Math.floor(Math.random() * 1e6), s = document.createElement("script"), fin = false, t;
+      function limpiar() {
+        fin = true; clearTimeout(t);
+        try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+        if (s.parentNode) s.parentNode.removeChild(s);
+      }
+      t = setTimeout(function () { if (!fin) { limpiar(); no(new Error("timeout")); } }, ms || 12000);
+      window[cb] = function (d) { if (!fin) { limpiar(); ok(d); } };
+      s.onerror = function () { if (!fin) { limpiar(); no(new Error("red")); } };
+      s.src = url + (url.indexOf("?") === -1 ? "?" : "&") + "callback=" + cb;
+      document.head.appendChild(s);
+    });
+  }
+  function pedirConReintento(url, intentos) {
+    return jsonp(url, 12000).catch(function (e) { if (intentos > 1) return pedirConReintento(url, intentos - 1); throw e; });
+  }
+  // Caché en el dispositivo: se muestra al instante el último ranking visto mientras llega el nuevo
+  function rkLocalLeer(clave) { try { return JSON.parse(localStorage.getItem("sue-rk-" + clave)); } catch (e) { return null; } }
+  function rkLocalGuardar(clave, d) { try { localStorage.setItem("sue-rk-" + clave, JSON.stringify(d)); } catch (e) {} }
 
   function cargarRanking() {
     if (!RANKING_URL) return;
@@ -583,16 +605,20 @@ const ESC = [
       : "Los mejores puntajes de este escenario. De cada jugador cuenta su mejor intento.";
     var c = rkCache[clave];
     if (c && Date.now() - c.t < 30000) { pintarRanking(c.datos); return; }
-    $("sim-rk").hidden = true; estadoRanking("Cargando ranking…");
-    fetch(RANKING_URL + (RANKING_URL.indexOf("?") === -1 ? "?" : "&") + "esc=" + encodeURIComponent(clave) + "&t=" + Date.now())
-      .then(function (r) { return r.json(); })
+    var viejo = rkLocalLeer(clave);
+    if (viejo && viejo.top) { pintarRanking(viejo); estadoRanking("Actualizando ranking…"); }
+    else { $("sim-rk").hidden = true; estadoRanking("Cargando ranking…"); }
+    pedirConReintento(RANKING_URL + (RANKING_URL.indexOf("?") === -1 ? "?" : "&") + "esc=" + encodeURIComponent(clave), 2)
       .then(function (d) {
         if (!d || !d.ok) throw new Error("ranking");
         rkCache[clave] = { t: Date.now(), datos: d };
-        if (claveRanking(ESCENARIO) === clave) pintarRanking(d);   // por si el jugador cambió de escenario mientras cargaba
+        rkLocalGuardar(clave, d);
+        if (claveRanking(ESCENARIO) === clave) pintarRanking(d);
       })
       .catch(function () {
-        if (claveRanking(ESCENARIO) === clave) { $("sim-rk").hidden = true; estadoRanking("No pudimos cargar el ranking en este momento."); }
+        if (claveRanking(ESCENARIO) !== clave) return;
+        if (viejo && viejo.top) estadoRanking("Mostrando el último ranking guardado (no pudimos actualizarlo).");
+        else { $("sim-rk").hidden = true; estadoRanking("No pudimos cargar el ranking en este momento."); }
       });
   }
 
@@ -600,8 +626,7 @@ const ESC = [
     try { localStorage.setItem(NOMBRE_KEY, nombreJugador()); } catch (e) {}
   }
 
-  // Al terminar la partida: se envía el puntaje y se informa en qué puesto quedó
-  function enviarPuntaje(p) {
+    function enviarPuntaje(p) {
     var el = $("sim-ranking-envio");
     if (!el) return;
     el.hidden = true;
@@ -614,11 +639,9 @@ const ESC = [
     }
     el.textContent = "Enviando tu puntaje al ranking…";
     var dur = Math.round((Date.now() - (P.inicio || Date.now())) / 1000);
-    fetch(RANKING_URL, {
-      method: "POST",
-      body: new URLSearchParams({ esc: clave, nombre: nombre, puntaje: String(p), dur: String(dur), website: "" })   // formato simple: evita bloqueos entre dominios
-    })
-      .then(function (r) { return r.json(); })
+    var url = RANKING_URL + (RANKING_URL.indexOf("?") === -1 ? "?" : "&") + "accion=guardar&esc=" + encodeURIComponent(clave) +
+      "&nombre=" + encodeURIComponent(nombre) + "&puntaje=" + p + "&dur=" + dur;
+    jsonp(url, 20000)
       .then(function (d) {
         if (d && d.ok && d.puesto) {
           delete rkCache[clave];
@@ -646,10 +669,12 @@ const ESC = [
     $("sim-ini-tpm").textContent = fmt(ESCENARIO.ini.i, 2) + "%";
     $("sim-ini-act").textContent = signo(ESCENARIO.ini.y) + "%";
     $("sim-ini-dur").textContent = ESCENARIO.T / 4 + (ESCENARIO.T === 4 ? " año" : " años");
+      actualizarBotonInicio();
     cargarRanking();
   }
 
   function empezar() {
+     if (ESCENARIO.azar && !DATOS_LISTOS) return;
     $("sim-intro").hidden = true; $("sim-final").hidden = true; $("sim-juego").hidden = true; $("sim-cargando").hidden = false;
     setTimeout(function () {                       // deja que se pinte el aviso antes del cálculo
       P = armarPartida(ESCENARIO);
@@ -678,8 +703,22 @@ const ESC = [
   }
 
   /* ---------- Datos reales de partida (mindicador.cl) ---------- */
+  var DATOS_LISTOS = false;
+
+  function conTimeout(p, ms) {
+    return new Promise(function (ok, no) {
+      var t = setTimeout(function () { no(new Error("timeout")); }, ms);
+      p.then(function (v) { clearTimeout(t); ok(v); }, function (e) { clearTimeout(t); no(e); });
+    });
+  }
+  // Solo los escenarios con datos actuales esperan; los históricos se pueden jugar de inmediato
+  function actualizarBotonInicio() {
+    var b = $("sim-empezar"), espera = !!ESCENARIO.azar && !DATOS_LISTOS;
+    b.disabled = espera;
+    b.textContent = espera ? "Cargando datos actuales…" : "Asumir la presidencia del Consejo →";
+  }
   function cargarHoy() {
-    var pedir = function (u) { return fetch(u).then(function (r) { if (!r.ok) throw 0; return r.json(); }); };
+    var pedir = function (u) { return conTimeout(fetch(u).then(function (r) { if (!r.ok) throw 0; return r.json(); }), 6000); };
     Promise.all([pedir("https://mindicador.cl/api/ipc"), pedir("https://mindicador.cl/api/tpm")])
       .then(function (r) {
         var serie = (r[0].serie || []).slice(0, 12), tpm = r[1].serie && r[1].serie[0] && r[1].serie[0].valor;
@@ -688,8 +727,8 @@ const ESC = [
           ESC.filter(function (s) { return s.azar; }).forEach(function (s) { s.ini.pi = clamp(anual, 0, 12); s.ini.i = clamp(tpm, IMIN, IMAX); });
         }
       })
-      .catch(function () {})
-      .then(function () { renderEscenarios(); $("sim-empezar").disabled = false; });
+      .catch(function () {})                       // si falla o demora más de 6 s, se usan los valores por defecto
+      .then(function () { DATOS_LISTOS = true; renderEscenarios(); });
   }
 
   // Solo para pruebas: con ?debug en la URL se puede inspeccionar la partida
