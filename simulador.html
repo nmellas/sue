@@ -6,7 +6,7 @@
 <title>Sé el Banco Central — SUE, Sociedad Universitaria de Economía</title>
 <meta name="description" content="Decide la tasa de interés durante dos o cuatro años, enfrenta shocks de la economía chilena y lleva la inflación a la meta. Un simulador de la Sociedad Universitaria de Economía.">
 <link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="simulador.css?v=11">
+<link rel="stylesheet" href="simulador.css?v=13">
 <!-- Ícono de la pestaña -->
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="shortcut icon" href="/favicon.ico">
@@ -83,6 +83,15 @@
               <div class="sim-dato"><div class="sim-lbl">Meta</div><div class="sim-num">3,0%</div></div>
               <div class="sim-dato"><div class="sim-lbl">Duración</div><div class="sim-num" id="sim-ini-dur">…</div></div>
             </div>
+
+            <div class="sim-arranque">
+              <div class="sim-nombre" id="sim-nombre-caja" hidden>
+                <label for="sim-nombre">Tu nombre para el ranking</label>
+                <input type="text" id="sim-nombre" maxlength="20" autocomplete="nickname" spellcheck="false" placeholder="Escribe tu nombre (opcional)">
+                <p class="sim-nombre-ayuda">Si lo dejas en blanco, juegas igual, pero tu puntaje no aparece en el ranking.</p>
+              </div>
+              <button type="button" class="btn btn-primary sim-cta" id="sim-empezar" disabled>Asumir la presidencia del Consejo →</button>
+            </div>
           </div>
           <div class="sim-reglas">
             <div class="sim-regla"><span>↑</span><p><strong>Subir la tasa</strong> enfría la demanda y aprecia el peso: baja la inflación, pero también la actividad.</p></div>
@@ -91,12 +100,6 @@
             <div class="sim-regla"><span>◎</span><p><strong>La credibilidad importa.</strong> Si la inflación sale del rango de 2%–4%, las expectativas se desanclan y cuesta más controlarla.</p></div>
           </div>
         </div>
-        <div class="sim-nombre" id="sim-nombre-caja" hidden>
-          <label for="sim-nombre">Tu nombre para el ranking</label>
-          <input type="text" id="sim-nombre" maxlength="20" autocomplete="nickname" spellcheck="false" placeholder="Escribe tu nombre (opcional)">
-          <p class="sim-nombre-ayuda">Si lo dejas en blanco, juegas igual, pero tu puntaje no aparece en el ranking.</p>
-        </div>
-        <button type="button" class="btn btn-primary sim-cta" id="sim-empezar" disabled>Asumir la presidencia del Consejo →</button>
 
         <section class="sim-ranking" id="sim-ranking" aria-labelledby="sim-ranking-titulo" hidden>
           <h2 id="sim-ranking-titulo">Ranking</h2>
@@ -201,7 +204,7 @@
             <p class="sim-informe" id="sim-informe" aria-live="polite"></p>
           </div>
 
-          <div>
+          <div class="sim-juego-col2">
             <div class="sim-tablero">
               <div class="sim-dato"><div class="sim-lbl">TPM</div><div class="sim-num" id="sim-tpm"></div></div>
               <div class="sim-dato"><div class="sim-lbl">Inflación anual</div><div class="sim-num" id="sim-inf"></div></div>
@@ -299,6 +302,6 @@
 <script src="indicators.js"></script>
 <script src="script.js"></script>
 <script src="ranking-config.js"></script>
-<script src="simulador.js?v=11"></script>
+<script src="simulador.js?v=13"></script>
 </body>
 </html>
