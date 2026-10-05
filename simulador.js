@@ -547,8 +547,8 @@ const ESC = [
   var NOMBRE_KEY = "sue-simulador-nombre";
   var RK_ESPERA = Number(window.SUE_RANKING_ESPERA) || 8000;           // cuánto espera cada intento antes de darlo por perdido
   var rkCache = {};                                                      // última tabla recibida de cada escenario (en memoria)
-  var RK_INICIO = { titulo: "sim-ranking-titulo", sub: "sim-ranking-sub", tabla: "sim-rk", cuerpo: "sim-rk-cuerpo", estado: "sim-rk-estado", clave: "", datos: null, enCurso: "" };
-  var RK_FINAL = { titulo: "sim-rkf-titulo", sub: "sim-rkf-sub", tabla: "sim-rkf", cuerpo: "sim-rkf-cuerpo", estado: "sim-rkf-estado", clave: "", datos: null, enCurso: "" };
+  var RK_INICIO = { titulo: "sim-ranking-titulo", sub: "sim-ranking-sub", tabla: "sim-rk", cuerpo: "sim-rk-cuerpo", estado: "sim-rk-estado", clave: "", datos: null, enCurso: "", fallo: null };
+  var RK_FINAL = { titulo: "sim-rkf-titulo", sub: "sim-rkf-sub", tabla: "sim-rkf", cuerpo: "sim-rkf-cuerpo", estado: "sim-rkf-estado", clave: "", datos: null, enCurso: "", fallo: null };
 
   function normNombre(t) { return String(t || "").replace(/\s+/g, " ").trim().toLowerCase(); }
   function nombreJugador() { var el = $("sim-nombre"); return el ? el.value.replace(/\s+/g, " ").trim() : ""; }
@@ -604,7 +604,7 @@ const ESC = [
     try { localStorage.setItem("sue-rk-" + clave, JSON.stringify({ total: d.total, top: d.top })); } catch (e) {}
   }
   function recordarRanking(clave, d) {
-    if (!d || !d.top) return;
+    if (!d || !d.top || (!d.top.length && d.total > 0)) return;      // una tabla vacía con jugadores en el total es una respuesta incoherente
     rkCache[clave] = { t: Date.now(), datos: { total: d.total, top: d.top } };
     guardarLocal(clave, d);
   }
@@ -657,6 +657,7 @@ const ESC = [
     var mem = rkCache[clave];
     if (mem && !forzar && Date.now() - mem.t < 30000) { pintarRanking(v, mem.datos); return; }
     if (v.enCurso === clave && !forzar) return;                // ya se está pidiendo: no se repite (la pantalla se redibuja varias veces)
+    if (!forzar && v.fallo && v.fallo.clave === clave && Date.now() - v.fallo.t < 15000) { mostrarFalloRanking(v, esc); return; }
     v.enCurso = clave;
 
     var viejo = (mem && mem.datos) || leerLocal(clave);
@@ -667,14 +668,19 @@ const ESC = [
       rkPedir({ esc: clave, t: Date.now() }, RK_ESPERA, "GET", function (err, d) {
         if (v.clave !== clave) return;                         // el jugador ya cambió de escenario
         v.enCurso = "";
-        if (!err && d && d.ok && d.top) { recordarRanking(clave, d); pintarRanking(v, d); return; }
-        var otra = function () { cargarRanking(v, esc, true); };
-        if (viejo) pintarRanking(v, viejo, "No pudimos actualizar el ranking: se muestra la última versión guardada en este dispositivo.");
-        else $(v.tabla).hidden = true;
-        estadoVista(v, viejo ? "No pudimos actualizar el ranking: se muestra la última versión guardada en este dispositivo." : "No pudimos cargar el ranking.", otra);
+        if (!err && d && d.ok && d.top && (d.top.length || !d.total)) { v.fallo = null; recordarRanking(clave, d); pintarRanking(v, d); return; }
+        v.fallo = { clave: clave, t: Date.now() };
+        mostrarFalloRanking(v, esc);
       });
     }
     intentar();
+  }
+
+  function mostrarFalloRanking(v, esc) {
+    var clave = claveRanking(esc), viejo = (rkCache[clave] && rkCache[clave].datos) || leerLocal(clave);
+    var txt = viejo ? "No pudimos actualizar el ranking: se muestra la última versión guardada en este dispositivo." : "No pudimos cargar el ranking.";
+    if (viejo) pintarRanking(v, viejo, txt); else $(v.tabla).hidden = true;
+    estadoVista(v, txt, function () { cargarRanking(v, esc, true); });
   }
 
   function repintarRankings() {
@@ -716,8 +722,14 @@ const ESC = [
       rkPedir({ accion: "guardar", esc: clave, nombre: nombre, puntaje: String(p), dur: String(dur), website: "", t: Date.now() }, RK_ESPERA * 1.5, "POST", function (err, d) {
         if (!err && d && d.ok && d.puesto) {
           el.textContent = "Tu puntaje quedó registrado como «" + nombre + "». Tu mejor puntaje en este escenario te deja en el puesto " + d.puesto + " de " + d.total + ".";
-          if (d.top) { recordarRanking(clave, d); if (RK_FINAL.clave === clave) pintarRanking(RK_FINAL, d); }
-          else { delete rkCache[clave]; cargarRanking(RK_FINAL, esc, true); }          // versión anterior del backend: no trae la tabla
+          if (d.top && d.top.length) { recordarRanking(clave, d); if (RK_FINAL.clave === clave) pintarRanking(RK_FINAL, d); }
+          else { delete rkCache[clave]; cargarRanking(RK_FINAL, esc, true); }          // sin tabla (backend anterior) o incoherente: se vuelve a pedir
+          return;
+        }
+        if (!err && d && d.ok && !d.mensaje) {                 // el servidor guardó el puntaje pero aún no lo ubica en la tabla
+          el.textContent = "Tu puntaje se envió; puede tardar unos segundos en aparecer en el ranking.";
+          delete rkCache[clave];
+          setTimeout(function () { if (RK_FINAL.clave === clave) cargarRanking(RK_FINAL, esc, true); }, 2500);
           return;
         }
         if (!err && d && d.mensaje) {                          // el servidor respondió y explicó por qué no (p. ej. "espera unos segundos")
