@@ -189,3 +189,29 @@
 
 /* ---- Reseña de cómo jugaste (pantalla final) ---- */
 .sim-resena{margin-top:-6px;font-size:14.5px;line-height:1.65;color:var(--sim-suave);}
+
+/* ---- Ranking online ---- */
+.sim-nombre{max-width:420px;margin:0 0 16px;}
+.sim-nombre label{display:block;font-family:var(--sim-mono);font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--sim-tenue);margin-bottom:8px;}
+.sim-nombre input{width:100%;box-sizing:border-box;font:inherit;font-size:16px;color:var(--sim-negro);background:#fff;border:1px solid var(--sim-linea);border-radius:4px;padding:12px 14px;}
+.sim-nombre input:focus{outline:2px solid var(--sim-rojo);outline-offset:1px;border-color:var(--sim-rojo);}
+.sim-nombre-ayuda{font-size:12.5px;color:var(--sim-suave);margin:8px 0 0;}
+
+.sim-ranking{margin-top:48px;max-width:860px;}
+.sim-ranking h2{margin:0 0 6px;font-size:clamp(22px,2.4vw,28px);}
+.sim-ranking-sub{font-size:14px;color:var(--sim-suave);margin:0 0 16px;}
+.sim-rk-caja{background:var(--sim-blanco);border:1px solid var(--sim-linea);border-radius:6px;overflow:hidden;}
+.sim-rk{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;}
+.sim-rk th,.sim-rk td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--sim-linea);font-size:15px;color:var(--sim-negro);}
+.sim-rk thead th{font-family:var(--sim-mono);font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--sim-tenue);background:var(--sim-papel2);}
+.sim-rk tbody th{width:72px;font-family:var(--sim-display);font-size:18px;font-weight:600;color:var(--sim-rojo);}
+.sim-rk th:last-child,.sim-rk td:last-child{text-align:right;width:96px;}
+.sim-rk td:last-child{font-family:var(--sim-display);font-size:18px;font-weight:600;}
+.sim-rk td:nth-child(2){overflow-wrap:anywhere;}
+.sim-rk tbody tr:last-child th,.sim-rk tbody tr:last-child td{border-bottom:0;}
+.sim-rk tr.is-tu th,.sim-rk tr.is-tu td{background:#fff4f4;}
+.sim-rk-estado{font-size:13.5px;color:var(--sim-suave);margin:0;padding:14px 16px;}
+.sim-rk-estado:empty{display:none;}
+.sim-rk:not([hidden]) + .sim-rk-estado{border-top:1px solid var(--sim-linea);}
+.sim-ranking-envio{font-size:13.5px;line-height:1.6;color:var(--sim-suave);margin:-4px 0 18px;max-width:58ch;margin-left:auto;margin-right:auto;}
+@media (max-width:560px){.sim-rk th,.sim-rk td{padding:11px 12px;}.sim-rk tbody th{width:56px;}}
