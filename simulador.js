@@ -378,6 +378,130 @@ const ESC = [
     mostrarEvento();
   }
 
+  /* ---------- Reseña de cómo jugaste ----------
+     Se calcula con los mismos números que el puntaje. La pérdida suma, trimestre a trimestre, tres cosas: qué tan lejos
+     estuvo la inflación de la meta, qué tan lejos estuvo la actividad de su potencial y cuánto se movió la TPM de golpe.
+     La credibilidad no resta puntos por sí sola, pero decide qué tan fácil es controlar la inflación. Cada frase de la
+     reseña solo aparece si los datos de la partida la respaldan. */
+  function pct(c) { return Math.round(c * 100) + "%"; }
+
+  function actividadFinal(y) {
+    if (y > 1.5) return "una economía sobrecalentada";
+    if (y > 0.5) return "la actividad sobre su potencial";
+    if (y < -1.5) return "una economía en recesión";
+    if (y < -0.5) return "la actividad bajo su potencial";
+    return "la actividad en torno a su potencial";
+  }
+
+  // Promedios, conteos y las tres partes de la pérdida de una trayectoria (trimestres 1..T)
+  function metricas(tray, ini) {
+    var n = tray.length, m = { n: n, pi: 0, y: 0, i: 0, real: 0, rango: 0, debil: 0, calor: 0, minC: 1, lp: 0, ly: 0, li: 0 };
+    tray.forEach(function (e, k) {
+      var prev = k ? tray[k - 1] : ini, dI = e.i - prev.i;
+      m.pi += e.pi; m.y += e.y; m.i += e.i; m.real += e.rp - RSTAR;           // rp = tasa real que usó el modelo ese trimestre
+      if (Math.abs(e.pi - META) <= 1) m.rango++;
+      if (e.y < -0.5) m.debil++;                                               // mismos cortes que el texto "bajo / sobre su potencial"
+      if (e.y > 0.5) m.calor++;
+      m.minC = Math.min(m.minC, e.c);
+      m.lp += (e.pi - META) * (e.pi - META); m.ly += PAR.wY * e.y * e.y; m.li += PAR.wI * dI * dI;
+    });
+    m.pi /= n; m.y /= n; m.i /= n; m.real /= n;
+    return m;
+  }
+
+  function resenaDelDesempeno(puntaje) {
+    var j = metricas(P.hist.slice(1), P.ini), o = metricas(P.refTray.slice(1), P.ini), n = j.n;
+    var cFinal = P.e.c, cIni = P.ini.c, enRango = j.rango + " de " + n;
+    var finalEnRango = Math.abs(P.e.pi - META) <= 1;
+    var tasaAlta = j.real >= 0.7, tasaBaja = j.real <= -0.7;               // TPM alta o baja PARA la inflación que había (tasa real)
+    var tpm = "(promedio de " + fmt(j.i) + "%)";
+    var infBuena = Math.abs(j.pi - META) <= 1 && j.rango >= 0.75 * n;
+    var debil = j.y <= -0.7 || (j.y < 0 && j.debil >= 0.4 * n);
+    var caliente = j.y >= 0.7 || (j.y > 0 && j.calor >= 0.4 * n);
+
+    // ¿El mejor recorrido posible también habría tenido ese problema? Solo entonces se aclara que era difícil evitarlo.
+    var dificil = ", aunque en este escenario era difícil evitarlo";
+    var oInfBuena = Math.abs(o.pi - META) <= 1 && o.rango >= 0.75 * n;
+    var oDebil = o.y <= -0.7 || (o.y < 0 && o.debil >= 0.4 * n);
+    var oCaliente = o.y >= 0.7 || (o.y > 0 && o.calor >= 0.4 * n);
+    var oCredCae = o.minC <= 0.5 || cIni - o.minC >= 0.2;
+
+    // Credibilidad
+    var s3;
+    if (j.minC <= 0.5 || cIni - j.minC >= 0.2) {
+      s3 = "La credibilidad llegó a caer hasta " + pct(j.minC) + (cFinal >= j.minC + 0.1 ? " y terminó en " + pct(cFinal) : "") +
+        ": cuando la inflación se aleja de la meta por varios trimestres, las expectativas se desanclan y cuesta más controlarla." +
+        (oCredCae && j.minC <= o.minC + 0.1 ? " En este escenario era difícil evitarlo." : "");
+    } else if (cFinal >= 0.8) {
+      s3 = "Cuidaste la credibilidad (terminó en " + pct(cFinal) + "), lo que mantuvo ancladas las expectativas y ayudó a controlar los precios.";
+    } else {
+      s3 = "La credibilidad terminó en " + pct(cFinal) + ".";
+    }
+
+    // Gestión casi perfecta: no hay mucho que corregir
+    if (puntaje >= 90) {
+      var buena = (puntaje >= 98 ? "Gestión perfecta" : "Gestión casi perfecta") + ": la inflación, la actividad y la credibilidad quedaron " +
+        (puntaje >= 98 ? "en lo mejor posible" : "muy cerca de lo mejor posible") + " en este escenario.";
+      var f2 = infBuena ? "Mantuviste la inflación dentro del rango en " + enRango + " trimestres."
+             : (o.rango < 0.75 * n ? "Era un escenario muy exigente para la inflación y lo manejaste casi tan bien como era posible." : "");
+      return [buena, f2, cFinal >= 0.8 ? s3 : ""].filter(Boolean).join(" ");
+    }
+
+    // Inflación
+    var s1, tpmDicho = false;
+    if (infBuena) {
+      s1 = "Mantuviste la inflación dentro del rango " + (j.rango === n ? "durante todo el mandato" : "casi todo el mandato") + " (" + enRango + " trimestres)";
+    } else if (Math.abs(j.pi - META) <= 1) {
+      s1 = "La inflación promedió " + fmt(j.pi) + "%, dentro del rango, pero salió de él en " + (n - j.rango) + " de " + n + " trimestres";
+    } else {
+      var alta = j.pi > META, intensidad = Math.abs(j.pi - META) > 2 ? "muy " : "";
+      s1 = (finalEnRango ? "Aunque terminaste con una inflación dentro del rango, en promedio la mantuviste " : "En promedio, la inflación estuvo ") +
+        intensidad + (alta ? "alta" : "baja") + " (" + fmt(j.pi) + "%)";
+      if (alta && tasaBaja) { s1 += ", con una TPM baja para frenarla " + tpm; tpmDicho = true; }
+      if (!alta && tasaAlta) { s1 += ", con una TPM alta que la mantuvo contenida " + tpm; tpmDicho = true; }
+    }
+    if (!infBuena && !oInfBuena && Math.abs(j.pi - o.pi) <= 0.5) s1 += dificil;
+
+    // Actividad (y su relación con la TPM, cuando los datos la respaldan)
+    var act;
+    if (debil) {
+      var cd = j.debil + " de " + n + " trimestres" + (oDebil && Math.abs(j.y - o.y) <= 0.5 ? dificil : "");
+      act = tasaAlta
+        ? (tpmDicho
+            ? { mala: true, unida: "pero esa tasa alta además contrajo la actividad: estuvo bajo su potencial en " + cd, sola: "Esa tasa alta además contrajo la actividad: estuvo bajo su potencial en " + cd + "." }
+            : { mala: true, unida: "pero con una TPM alta para el nivel de inflación que enfrentabas " + tpm + " que contrajo la actividad: estuvo bajo su potencial en " + cd,
+                sola: "Con una TPM alta para el nivel de inflación que enfrentabas " + tpm + ", la actividad se contrajo: estuvo bajo su potencial en " + cd + "." })
+        : { mala: true, unida: "pero la actividad estuvo bajo su potencial en " + cd, sola: "La actividad estuvo bajo su potencial en " + cd + "." };
+    } else if (caliente) {
+      var cc = j.calor + " de " + n + " trimestres" + (oCaliente && Math.abs(j.y - o.y) <= 0.5 ? dificil : "");
+      act = tasaBaja
+        ? (tpmDicho
+            ? { mala: true, unida: "pero esa tasa baja además dejó la economía sobrecalentada: estuvo sobre su potencial en " + cc, sola: "Esa tasa baja además dejó la economía sobrecalentada: estuvo sobre su potencial en " + cc + "." }
+            : { mala: true, unida: "pero con una TPM baja para el nivel de inflación que enfrentabas " + tpm + " que dejó la economía sobrecalentada: estuvo sobre su potencial en " + cc,
+                sola: "Con una TPM baja para el nivel de inflación que enfrentabas " + tpm + ", la economía se recalentó: estuvo sobre su potencial en " + cc + "." })
+        : { mala: true, unida: "pero la actividad estuvo sobre su potencial en " + cc, sola: "La actividad estuvo sobre su potencial en " + cc + "." };
+    } else {
+      act = { mala: false, unida: "y la actividad se mantuvo cerca de su potencial", sola: "La actividad se mantuvo cerca de su potencial." };
+    }
+
+    var partes = infBuena
+      ? [s1 + ", " + act.unida + "."]
+      : [s1 + ".", act.sola];
+    partes.push(s3);
+
+    // Lo que más puntos restó, solo si el dato es claro y coincide con lo que se dijo arriba
+    var ex = { inf: Math.max(0, j.lp - o.lp), act: Math.max(0, j.ly - o.ly), tasa: Math.max(0, j.li - o.li) };
+    var tot = ex.inf + ex.act + ex.tasa, clave = "inf";
+    if (ex.act > ex[clave]) clave = "act";
+    if (ex.tasa > ex[clave]) clave = "tasa";
+    if (tot > 0 && ex[clave] / tot >= 0.5) {
+      if (clave === "act" && (debil || caliente)) partes.push("Lo que más puntos te costó fue la actividad.");
+      else if (clave === "inf" && (!infBuena || j.lp / n > 0.35)) partes.push("Lo que más puntos te costó fue la inflación: cuanto más cerca de la meta de 3%, mejor.");
+      else if (clave === "tasa") partes.push("Lo que más puntos te costó fueron los cambios bruscos de tasa.");
+    }
+    return partes.join(" ");
+  }
+
   function finalizar() {
     var p = Math.round(puntaje(P.perdida)), nuevoRecord = guardarRecord(P.esc, p), rec = records()[claveRecord(P.esc)];
     $("sim-juego").hidden = true; $("sim-final").hidden = false;
@@ -385,8 +509,9 @@ const ESC = [
     $("sim-puntaje").textContent = p;
     $("sim-titulo-final").textContent = titulo(p);
     $("sim-record").textContent = nuevoRecord ? "¡Nuevo récord personal en este escenario!" : "Tu récord en este escenario: " + rec + "/100";
-    $("sim-resumen").innerHTML = "Terminaste con una inflación de <strong>" + fmt(P.e.pi) + "%</strong> y una TPM de <strong>" + fmt(P.e.i, 2) +
-      "%</strong>. Mantuviste la inflación en el rango de 2%–4% en <strong>" + P.enRango + " de " + P.T + "</strong> trimestres.";
+    $("sim-resumen").innerHTML = "Terminaste con una inflación de <strong>" + fmt(P.e.pi) + "%</strong>, una TPM de <strong>" + fmt(P.e.i, 2) +
+      "%</strong>, " + actividadFinal(P.e.y) + " y una credibilidad de <strong>" + pct(P.e.c) + "</strong>.";
+    $("sim-resena").textContent = resenaDelDesempeno(p);
     $("sim-grafico-final").innerHTML = grafico($("sim-grafico-final"), { hist: P.hist, optimo: P.refTray });
     $("sim-final").dataset.puntaje = p;
     renderEscenarios();
