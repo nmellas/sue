@@ -512,6 +512,7 @@ const ESC = [
     $("sim-resumen").innerHTML = "Terminaste con una inflación de <strong>" + fmt(P.e.pi) + "%</strong>, una TPM de <strong>" + fmt(P.e.i, 2) +
       "%</strong>, " + actividadFinal(P.e.y) + " y una credibilidad de <strong>" + pct(P.e.c) + "</strong>.";
     $("sim-resena").textContent = resenaDelDesempeno(p);
+    enviarPuntaje(p);
     $("sim-grafico-final").innerHTML = grafico($("sim-grafico-final"), { hist: P.hist, optimo: P.refTray });
     $("sim-final").dataset.puntaje = p;
     renderEscenarios();
@@ -526,6 +527,97 @@ const ESC = [
     else if (navigator.clipboard) navigator.clipboard.writeText(texto + " " + url).then(function () {
       $("sim-compartir").textContent = "¡Copiado!"; setTimeout(function () { $("sim-compartir").textContent = "Compartir resultado"; }, 2000);
     });
+  }
+
+  /* ---------- Ranking online (opcional) ----------
+     Se activa solo si ranking-config.js trae la dirección del ranking. Sin ella, el juego funciona igual que antes. */
+  var RANKING_URL = String(window.SUE_RANKING_URL || "").trim();
+  var NOMBRE_KEY = "sue-simulador-nombre";
+  var rkCache = {}, rkMostrado = null;
+
+  function normNombre(t) { return String(t || "").replace(/\s+/g, " ").trim().toLowerCase(); }
+  function nombreJugador() { var el = $("sim-nombre"); return el ? el.value.replace(/\s+/g, " ").trim() : ""; }
+  function claveRanking(e) { return e.diario ? "diario-" + claveDia() : e.id; }   // el Reto del día tiene un ranking nuevo cada día
+  function estadoRanking(txt) { $("sim-rk-estado").textContent = txt || ""; }
+
+  function pintarRanking(d) {
+    rkMostrado = d;
+    var cuerpo = $("sim-rk-cuerpo"), yo = normNombre(nombreJugador());
+    cuerpo.textContent = "";
+    if (!d.top || !d.top.length) {
+      $("sim-rk").hidden = true;
+      estadoRanking("Aún nadie ha jugado este escenario: ¡puedes ser el primero!");
+      return;
+    }
+    d.top.forEach(function (f, i) {
+      var tr = document.createElement("tr");
+      if (yo && normNombre(f.nombre) === yo) tr.className = "is-tu";
+      [i + 1, f.nombre, f.puntaje].forEach(function (v, k) {
+        var td = document.createElement(k === 0 ? "th" : "td");
+        if (k === 0) td.setAttribute("scope", "row");
+        td.textContent = v;                                    // textContent: un nombre nunca se interpreta como HTML
+        tr.appendChild(td);
+      });
+      cuerpo.appendChild(tr);
+    });
+    $("sim-rk").hidden = false;
+    estadoRanking(d.total > d.top.length ? "Mostrando los " + d.top.length + " mejores de " + d.total + " jugadores." : "");
+  }
+
+  function cargarRanking() {
+    if (!RANKING_URL) return;
+    var clave = claveRanking(ESCENARIO);
+    $("sim-ranking-titulo").textContent = "Ranking · " + ESCENARIO.n;
+    $("sim-ranking-sub").textContent = ESCENARIO.diario
+      ? "Se reinicia cada día: aquí compiten solo los puntajes de hoy. De cada jugador cuenta su mejor intento."
+      : "Los mejores puntajes de este escenario. De cada jugador cuenta su mejor intento.";
+    var c = rkCache[clave];
+    if (c && Date.now() - c.t < 30000) { pintarRanking(c.datos); return; }
+    $("sim-rk").hidden = true; estadoRanking("Cargando ranking…");
+    fetch(RANKING_URL + (RANKING_URL.indexOf("?") === -1 ? "?" : "&") + "esc=" + encodeURIComponent(clave) + "&t=" + Date.now())
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d || !d.ok) throw new Error("ranking");
+        rkCache[clave] = { t: Date.now(), datos: d };
+        if (claveRanking(ESCENARIO) === clave) pintarRanking(d);   // por si el jugador cambió de escenario mientras cargaba
+      })
+      .catch(function () {
+        if (claveRanking(ESCENARIO) === clave) { $("sim-rk").hidden = true; estadoRanking("No pudimos cargar el ranking en este momento."); }
+      });
+  }
+
+  function guardarNombre() {
+    try { localStorage.setItem(NOMBRE_KEY, nombreJugador()); } catch (e) {}
+  }
+
+  // Al terminar la partida: se envía el puntaje y se informa en qué puesto quedó
+  function enviarPuntaje(p) {
+    var el = $("sim-ranking-envio");
+    if (!el) return;
+    el.hidden = true;
+    if (!RANKING_URL) return;
+    var nombre = nombreJugador(), clave = claveRanking(P.esc);
+    el.hidden = false;
+    if (nombre.length < 2) {
+      el.textContent = "Para aparecer en el ranking, escribe tu nombre en la pantalla de inicio antes de jugar.";
+      return;
+    }
+    el.textContent = "Enviando tu puntaje al ranking…";
+    var dur = Math.round((Date.now() - (P.inicio || Date.now())) / 1000);
+    fetch(RANKING_URL, {
+      method: "POST",
+      body: new URLSearchParams({ esc: clave, nombre: nombre, puntaje: String(p), dur: String(dur), website: "" })   // formato simple: evita bloqueos entre dominios
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d && d.ok && d.puesto) {
+          delete rkCache[clave];
+          el.textContent = "Tu puntaje quedó registrado como «" + nombre + "». Tu mejor puntaje en este escenario te deja en el puesto " + d.puesto + " de " + d.total + ".";
+        } else {
+          el.textContent = (d && d.mensaje) || "No pudimos registrar tu puntaje en el ranking.";
+        }
+      })
+      .catch(function () { el.textContent = "No pudimos registrar tu puntaje en el ranking. Revisa tu conexión e inténtalo de nuevo."; });
   }
 
   /* ---------- Selección de escenario ---------- */
@@ -544,6 +636,7 @@ const ESC = [
     $("sim-ini-tpm").textContent = fmt(ESCENARIO.ini.i, 2) + "%";
     $("sim-ini-act").textContent = signo(ESCENARIO.ini.y) + "%";
     $("sim-ini-dur").textContent = ESCENARIO.T / 4 + (ESCENARIO.T === 4 ? " año" : " años");
+    cargarRanking();
   }
 
   function empezar() {
@@ -551,6 +644,8 @@ const ESC = [
     setTimeout(function () {                       // deja que se pinte el aviso antes del cálculo
       P = armarPartida(ESCENARIO);
       prepararReferencia();
+      P.inicio = Date.now();
+      guardarNombre();
       $("sim-cargando").hidden = true; $("sim-juego").hidden = false;
       $("sim-juego-esc").textContent = ESCENARIO.n;
       $("sim-informe").innerHTML = "<strong>Primera reunión del Consejo</strong>Lee el shock del trimestre, mira el radar y decide qué hacer con la tasa.";
@@ -601,6 +696,11 @@ const ESC = [
       var b = ev.target.closest("button"); if (!b) return;
       ESCENARIO = ESC.filter(function (s) { return s.id === b.dataset.id; })[0] || ESCENARIO; renderEscenarios();
     });
+    if (RANKING_URL) {
+      $("sim-nombre-caja").hidden = false; $("sim-ranking").hidden = false;
+      try { $("sim-nombre").value = localStorage.getItem(NOMBRE_KEY) || ""; } catch (e) {}
+      $("sim-nombre").addEventListener("input", function () { guardarNombre(); if (rkMostrado) pintarRanking(rkMostrado); });   // resalta tu fila al escribir
+    }
     $("sim-empezar").addEventListener("click", empezar);
     $("sim-otra").addEventListener("click", empezar);
     $("sim-menu").addEventListener("click", volverAlMenu);
