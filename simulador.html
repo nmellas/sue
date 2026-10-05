@@ -6,7 +6,7 @@
 <title>Sé el Banco Central — SUE, Sociedad Universitaria de Economía</title>
 <meta name="description" content="Decide la tasa de interés durante dos o cuatro años, enfrenta shocks de la economía chilena y lleva la inflación a la meta. Un simulador de la Sociedad Universitaria de Economía.">
 <link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="simulador.css?v=10">
+<link rel="stylesheet" href="simulador.css?v=11">
 <!-- Ícono de la pestaña -->
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="shortcut icon" href="/favicon.ico">
@@ -91,7 +91,24 @@
             <div class="sim-regla"><span>◎</span><p><strong>La credibilidad importa.</strong> Si la inflación sale del rango de 2%–4%, las expectativas se desanclan y cuesta más controlarla.</p></div>
           </div>
         </div>
+        <div class="sim-nombre" id="sim-nombre-caja" hidden>
+          <label for="sim-nombre">Tu nombre para el ranking</label>
+          <input type="text" id="sim-nombre" maxlength="20" autocomplete="nickname" spellcheck="false" placeholder="Escribe tu nombre (opcional)">
+          <p class="sim-nombre-ayuda">Si lo dejas en blanco, juegas igual, pero tu puntaje no aparece en el ranking.</p>
+        </div>
         <button type="button" class="btn btn-primary sim-cta" id="sim-empezar" disabled>Asumir la presidencia del Consejo →</button>
+
+        <section class="sim-ranking" id="sim-ranking" aria-labelledby="sim-ranking-titulo" hidden>
+          <h2 id="sim-ranking-titulo">Ranking</h2>
+          <p class="sim-ranking-sub" id="sim-ranking-sub"></p>
+          <div class="sim-rk-caja">
+            <table class="sim-rk" id="sim-rk" hidden>
+              <thead><tr><th scope="col">Puesto</th><th scope="col">Jugador</th><th scope="col">Puntaje</th></tr></thead>
+              <tbody id="sim-rk-cuerpo"></tbody>
+            </table>
+            <p class="sim-rk-estado" id="sim-rk-estado" role="status"></p>
+          </div>
+        </section>
 
         <details class="sim-como" id="sim-modelo">
           <summary>Conoce el modelo detrás del juego</summary>
@@ -215,6 +232,7 @@
         <p class="sim-record" id="sim-record"></p>
         <p class="sim-resumen" id="sim-resumen"></p>
         <p class="sim-resumen sim-resena" id="sim-resena"></p>
+        <p class="sim-ranking-envio" id="sim-ranking-envio" role="status" hidden></p>
         <div class="sim-grafico" id="sim-grafico-final"></div>
         <div class="sim-leyenda sim-leyenda-final">
           <span><i style="background:#CD1729"></i>Tu inflación</span>
@@ -280,6 +298,7 @@
 <script src="ticker-cache.js"></script>
 <script src="indicators.js"></script>
 <script src="script.js"></script>
-<script src="simulador.js?v=10"></script>
+<script src="ranking-config.js"></script>
+<script src="simulador.js?v=11"></script>
 </body>
 </html>
