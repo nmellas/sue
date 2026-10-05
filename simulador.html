@@ -6,7 +6,7 @@
 <title>Sé el Banco Central — SUE, Sociedad Universitaria de Economía</title>
 <meta name="description" content="Decide la tasa de interés durante dos o cuatro años, enfrenta shocks de la economía chilena y lleva la inflación a la meta. Un simulador de la Sociedad Universitaria de Economía.">
 <link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="simulador.css?v=13">
+<link rel="stylesheet" href="simulador.css?v=15">
 <!-- Ícono de la pestaña -->
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="shortcut icon" href="/favicon.ico">
@@ -90,7 +90,7 @@
                 <input type="text" id="sim-nombre" maxlength="20" autocomplete="nickname" spellcheck="false" placeholder="Escribe tu nombre (opcional)">
                 <p class="sim-nombre-ayuda">Si lo dejas en blanco, juegas igual, pero tu puntaje no aparece en el ranking.</p>
               </div>
-              <button type="button" class="btn btn-primary sim-cta" id="sim-empezar" disabled>Asumir la presidencia del Consejo →</button>
+              <button type="button" class="btn btn-primary sim-cta" id="sim-empezar">Asumir la presidencia del Consejo →</button>
             </div>
           </div>
           <div class="sim-reglas">
@@ -243,6 +243,18 @@
           <span><i style="background:#172340"></i>Tu TPM</span>
         </div>
 
+        <section class="sim-ranking sim-ranking-final" id="sim-ranking-final" aria-labelledby="sim-rkf-titulo" hidden>
+          <h2 id="sim-rkf-titulo">Ranking</h2>
+          <p class="sim-ranking-sub" id="sim-rkf-sub"></p>
+          <div class="sim-rk-caja">
+            <table class="sim-rk" id="sim-rkf" hidden>
+              <thead><tr><th scope="col">Puesto</th><th scope="col">Jugador</th><th scope="col">Puntaje</th></tr></thead>
+              <tbody id="sim-rkf-cuerpo"></tbody>
+            </table>
+            <p class="sim-rk-estado" id="sim-rkf-estado" role="status"></p>
+          </div>
+        </section>
+
         <div class="sim-acciones">
           <button type="button" class="btn btn-primary" id="sim-compartir">Compartir resultado</button>
           <button type="button" class="btn btn-ghost" id="sim-otra">Repetir escenario</button>
@@ -302,6 +314,6 @@
 <script src="indicators.js"></script>
 <script src="script.js"></script>
 <script src="ranking-config.js"></script>
-<script src="simulador.js?v=13"></script>
+<script src="simulador.js?v=15"></script>
 </body>
 </html>
