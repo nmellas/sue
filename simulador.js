@@ -522,7 +522,7 @@ const ESC = [
     $("sim-resumen").innerHTML = "Terminaste con una inflación de <strong>" + fmt(P.e.pi) + "%</strong>, una TPM de <strong>" + fmt(P.e.i, 2) +
       "%</strong>, " + actividadFinal(P.e.y) + " y una credibilidad de <strong>" + pct(P.e.c) + "</strong>.";
     $("sim-resena").textContent = resenaDelDesempeno(p);
-    enviarPuntaje(p);
+    rankingAlFinalizar(p);
     $("sim-grafico-final").innerHTML = grafico($("sim-grafico-final"), { hist: P.hist, optimo: P.refTray });
     $("sim-final").dataset.puntaje = p;
     renderEscenarios();
@@ -540,117 +540,177 @@ const ESC = [
   }
 
   /* ---------- Ranking online (opcional) ----------
-     Se activa solo si ranking-config.js trae la dirección del ranking. Sin ella, el juego funciona igual que antes. */
+     Se activa solo si ranking-config.js trae la dirección del ranking. Sin ella, el juego funciona igual que antes.
+     Se pide cargando la dirección como un <script> (JSONP): así funciona también en los navegadores integrados de
+     Instagram, Facebook o WhatsApp, donde las peticiones fetch a Google suelen fallar. */
   var RANKING_URL = String(window.SUE_RANKING_URL || "").trim();
   var NOMBRE_KEY = "sue-simulador-nombre";
-  var rkCache = {}, rkMostrado = null;
+  var RK_ESPERA = Number(window.SUE_RANKING_ESPERA) || 10000;          // cuánto espera cada intento antes de darlo por perdido
+  var rkCache = {};                                                      // última tabla recibida de cada escenario (en memoria)
+  var RK_INICIO = { titulo: "sim-ranking-titulo", sub: "sim-ranking-sub", tabla: "sim-rk", cuerpo: "sim-rk-cuerpo", estado: "sim-rk-estado", clave: "", datos: null };
+  var RK_FINAL = { titulo: "sim-rkf-titulo", sub: "sim-rkf-sub", tabla: "sim-rkf", cuerpo: "sim-rkf-cuerpo", estado: "sim-rkf-estado", clave: "", datos: null };
 
   function normNombre(t) { return String(t || "").replace(/\s+/g, " ").trim().toLowerCase(); }
   function nombreJugador() { var el = $("sim-nombre"); return el ? el.value.replace(/\s+/g, " ").trim() : ""; }
   function claveRanking(e) { return e.diario ? "diario-" + claveDia() : e.id; }   // el Reto del día tiene un ranking nuevo cada día
-  function estadoRanking(txt) { $("sim-rk-estado").textContent = txt || ""; }
 
-  function pintarRanking(d) {
-    rkMostrado = d;
-    var cuerpo = $("sim-rk-cuerpo"), yo = normNombre(nombreJugador());
+  // Pide algo al ranking cargando un <script>. Llama a fin(error, datos).
+  function rkLlamar(params, espera, fin) {
+    var nombre = "__rk" + Date.now().toString(36) + Math.floor(Math.random() * 1e6), s = document.createElement("script"), listo = false, t;
+    function terminar(err, d) {
+      if (listo) return;
+      listo = true; clearTimeout(t);
+      window[nombre] = function () {};                                    // si llega tarde, no hace nada ni deja errores
+      if (s.parentNode) s.parentNode.removeChild(s);
+      fin(err, d);
+    }
+    window[nombre] = function (d) { terminar(d && d.ok === false && !d.mensaje ? true : null, d); };
+    s.onerror = function () { terminar(true); };
+    t = setTimeout(function () { terminar(true); }, espera);
+    params.callback = nombre;
+    var q = Object.keys(params).map(function (k) { return encodeURIComponent(k) + "=" + encodeURIComponent(params[k]); }).join("&");
+    s.async = true;
+    s.src = RANKING_URL + (RANKING_URL.indexOf("?") === -1 ? "?" : "&") + q;
+    document.head.appendChild(s);
+  }
+
+  // Última tabla guardada en este dispositivo: se muestra al instante mientras llega la actualizada
+  function leerLocal(clave) {
+    try { var o = JSON.parse(localStorage.getItem("sue-rk-" + clave) || "null"); return o && o.top ? o : null; } catch (e) { return null; }
+  }
+  function guardarLocal(clave, d) {
+    try { localStorage.setItem("sue-rk-" + clave, JSON.stringify({ total: d.total, top: d.top })); } catch (e) {}
+  }
+  function recordarRanking(clave, d) {
+    if (!d || !d.top) return;
+    rkCache[clave] = { t: Date.now(), datos: { total: d.total, top: d.top } };
+    guardarLocal(clave, d);
+  }
+
+  function estadoVista(v, txt, reintentar) {
+    var el = $(v.estado);
+    el.textContent = txt || "";
+    if (reintentar) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "sim-rk-reintentar"; b.textContent = "Reintentar";
+      b.addEventListener("click", reintentar);
+      el.appendChild(document.createTextNode(" ")); el.appendChild(b);
+    }
+  }
+
+  function pintarRanking(v, d, nota) {
+    v.datos = d;
+    var cuerpo = $(v.cuerpo), yo = normNombre(nombreJugador());
     cuerpo.textContent = "";
     if (!d.top || !d.top.length) {
-      $("sim-rk").hidden = true;
-      estadoRanking("Aún nadie ha jugado este escenario: ¡puedes ser el primero!");
+      $(v.tabla).hidden = true;
+      estadoVista(v, nota || "Aún nadie ha jugado este escenario: ¡puedes ser el primero!");
       return;
     }
     d.top.forEach(function (f, i) {
       var tr = document.createElement("tr");
       if (yo && normNombre(f.nombre) === yo) tr.className = "is-tu";
-      [i + 1, f.nombre, f.puntaje].forEach(function (v, k) {
+      [i + 1, f.nombre, f.puntaje].forEach(function (val, k) {
         var td = document.createElement(k === 0 ? "th" : "td");
         if (k === 0) td.setAttribute("scope", "row");
-        td.textContent = v;                                    // textContent: un nombre nunca se interpreta como HTML
+        td.textContent = val;                                  // textContent: un nombre nunca se interpreta como HTML
         tr.appendChild(td);
       });
       cuerpo.appendChild(tr);
     });
-    $("sim-rk").hidden = false;
-    estadoRanking(d.total > d.top.length ? "Mostrando los " + d.top.length + " mejores de " + d.total + " jugadores." : "");
+    $(v.tabla).hidden = false;
+    estadoVista(v, nota || (d.total > d.top.length ? "Mostrando los " + d.top.length + " mejores de " + d.total + " jugadores." : ""));
   }
-  // JSONP: carga el ranking con una etiqueta <script>. Funciona en el navegador de Instagram, donde fetch() a Google suele fallar.
-  function jsonp(url, ms) {
-    return new Promise(function (ok, no) {
-      var cb = "sueRk" + Date.now() + Math.floor(Math.random() * 1e6), s = document.createElement("script"), fin = false, t;
-      function limpiar() {
-        fin = true; clearTimeout(t);
-        try { delete window[cb]; } catch (e) { window[cb] = undefined; }
-        if (s.parentNode) s.parentNode.removeChild(s);
-      }
-      t = setTimeout(function () { if (!fin) { limpiar(); no(new Error("timeout")); } }, ms || 12000);
-      window[cb] = function (d) { if (!fin) { limpiar(); ok(d); } };
-      s.onerror = function () { if (!fin) { limpiar(); no(new Error("red")); } };
-      s.src = url + (url.indexOf("?") === -1 ? "?" : "&") + "callback=" + cb;
-      document.head.appendChild(s);
-    });
-  }
-  function pedirConReintento(url, intentos) {
-    return jsonp(url, 12000).catch(function (e) { if (intentos > 1) return pedirConReintento(url, intentos - 1); throw e; });
-  }
-  // Caché en el dispositivo: se muestra al instante el último ranking visto mientras llega el nuevo
-  function rkLocalLeer(clave) { try { return JSON.parse(localStorage.getItem("sue-rk-" + clave)); } catch (e) { return null; } }
-  function rkLocalGuardar(clave, d) { try { localStorage.setItem("sue-rk-" + clave, JSON.stringify(d)); } catch (e) {} }
 
-  function cargarRanking() {
+  // Muestra el ranking de un escenario en una vista (inicio o final): primero lo que ya se tiene, luego lo actualizado
+  function cargarRanking(v, esc, forzar) {
     if (!RANKING_URL) return;
-    var clave = claveRanking(ESCENARIO);
-    $("sim-ranking-titulo").textContent = "Ranking · " + ESCENARIO.n;
-    $("sim-ranking-sub").textContent = ESCENARIO.diario
+    var clave = claveRanking(esc);
+    v.clave = clave;
+    $(v.titulo).textContent = "Ranking · " + esc.n;
+    $(v.sub).textContent = esc.diario
       ? "Se reinicia cada día: aquí compiten solo los puntajes de hoy. De cada jugador cuenta su mejor intento."
       : "Los mejores puntajes de este escenario. De cada jugador cuenta su mejor intento.";
-    var c = rkCache[clave];
-    if (c && Date.now() - c.t < 30000) { pintarRanking(c.datos); return; }
-    var viejo = rkLocalLeer(clave);
-    if (viejo && viejo.top) { pintarRanking(viejo); estadoRanking("Actualizando ranking…"); }
-    else { $("sim-rk").hidden = true; estadoRanking("Cargando ranking…"); }
-    pedirConReintento(RANKING_URL + (RANKING_URL.indexOf("?") === -1 ? "?" : "&") + "esc=" + encodeURIComponent(clave), 2)
-      .then(function (d) {
-        if (!d || !d.ok) throw new Error("ranking");
-        rkCache[clave] = { t: Date.now(), datos: d };
-        rkLocalGuardar(clave, d);
-        if (claveRanking(ESCENARIO) === clave) pintarRanking(d);
-      })
-      .catch(function () {
-        if (claveRanking(ESCENARIO) !== clave) return;
-        if (viejo && viejo.top) estadoRanking("Mostrando el último ranking guardado (no pudimos actualizarlo).");
-        else { $("sim-rk").hidden = true; estadoRanking("No pudimos cargar el ranking en este momento."); }
+
+    var mem = rkCache[clave];
+    if (mem && !forzar && Date.now() - mem.t < 30000) { pintarRanking(v, mem.datos); return; }
+
+    var viejo = (mem && mem.datos) || leerLocal(clave);
+    if (viejo) pintarRanking(v, viejo, "Actualizando…");
+    else { $(v.tabla).hidden = true; estadoVista(v, "Cargando ranking…"); }
+
+    function intentar(restantes) {
+      rkLlamar({ esc: clave, t: Date.now() }, RK_ESPERA, function (err, d) {
+        if (v.clave !== clave) return;                         // el jugador ya cambió de escenario
+        if (!err && d && d.ok && d.top) { recordarRanking(clave, d); pintarRanking(v, d); return; }
+        if (restantes > 1) { setTimeout(function () { if (v.clave === clave) intentar(restantes - 1); }, 1500); return; }
+        var otra = function () { cargarRanking(v, esc, true); };
+        if (viejo) pintarRanking(v, viejo, "No pudimos actualizar el ranking: se muestra la última versión guardada en este dispositivo.");
+        else $(v.tabla).hidden = true;
+        estadoVista(v, viejo ? "No pudimos actualizar el ranking: se muestra la última versión guardada en este dispositivo." : "No pudimos cargar el ranking.", otra);
       });
+    }
+    intentar(2);
+  }
+
+  function repintarRankings() {
+    [RK_INICIO, RK_FINAL].forEach(function (v) { if (v.datos && !$(v.tabla).hidden) pintarRanking(v, v.datos, $(v.estado).textContent.indexOf("Mostrando") === 0 ? "" : undefined); });
   }
 
   function guardarNombre() {
     try { localStorage.setItem(NOMBRE_KEY, nombreJugador()); } catch (e) {}
   }
 
-    function enviarPuntaje(p) {
-    var el = $("sim-ranking-envio");
-    if (!el) return;
-    el.hidden = true;
-    if (!RANKING_URL) return;
-    var nombre = nombreJugador(), clave = claveRanking(P.esc);
-    el.hidden = false;
+  // Al terminar la partida: se envía el puntaje, se informa en qué puesto quedó y se muestra el ranking del escenario
+  function rankingAlFinalizar(p) {
+    var el = $("sim-ranking-envio"), caja = $("sim-ranking-final");
+    if (el) el.hidden = true;
+    if (caja) caja.hidden = true;
+    if (!RANKING_URL || !el || !caja) return;
+
+    var esc = P.esc, clave = claveRanking(esc), nombre = nombreJugador();
+    var dur = Math.round((Date.now() - (P.inicio || Date.now())) / 1000);
+    caja.hidden = false; el.hidden = false;
+
     if (nombre.length < 2) {
       el.textContent = "Para aparecer en el ranking, escribe tu nombre en la pantalla de inicio antes de jugar.";
+      cargarRanking(RK_FINAL, esc, true);
       return;
     }
-    el.textContent = "Enviando tu puntaje al ranking…";
-    var dur = Math.round((Date.now() - (P.inicio || Date.now())) / 1000);
-    var url = RANKING_URL + (RANKING_URL.indexOf("?") === -1 ? "?" : "&") + "accion=guardar&esc=" + encodeURIComponent(clave) +
-      "&nombre=" + encodeURIComponent(nombre) + "&puntaje=" + p + "&dur=" + dur;
-    jsonp(url, 20000)
-      .then(function (d) {
-        if (d && d.ok && d.puesto) {
-          delete rkCache[clave];
+
+    // Mientras se envía el puntaje, ya se ve el último ranking conocido
+    var mem = rkCache[clave], viejo = (mem && mem.datos) || leerLocal(clave);
+    RK_FINAL.clave = clave;
+    $(RK_FINAL.titulo).textContent = "Ranking · " + esc.n;
+    $(RK_FINAL.sub).textContent = esc.diario ? "Se reinicia cada día: aquí compiten solo los puntajes de hoy. De cada jugador cuenta su mejor intento."
+                                              : "Los mejores puntajes de este escenario. De cada jugador cuenta su mejor intento.";
+    if (viejo) pintarRanking(RK_FINAL, viejo, "Actualizando con tu puntaje…");
+    else { $(RK_FINAL.tabla).hidden = true; estadoVista(RK_FINAL, "Cargando ranking…"); }
+
+    function enviar(intentosLeft) {
+      el.textContent = "Enviando tu puntaje al ranking…";
+      rkLlamar({ accion: "guardar", esc: clave, nombre: nombre, puntaje: String(p), dur: String(dur), website: "", t: Date.now() }, RK_ESPERA * 2, function (err, d) {
+        if (!err && d && d.ok && d.puesto) {
+          recordarRanking(clave, d);
           el.textContent = "Tu puntaje quedó registrado como «" + nombre + "». Tu mejor puntaje en este escenario te deja en el puesto " + d.puesto + " de " + d.total + ".";
-        } else {
-          el.textContent = (d && d.mensaje) || "No pudimos registrar tu puntaje en el ranking.";
+          if (RK_FINAL.clave === clave) pintarRanking(RK_FINAL, d);
+          return;
         }
-      })
-      .catch(function () { el.textContent = "No pudimos registrar tu puntaje en el ranking. Revisa tu conexión e inténtalo de nuevo."; });
+        if (!err && d && d.mensaje) {                          // el servidor respondió y explicó por qué no (p. ej. "espera unos segundos")
+          el.textContent = d.mensaje;
+          cargarRanking(RK_FINAL, esc, true);
+          return;
+        }
+        if (intentosLeft > 1) { setTimeout(function () { enviar(intentosLeft - 1); }, 1500); return; }
+        el.textContent = "No pudimos registrar tu puntaje en el ranking. ";
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "sim-rk-reintentar"; b.textContent = "Reintentar";
+        b.addEventListener("click", function () { enviar(2); });
+        el.appendChild(b);
+        cargarRanking(RK_FINAL, esc, true);
+      });
+    }
+    enviar(2);
   }
 
   /* ---------- Selección de escenario ---------- */
@@ -669,14 +729,13 @@ const ESC = [
     $("sim-ini-tpm").textContent = fmt(ESCENARIO.ini.i, 2) + "%";
     $("sim-ini-act").textContent = signo(ESCENARIO.ini.y) + "%";
     $("sim-ini-dur").textContent = ESCENARIO.T / 4 + (ESCENARIO.T === 4 ? " año" : " años");
-      actualizarBotonInicio();
-    cargarRanking();
+    cargarRanking(RK_INICIO, ESCENARIO);
   }
 
   function empezar() {
-     if (ESCENARIO.azar && !DATOS_LISTOS) return;
     $("sim-intro").hidden = true; $("sim-final").hidden = true; $("sim-juego").hidden = true; $("sim-cargando").hidden = false;
-    setTimeout(function () {                       // deja que se pinte el aviso antes del cálculo
+    var espera = (ESCENARIO.azar && !ESCENARIO.diario) ? datosHoy : Promise.resolve();
+    espera.then(function () { setTimeout(function () {   // deja que se pinte el aviso antes del cálculo
       P = armarPartida(ESCENARIO);
       prepararReferencia();
       P.inicio = Date.now();
@@ -686,7 +745,7 @@ const ESC = [
       $("sim-informe").innerHTML = "<strong>Primera reunión del Consejo</strong>Lee el shock del trimestre, mira el radar y decide qué hacer con la tasa.";
       tablero(null); mostrarEvento();
       $("sim-juego").scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 40);
+    }, 40); });
   }
   // Salir de la partida (botón "Volver" o clic en el título). Si hay avance, pide confirmación.
   function salir(ev) {
@@ -703,32 +762,24 @@ const ESC = [
   }
 
   /* ---------- Datos reales de partida (mindicador.cl) ---------- */
-  var DATOS_LISTOS = false;
-
-  function conTimeout(p, ms) {
-    return new Promise(function (ok, no) {
-      var t = setTimeout(function () { no(new Error("timeout")); }, ms);
-      p.then(function (v) { clearTimeout(t); ok(v); }, function (e) { clearTimeout(t); no(e); });
-    });
-  }
-  // Solo los escenarios con datos actuales esperan; los históricos se pueden jugar de inmediato
-  function actualizarBotonInicio() {
-    var b = $("sim-empezar"), espera = !!ESCENARIO.azar && !DATOS_LISTOS;
-    b.disabled = espera;
-    b.textContent = espera ? "Cargando datos actuales…" : "Asumir la presidencia del Consejo →";
-  }
+  // Los datos reales (mindicador.cl) solo afectan a los escenarios "de hoy". Si tardan o fallan, se sigue con valores de respaldo:
+  // el botón de jugar NUNCA depende de esta consulta.
+  var datosHoy = Promise.resolve();
   function cargarHoy() {
-    var pedir = function (u) { return conTimeout(fetch(u).then(function (r) { if (!r.ok) throw 0; return r.json(); }), 6000); };
-    Promise.all([pedir("https://mindicador.cl/api/ipc"), pedir("https://mindicador.cl/api/tpm")])
+    var pedir = function (u) { return fetch(u).then(function (r) { if (!r.ok) throw 0; return r.json(); }); };
+    var consulta = Promise.all([pedir("https://mindicador.cl/api/ipc"), pedir("https://mindicador.cl/api/tpm")])
       .then(function (r) {
         var serie = (r[0].serie || []).slice(0, 12), tpm = r[1].serie && r[1].serie[0] && r[1].serie[0].valor;
         if (serie.length === 12 && typeof tpm === "number") {
           var anual = (serie.reduce(function (acc, m) { return acc * (1 + m.valor / 100); }, 1) - 1) * 100;
-          ESC.filter(function (s) { return s.azar; }).forEach(function (s) { s.ini.pi = clamp(anual, 0, 12); s.ini.i = clamp(tpm, IMIN, IMAX); });
+          // El Reto del día no se toca: debe partir igual para todos los jugadores, con o sin conexión
+          ESC.filter(function (s) { return s.azar && !s.diario; }).forEach(function (s) { s.ini.pi = clamp(anual, 0, 12); s.ini.i = clamp(tpm, IMIN, IMAX); });
         }
       })
-      .catch(function () {})                       // si falla o demora más de 6 s, se usan los valores por defecto
-      .then(function () { DATOS_LISTOS = true; renderEscenarios(); });
+      .catch(function () {});
+    var limite = new Promise(function (ok) { setTimeout(ok, 3000); });          // máximo 3 s de espera
+    datosHoy = Promise.race([consulta, limite]);
+    consulta.then(function () { try { renderEscenarios(); } catch (e) {} });     // refresca las cifras de la pantalla cuando llegan
   }
 
   // Solo para pruebas: con ?debug en la URL se puede inspeccionar la partida
@@ -748,8 +799,9 @@ const ESC = [
     if (RANKING_URL) {
       $("sim-nombre-caja").hidden = false; $("sim-ranking").hidden = false;
       try { $("sim-nombre").value = localStorage.getItem(NOMBRE_KEY) || ""; } catch (e) {}
-      $("sim-nombre").addEventListener("input", function () { guardarNombre(); if (rkMostrado) pintarRanking(rkMostrado); });   // resalta tu fila al escribir
+      $("sim-nombre").addEventListener("input", function () { guardarNombre(); repintarRankings(); });   // resalta tu fila al escribir
     }
+    $("sim-empezar").disabled = false;
     $("sim-empezar").addEventListener("click", empezar);
     $("sim-otra").addEventListener("click", empezar);
     $("sim-menu").addEventListener("click", volverAlMenu);
