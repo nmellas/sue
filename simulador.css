@@ -152,16 +152,16 @@
 /* ---- Responsive ---- */
 @media (max-width:1000px){
   .sim-arranque{margin-top:4px;}
+  /* El gráfico va ANTES que los indicadores: para decidir, ver la trayectoria ayuda más que las cifras sueltas */
+  .sim-juego-grid > div:last-child{display:flex;flex-direction:column;}
+  .sim-juego-grid > div:last-child > .sim-grafico{order:1;}
+  .sim-juego-grid > div:last-child > .sim-leyenda{order:2;}
+  .sim-juego-grid > div:last-child > .sim-tablero{order:3;margin:16px 0 0;}
   .sim-escenarios{grid-template-columns:repeat(2,minmax(0,1fr));}
   .sim-partida{grid-template-columns:repeat(3,1fr);}
   .sim-inicio,.sim-juego-grid{grid-template-columns:1fr;gap:28px;}
 }
 @media (max-width:620px){
-  /* En celular el gráfico va primero: para decidir, ver la trayectoria ayuda más que las cifras sueltas */
-  .sim-juego-col2{display:flex;flex-direction:column;}
-     sim-juego-col2 .sim-grafico{order:1;margin-bottom:0;}
-   .sim-juego-col2 .sim-leyenda{order:2;margin:10px 0 16px;}
-   .sim-juego-col2 .sim-tablero{order:3;margin-bottom:0;}
   .sim-escenarios{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
   .sim-esc{min-height:0;padding:14px;}
   .sim-esc-nombre{font-size:16px;}
@@ -222,3 +222,9 @@
 .sim-rk:not([hidden]) + .sim-rk-estado{border-top:1px solid var(--sim-linea);}
 .sim-ranking-envio{font-size:13.5px;line-height:1.6;color:var(--sim-suave);margin:-4px 0 18px;max-width:58ch;margin-left:auto;margin-right:auto;}
 @media (max-width:560px){.sim-rk th,.sim-rk td{padding:11px 12px;}.sim-rk tbody th{width:56px;}}
+
+/* ---- Ranking en la pantalla final y botón "Reintentar" ---- */
+.sim-ranking-final{margin:34px auto 28px;max-width:none;text-align:left;}
+.sim-ranking-final h2{text-align:center;font-size:clamp(20px,2.2vw,24px);}
+.sim-ranking-final .sim-ranking-sub{text-align:center;}
+.sim-rk-reintentar{background:none;border:0;border-radius:0;box-shadow:none;margin:0;padding:6px 4px;font:inherit;font-weight:600;color:var(--sim-rojo);cursor:pointer;text-decoration:underline;text-underline-offset:3px;-webkit-appearance:none;appearance:none;}
