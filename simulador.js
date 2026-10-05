@@ -710,3 +710,15 @@ const ESC = [
     renderEscenarios(); cargarHoy();
   });
 })();
+
+function puntajeDe(L, Lb, Lw, T) {
+  var den = Lb + KAPPA_POR_TRIM * T;
+  var r = Math.max(0, (L - Lb) / den);
+  var rw = Math.max(0.001, (Lw - Lb) / den); // Evita rw = 0
+  
+  var div = Math.log(1 + rw / R0);
+  if (!div || isNaN(div)) return 50; // Resguardo contra división por 0
+
+  var p = 100 * (1 - Math.log(1 + r / R0) / div);
+  return isNaN(p) ? 0 : clamp(p, 0, 100);
+}
