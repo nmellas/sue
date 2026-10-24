@@ -250,7 +250,8 @@ font-style:italic;color:var(--brick);font-weight:500;
 /* Computador: los botones terminan a la misma altura que el gráfico */
 .hero-grid{align-items:stretch;}
 .hero-grid > div:first-child{display:flex;flex-direction:column;}
-.hero-grid > .chart-frame{align-self:end;}
+.hero-grid{grid-template-columns:1fr 1.12fr;gap:40px;}
+.hero-grid > .chart-frame{align-self:stretch;display:flex;flex-direction:column;justify-content:center;}
 @media (max-width:700px){
   .hero-actions{gap:8px;max-width:340px;}
   .hero-actions .btn{font-size:13px;padding:13px 8px;letter-spacing:.02em;}
