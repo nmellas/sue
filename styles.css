@@ -253,7 +253,7 @@ font-style:italic;color:var(--brick);font-weight:500;
 .hero-grid > .chart-frame{align-self:end;}
 @media (max-width:700px){
   .hero-actions{gap:8px;max-width:340px;}
-  .hero-actions .btn{font-size:12px;padding:8px 6px;letter-spacing:.02em;}
+  .hero-actions .btn{font-size:13px;padding:13px 8px;letter-spacing:.02em;}
   .hero-actions .lbl-full{display:none;}
   .hero-actions .lbl-short{display:inline;}
 }
