@@ -244,8 +244,19 @@ margin-bottom:.3em;
 font-style:italic;color:var(--brick);font-weight:500;
 }
 .hero-sub{font-size:17px;max-width:46ch;margin-bottom:1.8em;}
-.hero-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:520px;}
+.hero-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:520px;margin-top:auto;}
 .hero-actions .btn{justify-content:center;text-align:center;}
+.hero-actions .lbl-short{display:none;}
+/* Computador: los botones terminan a la misma altura que el gráfico */
+.hero-grid{align-items:stretch;}
+.hero-grid > div:first-child{display:flex;flex-direction:column;}
+.hero-grid > .chart-frame{align-self:end;}
+@media (max-width:700px){
+  .hero-actions{gap:8px;max-width:340px;}
+  .hero-actions .btn{font-size:12px;padding:8px 6px;letter-spacing:.02em;}
+  .hero-actions .lbl-full{display:none;}
+  .hero-actions .lbl-short{display:inline;}
+}
 
 .chart-frame{
 background:var(--white);
