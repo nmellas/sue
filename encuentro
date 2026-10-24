@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.er Encuentro Universitario de Economía — SUE y FEN UChile</title>
+<meta name="description" content="1.er Encuentro Universitario de Economía, 27, 28 y 29 de octubre de 2026 en la FEN de la Universidad de Chile: panel sobre IA y mercado laboral, investigaciones estudiantiles, charla de minería y conversatorio sobre desigualdad y crecimiento.">
+<meta name="theme-color" content="#bf0d1f">
+
+<!-- Ícono de la pestaña -->
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<!-- Vista previa al compartir -->
+<link rel="canonical" href="https://suecon.cl/encuentro.html">
+<meta property="og:url" content="https://suecon.cl/encuentro.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SUE — Sociedad Universitaria de Economía">
+<meta property="og:locale" content="es_CL">
+<meta property="og:title" content="1.er Encuentro Universitario de Economía">
+<meta property="og:description" content="27, 28 y 29 de octubre de 2026 · FEN, Universidad de Chile. Organiza la SUE en alianza con la FEN.">
+<meta property="og:image" content="https://suecon.cl/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Estilos de Tailwind CSS ya compilados (solo con las clases que usa esta página). -->
+<link rel="stylesheet" href="encuentro.css">
+<!-- Alternativa para editar clases a mano sin recompilar: borra la línea de arriba y usa Tailwind por CDN:
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+-->
+<script>document.documentElement.classList.add('reveal-on');</script>
+</head>
+<body>
+
+<!-- ============ Barra superior ============ -->
+<header class="sticky top-0 z-50 border-b border-white/20 bg-sue-900/95 backdrop-blur">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+    <a href="index.html" aria-label="Volver al sitio de la SUE"><span class="inline-flex items-center rounded-md bg-white px-3 py-1.5"><img src="logofinal_sue.png" alt="Sociedad Universitaria de Economía" class="h-9 w-auto sm:h-10" onerror="this.replaceWith(Object.assign(document.createElement('b'),{className:'font-display text-sue-700 text-lg',textContent:'SUE'}))"></span></a>
+    <nav class="hidden items-center gap-6 text-sm font-semibold text-white/85 lg:flex" aria-label="Secciones del encuentro"><a href="#programa" class="transition hover:text-white hover:underline hover:underline-offset-8 decoration-2">Programa</a><a href="#invitados" class="transition hover:text-white hover:underline hover:underline-offset-8 decoration-2">Invitados</a><a href="#inscripcion" class="transition hover:text-white hover:underline hover:underline-offset-8 decoration-2">Inscripción</a><a href="#contacto-evento" class="transition hover:text-white hover:underline hover:underline-offset-8 decoration-2">Dudas y alianzas</a><a href="#como-llegar" class="transition hover:text-white hover:underline hover:underline-offset-8 decoration-2">Cómo llegar</a></nav>
+    <div class="flex items-center gap-3">
+      <a href="#inscripcion" class="js-inscripcion hidden rounded-md bg-white px-4 py-2 text-sm font-bold text-sue-700 transition hover:bg-crema sm:inline-block">Inscríbete</a>
+      <button id="menu-btn" type="button" class="rounded-md border border-white/40 p-2 lg:hidden" aria-expanded="false" aria-controls="menu-movil" aria-label="Abrir menú">
+        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="menu-movil" class="hidden border-t border-white/20 bg-sue-900 px-6 pb-5 lg:hidden">
+    <nav aria-label="Secciones del encuentro"><a href="#programa" class="block py-3 text-lg font-semibold">Programa</a><a href="#invitados" class="block py-3 text-lg font-semibold">Invitados</a><a href="#inscripcion" class="block py-3 text-lg font-semibold">Inscripción</a><a href="#contacto-evento" class="block py-3 text-lg font-semibold">Dudas y alianzas</a><a href="#como-llegar" class="block py-3 text-lg font-semibold">Cómo llegar</a></nav>
+    <div class="mt-3 border-t border-white/20 pt-3"><p class="text-xs font-bold uppercase tracking-widest text-white/60">Sitio de la SUE</p><a href="index.html" class="block py-2 text-sm text-white/85">Inicio</a><a href="quienes-somos.html" class="block py-2 text-sm text-white/85">Quiénes somos</a><a href="actividades.html" class="block py-2 text-sm text-white/85">Actividades</a><a href="publicaciones.html" class="block py-2 text-sm text-white/85">Publicaciones</a><a href="contacto.html" class="block py-2 text-sm text-white/85">Contacto</a></div>
+  </div>
+</header>
+
+<main>
+<!-- ============ Portada ============ -->
+<section class="relative isolate overflow-hidden bg-gradient-to-b from-sue-700 via-sue-700 to-sue-800">
+  <!-- Malla decorativa -->
+  <svg class="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-72 w-full text-white/15 sm:h-96" viewBox="0 0 1200 400" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+    <path d="M0 330C150 250 250 380 420 300S700 210 860 290s240-40 340-110"/>
+    <path d="M0 360C160 290 280 400 450 330S720 250 880 320s230-60 320-130"/>
+    <path d="M0 300C140 210 240 340 410 260S690 170 850 250s250-30 350-100"/>
+    <path d="M0 390C170 330 300 410 470 360S740 290 900 350s220-80 300-150"/>
+    <path d="M200 400C260 300 330 250 420 300M520 400c60-120 150-150 270-100M880 400c20-90 90-150 200-130"/>
+    <g fill="currentColor" stroke="none"><circle cx="420" cy="300" r="4"/><circle cx="860" cy="290" r="4"/><circle cx="650" cy="238" r="3"/><circle cx="1090" cy="270" r="4"/></g>
+  </svg>
+  <div class="mx-auto flex min-h-[calc(100svh-4.5rem)] max-w-6xl flex-col justify-center px-4 py-16 sm:px-6 lg:py-24">
+    <p class="reveal inline-flex w-fit items-center gap-2 rounded-full border border-white/40 px-4 py-1.5 text-xs font-bold uppercase tracking-[.2em]">27 · 28 · 29 de octubre de 2026</p>
+    <h1 class="reveal mt-6 flex items-start gap-3 sm:gap-5">
+      <span class="font-display text-[8.5rem] font-bold leading-[.8] sm:text-[12rem] lg:text-[15rem]">1</span>
+      <span class="pt-1 sm:pt-3">
+        <span class="block font-display text-4xl font-semibold sm:text-6xl">.er</span>
+        <span class="mt-2 block font-display text-3xl font-bold uppercase leading-[1.02] tracking-tight sm:mt-4 sm:text-5xl lg:text-6xl">Encuentro<br>Universitario<br>de Economía</span>
+      </span>
+    </h1>
+    <p class="reveal mt-8 max-w-2xl text-lg font-medium leading-relaxed text-white/95 sm:text-xl">Tres días de paneles, investigaciones estudiantiles y conversación con quienes han pensado y conducido la economía de Chile. Organizado por la Sociedad Universitaria de Economía, en alianza con la Facultad de Economía y Negocios de la Universidad de Chile.</p>
+    <div class="reveal mt-9 flex flex-wrap items-center gap-4">
+      <a href="#inscripcion" class="js-inscripcion rounded-md bg-white px-7 py-3.5 text-base font-bold text-sue-700 shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:bg-crema">Inscríbete</a>
+      <a href="#programa" class="rounded-md border-2 border-white px-7 py-3.5 text-base font-bold transition hover:bg-white hover:text-sue-700">Conoce la programación ↓</a>
+    </div>
+    <div class="reveal mt-12 flex flex-wrap items-center gap-x-8 gap-y-5 text-sm font-medium">
+      <p class="flex items-center gap-2"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>FEN, Universidad de Chile · Diagonal Paraguay 257, Santiago</p>
+      <p id="cuenta" class="rounded-md bg-black/20 px-4 py-2 font-semibold" hidden></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Organizan ============ -->
+<section class="border-y border-white/20 bg-sue-900" aria-label="Organización">
+  <div class="mx-auto flex max-w-6xl flex-col items-center justify-center gap-6 px-4 py-8 sm:flex-row sm:gap-10 sm:px-6">
+    <div class="flex items-center gap-4"><span class="text-xs font-bold uppercase tracking-[.2em] text-white/70">Organiza</span><span class="inline-flex items-center rounded-md bg-white px-3 py-1.5"><img src="logofinal_sue.png" alt="Sociedad Universitaria de Economía" class="h-9 w-auto sm:h-10" onerror="this.replaceWith(Object.assign(document.createElement('b'),{className:'font-display text-sue-700 text-lg',textContent:'SUE'}))"></span></div>
+    <span class="hidden text-2xl text-white/50 sm:block" aria-hidden="true">×</span>
+    <div class="flex items-center gap-4"><span class="text-xs font-bold uppercase tracking-[.2em] text-white/70">En alianza con</span><span class="inline-flex items-center rounded-md bg-white px-4 py-2"><img src="img/logo-fen.png" alt="Facultad de Economía y Negocios, Universidad de Chile" class="h-10 w-auto sm:h-12" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'text-sue-700 text-sm font-bold leading-tight',innerHTML:'Facultad de Economía y Negocios<br><span class=&quot;font-medium&quot;>Universidad de Chile</span>'}))"></span></div>
+  </div>
+</section>
+
+<!-- ============ Programa ============ -->
+<section id="programa" class="bg-sue-700">
+  <div class="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
+    <p class="reveal text-xs font-bold uppercase tracking-[.25em] text-white/75">Programa</p>
+    <h2 class="reveal mt-3 max-w-3xl font-display text-4xl font-semibold leading-tight sm:text-6xl">Conoce la programación</h2>
+    <p class="reveal mt-4 max-w-2xl text-lg text-white/90">Baja por la página para recorrer los tres días. Todas las actividades son en la FEN.</p>
+  </div>
+  <div class="mx-auto max-w-6xl px-4 pb-6 sm:px-6"><div class="grid gap-8 py-14 lg:grid-cols-[230px_1fr] lg:gap-14" id="dia-27">
+  <div class="lg:sticky lg:top-28 lg:self-start">
+    <div class="reveal flex items-end gap-4 lg:block">
+      <p class="font-display text-7xl font-semibold leading-none sm:text-8xl lg:text-9xl">27</p>
+      <div class="pb-1 lg:pb-0 lg:pt-3"><p class="text-xl font-bold uppercase tracking-[.22em] sm:text-2xl">Martes</p><p class="text-sm font-medium uppercase tracking-widest text-white/70">de octubre</p></div>
+    </div>
+  </div>
+  <div class="space-y-6 lg:border-l lg:border-white/25 lg:pl-14"><article class="reveal rounded-2xl border border-white/25 bg-black/15 p-6 shadow-xl shadow-black/10 backdrop-blur-sm sm:p-8">
+  <span class="inline-block rounded bg-white px-2.5 py-1 text-[11px] font-bold uppercase tracking-[.18em] text-sue-700">Panel</span>
+  <h4 class="mt-4 font-display text-2xl font-semibold leading-tight sm:text-3xl">IA y mercado laboral</h4>
+  <p class="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm font-medium text-white/90"><span class="inline-flex items-center gap-1.5"><svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>11:00 hrs</span><span class="inline-flex items-center gap-1.5"><svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Auditorio PwC</span></p>
+  <ul class="mt-5 grid gap-3 sm:grid-cols-2"><li class="flex items-center gap-3"><span class="relative inline-flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-sue-900 ring-2 ring-white/80 font-display text-base font-semibold">JD<img src="img/invitados/jose-de-gregorio.jpg" alt="Foto de José De Gregorio" loading="lazy" onerror="this.style.display='none'" class="absolute inset-0 h-full w-full object-cover"></span><span class="leading-tight"><span class="block font-semibold">José De Gregorio</span><span class="block text-xs text-white/75">Profesor FEN · expresidente del Banco Central</span></span></li><li class="flex items-center gap-3"><span class="relative inline-flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-sue-900 ring-2 ring-white/80 font-display text-base font-semibold">RD<img src="img/invitados/rodrigo-duran.jpg" alt="Foto de Rodrigo Durán" loading="lazy" onerror="this.style.display='none'" class="absolute inset-0 h-full w-full object-cover"></span><span class="leading-tight"><span class="block font-semibold">Rodrigo Durán</span><span class="block text-xs text-white/75">Gerente general de Cenia</span></span></li><li class="flex items-center gap-3"><span class="relative inline-flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-sue-900 ring-2 ring-white/80 font-display text-base font-semibold">PM<img src="img/invitados/pablo-munoz.jpg" alt="Foto de Pablo Muñoz" loading="lazy" onerror="this.style.display='none'" class="absolute inset-0 h-full w-full object-cover"></span><span class="leading-tight"><span class="block font-semibold">Pablo Muñoz</span><span class="block text-xs text-white/75">Profesor asociado, Depto. de Economía FEN</span></span></li><li class="flex items-center gap-3"><span class="relative inline-flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-sue-900 ring-2 ring-white/80 font-display text-base font-semibold">PB<img src="img/invitados/paola-bordon.jpg" alt="Foto de Paola Bordón" loading="lazy" onerror="this.style.display='none'" class="absolute inset-0 h-full w-full object-cover"></span><span class="leading-tight"><span class="block font-semibold">Paola Bordón</span><span class="block text-xs text-white/75">Profesora asistente, Depto. de Economía FEN</span></span></li></ul>
+</article><article class="reveal rounded-2xl border border-white/25 bg-black/15 p-6 shadow-xl shadow-black/10 backdrop-blur-sm sm:p-8">
+  <span class="inline-block rounded bg-white px-2.5 py-1 text-[11px] font-bold uppercase tracking-[.18em] text-sue-700">Presentaciones</span>
+  <h4 class="mt-4 font-display text-2xl font-semibold leading-tight sm:text-3xl">Investigaciones estudiantiles (1)</h4>
+  <p class="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm font-medium text-white/90"><span class="inline-flex items-center gap-1.5"><svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>12:30 hrs</span><span class="inline-flex items-center gap-1.5"><svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Lounge de Posgrado</span></p>
+  <div class="mt-5 grid gap-5 sm:grid-cols-2"><div><p class="text-xs font-bold uppercase tracking-widest text-white/70">Presentan</p><ul class="mt-2 space-y-1 font-semibold"><li>Alexander Santibáñez</li><li>Tomás Rodríguez</li><li>Joaquín Martínez</li></ul></div><div><p class="text-xs font-bold uppercase tracking-widest text-white/70">Comenta</p><div class="mt-2 flex items-center gap-3"><span class="relative inline-flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-sue-900 ring-2 ring-white/80 font-display text-base font-semibold">VP<img src="img/invitados/valentina-paredes.jpg" alt="Foto de Valentina Paredes" loading="lazy" onerror="this.style.display='none'" class="absolute inset-0 h-full w-full object-cover"></span><span class="leading-tight"><span class="block font-semibold">Valentina Paredes</span><span class="block text-xs text-white/75">Académica FEN UChile</span></span></div></div></div>
+</article></div>
+</div><hr class="border-white/20"><div class="grid gap-8 py-14 lg:grid-cols-[230px_1fr] lg:gap-14" id="dia-28">
+  <div class="lg:sticky lg:top-28 lg:self-start">
+    <div class="reveal flex items-end gap-4 lg:block">
+      <p class="font-display text-7xl font-semibold leading-none sm:text-8xl lg:text-9xl">28</p>
+      <div class="pb-1 lg:pb-0 lg:pt-3"><p class="text-xl font-bold uppercase tracking-[.22em] sm:text-2xl">Miércoles</p><p class="text-sm font-medium uppercase tracking-widest text-white/70">de octubre</p></div>
+    </div>
+  </div>
+  <div class="space-y-6 lg:border-l lg:border-white/25 lg:pl-14"><article class="reveal rounded-2xl border border-white/25 bg-black/15 p-6 shadow-xl shadow-black/10 backdrop-blur-sm sm:p-8">
+  <span class="inline-block rounded bg-white px-2.5 py-1 text-[11px] font-bold uppercase tracking-[.18em] text-sue-700">Presentaciones</span>
+  <h4 class="mt-4 font-display text-2xl font-semibold leading-tight sm:text-3xl">Investigaciones estudiantiles (2)</h4>
+  <p class="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm font-medium text-white/90"><span class="inline-flex items-center gap-1.5"><svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>12:30 hrs</span><span class="inline-flex items-center gap-1.5"><svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Lounge de Posgrado</span></p>
+  <div class="mt-5 grid gap-5 sm:grid-cols-2"><div><p class="text-xs font-bold uppercase tracking-widest text-white/70">Presentan</p><ul class="mt-2 space-y-1 font-semibold"><li>Ricardo Vargas</li><li>Maximiliano Cea</li><li>Diego Pakomio</li></ul></div><div><p class="text-xs font-bold uppercase tracking-widest text-white/70">Comenta</p><div class="mt-2 flex items-center gap-3"><span class="relative inline-flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-sue-900 ring-2 ring-white/80 font-display text-base font-semibold">PB<img src="img/invitados/paola-bordon.jpg" alt="Foto de Paola Bordón" loading="lazy" onerror="this.style.display='none'" class="absolute inset-0 h-full w-full object-cover"></span><span class="leading-tight"><span class="block font-semibold">Paola Bordón</span><span class="block text-xs text-white/75">Académica FEN UChile</span></span></div></div></div>
+</article><article class="reveal rounded-2xl border border-white/25 bg-black/15 p-6 shadow-xl shadow-black/10 backdrop-blur-sm sm:p-8">
+  <span class="inline-block rounded bg-white px-2.5 py-1 text-[11px] font-bold uppercase tracking-[.18em] text-sue-700">Charla</span>
+  <h4 class="mt-4 font-display text-2xl font-semibold leading-tight sm:text-3xl">Minería y desarrollo sostenible</h4>
+  <p class="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm font-medium text-white/90"><span class="inline-flex items-center gap-1.5"><svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>14:00 hrs</span><span class="inline-flex items-center gap-1.5"><svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Aula Magna</span></p>
+  <ul class="mt-5 grid gap-3 sm:grid-cols-2"><li class="flex items-center gap-3"><span class="relative inline-flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-sue-900 ring-2 ring-white/80 font-display text-base font-semibold">OL<img src="img/invitados/oscar-landerretche.jpg" alt="Foto de Óscar Landerretche" loading="lazy" onerror="this.style.display='none'" class="absolute inset-0 h-full w-full object-cover"></span><span class="leading-tight"><span class="block font-semibold">Óscar Landerretche</span><span class="block text-xs text-white/75">Decano de la FEN · expresidente de Codelco</span></span></li></ul>
+</article></div>
+</div><hr class="border-white/20"><div class="grid gap-8 py-14 lg:grid-cols-[230px_1fr] lg:gap-14" id="dia-29">
+  <div class="lg:sticky lg:top-28 lg:self-start">
+    <div class="reveal flex items-end gap-4 lg:block">
+      <p class="font-display text-7xl font-semibold leading-none sm:text-8xl lg:text-9xl">29</p>
+      <div class="pb-1 lg:pb-0 lg:pt-3"><p class="text-xl font-bold uppercase tracking-[.22em] sm:text-2xl">Jueves</p><p class="text-sm font-medium uppercase tracking-widest text-white/70">de octubre</p></div>
+    </div>
+  </div>
+  <div class="space-y-6 lg:border-l lg:border-white/25 lg:pl-14"><article class="reveal rounded-2xl border border-white/25 bg-black/15 p-6 shadow-xl shadow-black/10 backdrop-blur-sm sm:p-8">
+  <span class="inline-block rounded bg-white px-2.5 py-1 text-[11px] font-bold uppercase tracking-[.18em] text-sue-700">Conversatorio</span>
+  <h4 class="mt-4 font-display text-2xl font-semibold leading-tight sm:text-3xl">Desigualdad y crecimiento</h4>
+  <p class="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm font-medium text-white/90"><span class="inline-flex items-center gap-1.5"><svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>14:00 hrs</span><span class="inline-flex items-center gap-1.5"><svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Auditorio PwC</span></p>
+  <ul class="mt-5 grid gap-3 sm:grid-cols-2"><li class="flex items-center gap-3"><span class="relative inline-flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-sue-900 ring-2 ring-white/80 font-display text-base font-semibold">NE<img src="img/invitados/nicolas-eyzaguirre.jpg" alt="Foto de Nicolás Eyzaguirre" loading="lazy" onerror="this.style.display='none'" class="absolute inset-0 h-full w-full object-cover"></span><span class="leading-tight"><span class="block font-semibold">Nicolás Eyzaguirre</span><span class="block text-xs text-white/75">Exministro de Hacienda y de Educación</span></span></li><li class="flex items-center gap-3"><span class="relative inline-flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-sue-900 ring-2 ring-white/80 font-display text-base font-semibold">CS<img src="img/invitados/claudia-sanhueza.jpg" alt="Foto de Claudia Sanhueza" loading="lazy" onerror="this.style.display='none'" class="absolute inset-0 h-full w-full object-cover"></span><span class="leading-tight"><span class="block font-semibold">Claudia Sanhueza</span><span class="block text-xs text-white/75">Exsubsecretaria de Relaciones Económicas Internacionales</span></span></li></ul>
+</article></div>
+</div></div>
+</section>
+
+<!-- ============ Invitados ============ -->
+<section id="invitados" class="bg-sue-800">
+  <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+    <p class="reveal text-xs font-bold uppercase tracking-[.25em] text-white/75">Quiénes nos acompañan</p>
+    <h2 class="reveal mt-3 font-display text-4xl font-semibold leading-tight sm:text-6xl">Invitadas e invitados</h2>
+    <p class="reveal mt-4 max-w-2xl text-lg text-white/90">Académicas, académicos y figuras de la política económica que conversarán con estudiantes.</p>
+    <ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"><li class="reveal flex flex-col rounded-2xl border border-white/25 bg-black/15 p-6">
+  <div><span class="relative inline-flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full bg-sue-900 ring-2 ring-white/80 font-display text-3xl font-semibold">JD<img src="img/invitados/jose-de-gregorio.jpg" alt="Foto de José De Gregorio" loading="lazy" onerror="this.style.display='none'" class="absolute inset-0 h-full w-full object-cover"></span><h3 class="mt-4 font-display text-2xl font-semibold leading-tight">José De Gregorio</h3><p class="mt-1 text-sm font-medium text-white/80">Profesor FEN · expresidente del Banco Central</p></div>
+  <p class="mt-4 flex-1 text-sm leading-relaxed text-white/90">Profesor de la FEN y exdecano de la Facultad. Presidió el Banco Central de Chile (2007–2011) y fue ministro de Economía, Minería y Energía (2000–2001). Doctor en Economía por el MIT.</p>
+  <p class="mt-4 inline-block self-start rounded-md border border-white/40 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider">Panel · Mar 27</p>
+</li><li class="reveal flex flex-col rounded-2xl border border-white/25 bg-black/15 p-6">
+  <div><span class="relative inline-flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full bg-sue-900 ring-2 ring-white/80 font-display text-3xl font-semibold">RD<img src="img/invitados/rodrigo-duran.jpg" alt="Foto de Rodrigo Durán" loading="lazy" onerror="this.style.display='none'" class="absolute inset-0 h-full w-full object-cover"></span><h3 class="mt-4 font-display text-2xl font-semibold leading-tight">Rodrigo Durán</h3><p class="mt-1 text-sm font-medium text-white/80">Gerente general de Cenia</p></div>
+  <p class="mt-4 flex-1 text-sm leading-relaxed text-white/90">Gerente general del Centro Nacional de Inteligencia Artificial (Cenia), y voz frecuente en el debate sobre inteligencia artificial y productividad en Chile.</p>
+  <p class="mt-4 inline-block self-start rounded-md border border-white/40 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider">Panel · Mar 27</p>
+</li><li class="reveal flex flex-col rounded-2xl border border-white/25 bg-black/15 p-6">
+  <div><span class="relative inline-flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full bg-sue-900 ring-2 ring-white/80 font-display text-3xl font-semibold">PM<img src="img/invitados/pablo-munoz.jpg" alt="Foto de Pablo Muñoz" loading="lazy" onerror="this.style.display='none'" class="absolute inset-0 h-full w-full object-cover"></span><h3 class="mt-4 font-display text-2xl font-semibold leading-tight">Pablo Muñoz</h3><p class="mt-1 text-sm font-medium text-white/80">Profesor asociado, Depto. de Economía FEN</p></div>
+  <p class="mt-4 flex-1 text-sm leading-relaxed text-white/90">Doctor en Economía por la Universidad de Berkeley y economista de la U. de Chile. Investiga economía laboral y economía política; es investigador del MIPP y del núcleo MIGRA.</p>
+  <p class="mt-4 inline-block self-start rounded-md border border-white/40 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider">Panel · Mar 27</p>
+</li><li class="reveal flex flex-col rounded-2xl border border-white/25 bg-black/15 p-6">
+  <div><span class="relative inline-flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full bg-sue-900 ring-2 ring-white/80 font-display text-3xl font-semibold">PB<img src="img/invitados/paola-bordon.jpg" alt="Foto de Paola Bordón" loading="lazy" onerror="this.style.display='none'" class="absolute inset-0 h-full w-full object-cover"></span><h3 class="mt-4 font-display text-2xl font-semibold leading-tight">Paola Bordón</h3><p class="mt-1 text-sm font-medium text-white/80">Profesora asistente, Depto. de Economía FEN</p></div>
+  <p class="mt-4 flex-1 text-sm leading-relaxed text-white/90">Doctora en Economía por la Universidad de Wisconsin–Madison. Investiga economía de la educación y economía laboral; es vicepresidenta de la Sociedad Chilena de Economía.</p>
+  <p class="mt-4 inline-block self-start rounded-md border border-white/40 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider">Panel · Mar 27 · Comenta · Mié 28</p>
+</li><li class="reveal flex flex-col rounded-2xl border border-white/25 bg-black/15 p-6">
+  <div><span class="relative inline-flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full bg-sue-900 ring-2 ring-white/80 font-display text-3xl font-semibold">VP<img src="img/invitados/valentina-paredes.jpg" alt="Foto de Valentina Paredes" loading="lazy" onerror="this.style.display='none'" class="absolute inset-0 h-full w-full object-cover"></span><h3 class="mt-4 font-display text-2xl font-semibold leading-tight">Valentina Paredes</h3><p class="mt-1 text-sm font-medium text-white/80">Profesora asociada, Depto. de Economía FEN</p></div>
+  <p class="mt-4 flex-1 text-sm leading-relaxed text-white/90">Doctora en Economía por Berkeley (asesorada por David Card). Dirige los programas de magíster y doctorado en Economía de la U. de Chile; estudia educación y brechas de género.</p>
+  <p class="mt-4 inline-block self-start rounded-md border border-white/40 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider">Comenta · Mar 27</p>
+</li><li class="reveal flex flex-col rounded-2xl border border-white/25 bg-black/15 p-6">
+  <div><span class="relative inline-flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full bg-sue-900 ring-2 ring-white/80 font-display text-3xl font-semibold">OL<img src="img/invitados/oscar-landerretche.jpg" alt="Foto de Óscar Landerretche" loading="lazy" onerror="this.style.display='none'" class="absolute inset-0 h-full w-full object-cover"></span><h3 class="mt-4 font-display text-2xl font-semibold leading-tight">Óscar Landerretche</h3><p class="mt-1 text-sm font-medium text-white/80">Decano de la FEN · expresidente de Codelco</p></div>
+  <p class="mt-4 flex-1 text-sm leading-relaxed text-white/90">Decano de la FEN desde julio de 2026. Doctor en Economía por el MIT, trabajó en el Departamento de Estudios del Banco Central y presidió el directorio de Codelco.</p>
+  <p class="mt-4 inline-block self-start rounded-md border border-white/40 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider">Charla · Mié 28</p>
+</li><li class="reveal flex flex-col rounded-2xl border border-white/25 bg-black/15 p-6">
+  <div><span class="relative inline-flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full bg-sue-900 ring-2 ring-white/80 font-display text-3xl font-semibold">NE<img src="img/invitados/nicolas-eyzaguirre.jpg" alt="Foto de Nicolás Eyzaguirre" loading="lazy" onerror="this.style.display='none'" class="absolute inset-0 h-full w-full object-cover"></span><h3 class="mt-4 font-display text-2xl font-semibold leading-tight">Nicolás Eyzaguirre</h3><p class="mt-1 text-sm font-medium text-white/80">Exministro de Hacienda y de Educación</p></div>
+  <p class="mt-4 flex-1 text-sm leading-relaxed text-white/90">Fue ministro de Hacienda en los gobiernos de Ricardo Lagos y Michelle Bachelet, ministro de Educación y director del Departamento del Hemisferio Occidental del FMI.</p>
+  <p class="mt-4 inline-block self-start rounded-md border border-white/40 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider">Conversatorio · Jue 29</p>
+</li><li class="reveal flex flex-col rounded-2xl border border-white/25 bg-black/15 p-6">
+  <div><span class="relative inline-flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full bg-sue-900 ring-2 ring-white/80 font-display text-3xl font-semibold">CS<img src="img/invitados/claudia-sanhueza.jpg" alt="Foto de Claudia Sanhueza" loading="lazy" onerror="this.style.display='none'" class="absolute inset-0 h-full w-full object-cover"></span><h3 class="mt-4 font-display text-2xl font-semibold leading-tight">Claudia Sanhueza</h3><p class="mt-1 text-sm font-medium text-white/80">Exsubsecretaria de Relaciones Económicas Internacionales</p></div>
+  <p class="mt-4 flex-1 text-sm leading-relaxed text-white/90">Economista de la U. de Chile y Doctora en Economía por Cambridge. Fue subsecretaria de Hacienda y de Relaciones Económicas Internacionales, y fundó el Centro de Economía y Política Social.</p>
+  <p class="mt-4 inline-block self-start rounded-md border border-white/40 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider">Conversatorio · Jue 29</p>
+</li></ul>
+    <p class="reveal mt-8 text-sm text-white/70">Las investigaciones estudiantiles serán presentadas por Alexander Santibáñez, Tomás Rodríguez, Joaquín Martínez, Ricardo Vargas, Maximiliano Cea y Diego Pakomio.</p>
+  </div>
+</section>
+
+<!-- ============ Inscripción ============ -->
+<section id="inscripcion" class="relative isolate overflow-hidden bg-white text-sue-700">
+  <div class="mx-auto max-w-4xl px-4 py-20 text-center sm:px-6">
+    <p class="reveal text-xs font-bold uppercase tracking-[.25em]">27 · 28 · 29 de octubre</p>
+    <h2 class="reveal mt-3 font-display text-4xl font-semibold leading-tight sm:text-6xl">Inscríbete y participa</h2>
+    <p class="reveal mx-auto mt-5 max-w-xl text-lg font-medium text-sue-900">Regístrate para participar en las actividades del encuentro.</p>
+    <a href="#" id="btn-inscripcion" class="js-inscripcion reveal mt-9 inline-block rounded-md bg-sue-700 px-9 py-4 text-lg font-bold text-white shadow-xl shadow-sue-900/30 transition hover:-translate-y-0.5 hover:bg-sue-900">Inscríbete aquí</a>
+    <p id="nota-inscripcion" class="mt-4 text-sm font-medium text-sue-900" hidden>El enlace de inscripción está en el perfil de Instagram de la SUE (@sue.chile).</p>
+  </div>
+</section>
+
+<!-- ============ Contacto del evento ============ -->
+<section id="contacto-evento" class="bg-sue-700">
+  <div class="mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
+    <div>
+      <p class="reveal text-xs font-bold uppercase tracking-[.25em] text-white/75">Contacto</p>
+      <h2 class="reveal mt-3 font-display text-4xl font-semibold leading-tight sm:text-5xl">Dudas, alianzas y auspicios</h2>
+      <p class="reveal mt-5 text-lg leading-relaxed text-white/90">¿Quieres saber más del encuentro, sumarte como colaborador o proponer una alianza? Escríbenos y respondemos cada mensaje.</p>
+      <p class="reveal mt-6 text-sm text-white/80">También puedes escribir directo a <a class="font-semibold underline underline-offset-4" href="mailto:contacto@suecon.cl">contacto@suecon.cl</a>.</p>
+    </div>
+    <form id="sue-contacto" class="reveal rounded-2xl border border-white/30 bg-black/15 p-6 sm:p-8" novalidate>
+      <div class="space-y-5">
+        <div><label for="cf-nombre" class="mb-1.5 block text-sm font-semibold">Nombre</label><input type="text" id="cf-nombre" name="nombre" autocomplete="name" maxlength="100" required class="campo"></div>
+        <div><label for="cf-correo" class="mb-1.5 block text-sm font-semibold">Correo electrónico</label><input type="email" id="cf-correo" name="correo" autocomplete="email" maxlength="150" required class="campo"></div>
+        <div><label for="cf-asunto" class="mb-1.5 block text-sm font-semibold">Motivo</label>
+          <select id="cf-asunto" name="asunto" required class="campo">
+            <option value="" disabled selected>Elige una opción</option>
+            <option>[1.er Encuentro] Duda sobre el evento</option>
+            <option>[1.er Encuentro] Alianza o auspicio</option>
+            <option>[1.er Encuentro] Prensa o difusión</option>
+            <option>[1.er Encuentro] Otro</option>
+          </select></div>
+        <div><label for="cf-mensaje" class="mb-1.5 block text-sm font-semibold">Mensaje</label><textarea id="cf-mensaje" name="mensaje" rows="5" maxlength="5000" required class="campo"></textarea></div>
+        <div class="hp" aria-hidden="true"><label for="cf-website">No llenar</label><input type="text" id="cf-website" name="website" tabindex="-1" autocomplete="off"></div>
+        <button type="submit" class="w-full rounded-md bg-white px-6 py-3.5 text-base font-bold text-sue-700 transition hover:bg-crema disabled:opacity-70 sm:w-auto">Enviar mensaje</button>
+        <p id="sue-contacto-estado" class="form-msg" role="status" aria-live="polite" hidden></p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ============ Cómo llegar ============ -->
+<section id="como-llegar" class="bg-sue-900">
+  <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+    <p class="reveal text-xs font-bold uppercase tracking-[.25em] text-white/75">Cómo llegar</p>
+    <h2 class="reveal mt-3 font-display text-4xl font-semibold leading-tight sm:text-5xl">Facultad de Economía y Negocios</h2>
+    <p class="reveal mt-3 text-lg text-white/90">Universidad de Chile · Diagonal Paraguay 257, Santiago</p>
+    <div class="mt-10 grid gap-8 lg:grid-cols-[1fr_320px]">
+      <div class="reveal overflow-hidden rounded-2xl border border-white/30 bg-black/20">
+        <iframe title="Mapa de la Facultad de Economía y Negocios, Universidad de Chile" class="h-80 w-full sm:h-[26rem]" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Facultad+de+Econom%C3%ADa+y+Negocios+Universidad+de+Chile,+Diagonal+Paraguay+257,+Santiago&amp;output=embed"></iframe>
+      </div>
+      <ul class="reveal space-y-6">
+        <li><p class="text-xs font-bold uppercase tracking-widest text-white/70">En Metro</p><p class="mt-1 font-medium">Líneas 1 y 5 llegan a la zona de la facultad.</p></li>
+        <li><p class="text-xs font-bold uppercase tracking-widest text-white/70">En bus</p><p class="mt-1 font-medium">210, 213E, 401, 406, 407, 421, 422 y 426.</p></li>
+        <li><p class="text-xs font-bold uppercase tracking-widest text-white/70">Salas del encuentro</p><p class="mt-1 font-medium">Auditorio PwC · Lounge de Posgrado · Aula Magna</p></li>
+        <li><a href="https://www.google.com/maps/search/?api=1&amp;query=Facultad+de+Econom%C3%ADa+y+Negocios+Universidad+de+Chile+Diagonal+Paraguay+257+Santiago" target="_blank" rel="noopener" class="inline-block rounded-md border-2 border-white px-5 py-3 text-sm font-bold transition hover:bg-white hover:text-sue-700">Abrir en Google Maps ↗</a></li>
+      </ul>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============ Pie ============ -->
+<footer class="bg-sue-950 text-white">
+  <div class="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-3">
+    <div><p class="font-display text-xl font-semibold">Sociedad Universitaria de Economía</p><p class="mt-3 text-sm text-white/75">Organización estudiantil dedicada al estudio, el debate y la difusión del pensamiento económico.</p></div>
+    <div><p class="text-xs font-bold uppercase tracking-widest text-white/60">Sitio SUE</p><ul class="mt-3 space-y-2 text-sm"><li><a href="index.html" class="hover:underline">Inicio</a></li><li><a href="quienes-somos.html" class="hover:underline">Quiénes somos</a></li><li><a href="actividades.html" class="hover:underline">Actividades</a></li><li><a href="publicaciones.html" class="hover:underline">Publicaciones</a></li><li><a href="contacto.html" class="hover:underline">Contacto</a></li></ul></div>
+    <div><p class="text-xs font-bold uppercase tracking-widest text-white/60">Contacto</p>
+      <ul class="mt-3 space-y-2 text-sm"><li><a class="hover:underline" href="mailto:contacto@suecon.cl">contacto@suecon.cl</a></li>
+      <li><a class="hover:underline" href="https://www.instagram.com/sue.chile/" target="_blank" rel="noopener noreferrer">Instagram @sue.chile</a></li>
+      <li><a class="hover:underline" href="https://www.linkedin.com/company/suechile" target="_blank" rel="noopener noreferrer">LinkedIn</a></li></ul></div>
+  </div>
+  <div class="border-t border-white/15 px-4 py-4 text-center text-xs text-white/60">© 2026 Sociedad Universitaria de Economía</div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  // ⚠️ Pega aquí el enlace de inscripción (entre las comillas).
+  // Si lo dejas vacío, el botón lleva al Instagram de la SUE, donde está el link.
+  var INSCRIPCION_URL = "";
+
+  /* Botones de inscripción */
+  var btns = document.querySelectorAll(".js-inscripcion");
+  var principal = document.getElementById("btn-inscripcion");
+  if (INSCRIPCION_URL) {
+    principal.setAttribute("href", INSCRIPCION_URL);
+    principal.setAttribute("target", "_blank");
+    principal.setAttribute("rel", "noopener");
+    Array.prototype.forEach.call(btns, function (b) {
+      if (b !== principal) { b.setAttribute("href", INSCRIPCION_URL); b.setAttribute("target", "_blank"); b.setAttribute("rel", "noopener"); }
+    });
+  } else {
+    principal.setAttribute("href", "https://www.instagram.com/sue.chile/");
+    principal.setAttribute("target", "_blank");
+    principal.setAttribute("rel", "noopener");
+    document.getElementById("nota-inscripcion").hidden = false;
+  }
+
+  /* Menú móvil */
+  var mb = document.getElementById("menu-btn"), mm = document.getElementById("menu-movil");
+  function cerrar() { mm.classList.add("hidden"); mb.setAttribute("aria-expanded", "false"); }
+  mb.addEventListener("click", function () {
+    var abre = mm.classList.contains("hidden");
+    mm.classList.toggle("hidden", !abre);
+    mb.setAttribute("aria-expanded", abre ? "true" : "false");
+  });
+  mm.addEventListener("click", function (e) { if (e.target.closest("a")) cerrar(); });
+  document.addEventListener("click", function (e) { if (!e.target.closest("header")) cerrar(); });
+
+  /* Aparición al hacer scroll */
+  var items = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("is-in"); io.unobserve(en.target); } });
+    }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
+    Array.prototype.forEach.call(items, function (el) { io.observe(el); });
+  } else {
+    Array.prototype.forEach.call(items, function (el) { el.classList.add("is-in"); });
+  }
+
+  /* Cuenta regresiva (hora de Chile continental: UTC-3 en octubre) */
+  var cuenta = document.getElementById("cuenta");
+  var inicio = new Date("2026-10-27T11:00:00-03:00").getTime();
+  var fin = new Date("2026-10-29T23:59:00-03:00").getTime();
+  var ahora = Date.now();
+  if (ahora < inicio) {
+    var dias = Math.ceil((inicio - ahora) / 86400000);
+    cuenta.textContent = dias === 1 ? "Empieza mañana" : "Faltan " + dias + " días";
+    cuenta.hidden = false;
+  } else if (ahora <= fin) {
+    cuenta.textContent = "¡El encuentro está en curso!";
+    cuenta.hidden = false;
+  }
+})();
+</script>
+<script src="contacto.js"></script>
+</body>
+</html>
