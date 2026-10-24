@@ -948,3 +948,6 @@ color:var(--ink-soft);white-space:pre-wrap;
 
 .nav-links a.nav-evento{background:var(--brick);color:#fff;font-weight:600;}
 .nav-links a.nav-evento:hover{background:var(--brick-dark);}
+@media (min-width:861px){
+  .nav-links a.nav-evento{margin-right:22px;}
+}
