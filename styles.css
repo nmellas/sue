@@ -945,3 +945,6 @@ color:var(--ink-soft);white-space:pre-wrap;
 .page-head{padding:56px 0 40px;border-bottom:1px solid var(--line);}
 .page-head h1{font-size:clamp(30px,4vw,46px);}
 .page-head p{font-size:16px;max-width:60ch;}
+
+.nav-links a.nav-evento{background:var(--brick);color:#fff;font-weight:600;}
+.nav-links a.nav-evento:hover{background:var(--brick-dark);}
