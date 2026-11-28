@@ -145,3 +145,61 @@ font-family:'Montserrat',sans-serif;font-size:15px;padding:0 10px;cursor:pointer
 .dt-notas h2{font-size:22px;}
 .dt-notas p{font-size:14px;}
 .dt-notas a{color:var(--ink);}
+
+/* Rótulos sobre la línea: un halo del color del fondo para que se lean */
+.dt-meta-texto,.dt-fin-texto{paint-order:stroke;stroke:var(--white);stroke-width:3px;stroke-linejoin:round;}
+
+/* ============================================================
+   Pantallas chicas (tablet y celular)
+   ============================================================ */
+@media (max-width:860px){
+body[data-page="datos"] .section{padding:52px 0;}
+.dt-resumen-wrap{padding:28px 0 32px;}
+.dt-barra{flex-direction:column;align-items:stretch;gap:16px;}
+.dt-descargas-todo{padding-top:14px;border-top:1px solid var(--line);}
+}
+
+@media (max-width:560px){
+body[data-page="datos"] .page-head h1{font-size:30px;}
+.dt-actualizado{text-transform:none;letter-spacing:0;font-size:12.5px;line-height:1.5;}
+
+/* Resumen: 2 columnas parejas, valores que caben en pantallas angostas */
+.dt-resumen{border-width:1px;}
+.dt-tile{padding:13px 14px 12px;gap:2px;}
+.dt-tile-label{font-size:10.5px;}
+.dt-tile-valor{font-size:clamp(19px,5.8vw,24px);}
+.dt-tile-nota{font-size:11px;}
+
+/* Período: botones como control segmentado y rango en una grilla */
+.dt-filtros{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.dt-filtros > .dt-filtros-label{grid-column:1 / -1;margin:0;}
+.dt-rango{padding:9px 6px;text-align:center;font-size:13.5px;}
+.dt-desde-hasta{grid-column:1 / -1;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 0;width:auto;}
+.dt-dh-grupo{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.dt-dh-grupo label{grid-column:1 / -1;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
+.dt-desde-hasta select{width:100%;height:38px;font-size:14px;padding:0 4px;}
+.dt-descargas-todo{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.dt-descargas-todo .dt-filtros-label{grid-column:1 / -1;}
+.dt-descargas-todo .dt-bajar{justify-content:center;padding:9px 10px;font-size:13.5px;}
+
+/* Tarjetas de gráficos */
+.dt-grid{gap:16px;}
+.dt-card{padding:18px 14px 14px;}
+.dt-card h2{font-size:20px;}
+.dt-sub{font-size:13px;margin-bottom:10px;}
+.dt-chart{height:210px;margin:0 -4px;}
+.dt-explica{font-size:13.5px;line-height:1.55;}
+.dt-card .dt-descargas{display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;}
+.dt-card .dt-bajar{justify-content:center;}
+
+/* Calculadora: campos a todo el ancho */
+.dt-calc{display:grid;grid-template-columns:1fr;gap:14px;}
+.dt-campo{display:grid;grid-template-columns:1.4fr 1fr;gap:8px;}
+.dt-campo > span:first-child,.dt-campo legend{grid-column:1 / -1;margin-bottom:0;}
+.dt-campo-monto{grid-template-columns:1fr;}
+.dt-monto{width:100%;}
+.dt-monto input{width:100%;}
+.dt-campo select{width:100%;}
+.dt-calc-resultado{padding-left:14px;}
+.dt-calc-texto{font-size:14.5px;}
+}

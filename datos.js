@@ -95,7 +95,8 @@
       return;
     }
     var W = cont.clientWidth, H = cont.clientHeight || 240;
-    var m = { t: 14, r: 64, b: 26, l: 46 };
+    var chico = W < 460;   // celular: márgenes más justos para que el gráfico use el ancho
+    var m = chico ? { t: 12, r: 48, b: 24, l: 38 } : { t: 14, r: 58, b: 26, l: 46 };
     var w = W - m.l - m.r, h = H - m.t - m.b;
     if (w < 60) return;
 
@@ -127,7 +128,8 @@
     if (cfg.banda) {
       el("rect", { x: m.l, width: w, y: Y(cfg.banda[1]), height: Y(cfg.banda[0]) - Y(cfg.banda[1]), "class": "dt-banda" }, svg);
       el("line", { x1: m.l, x2: m.l + w, y1: Y(cfg.meta), y2: Y(cfg.meta), "class": "dt-meta" }, svg);
-      var mt = el("text", { x: m.l + w + 6, y: Y(cfg.meta) + 4, "class": "dt-meta-texto" }, svg);
+      // Rótulo de la meta dentro del gráfico, a la izquierda, sobre la línea
+      var mt = el("text", { x: m.l + 6, y: Y(cfg.meta) - 6, "class": "dt-meta-texto" }, svg);
       mt.textContent = "Meta " + cfg.meta + " %";
     }
 
@@ -150,7 +152,6 @@
     var yf = Y(ultimo[1]);
     el("circle", { cx: X(datos.length - 1), cy: yf, r: 4, "class": "dt-punto" }, svg);
     var yTexto = yf + 4;
-    if (cfg.banda && Math.abs(yTexto - (Y(cfg.meta) + 4)) < 14) yTexto = yf > Y(cfg.meta) ? Y(cfg.meta) + 18 : Y(cfg.meta) - 10;
     var ft = el("text", { x: X(datos.length - 1) + 8, y: yTexto, "class": "dt-fin-texto" }, svg);
     ft.textContent = fmt(cfg, ultimo[1], cfg.decFin).replace("US$", "").replace("/lb", "");
 
@@ -228,7 +229,7 @@
     var u = D.ultimo;
     var tiles = [
       ["#inflacion", "Inflación anual", fmt(CONFIG.inflacion, inf[1]), "a " + nombreMes(inf[0], true)],
-      ["#tpm", "Tasa de Política Monetaria", fmt(CONFIG.tpm, u.tpm.valor, 2), "Banco Central"],
+      ["#tpm", "TPM", fmt(CONFIG.tpm, u.tpm.valor, 2), "Banco Central"],
       ["#dolar", "Dólar observado", "$" + num(u.dolar.valor, 2), nombreFecha(u.dolar.fecha)],
       ["#calculadora", "UF", "$" + num(u.uf.valor, 2), nombreFecha(u.uf.fecha)],
       ["#cobre", "Cobre", "US$" + num(u.cobre.valor, 2) + "/lb", nombreFecha(u.cobre.fecha)],
