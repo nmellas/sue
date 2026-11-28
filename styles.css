@@ -662,11 +662,19 @@ position:absolute;left:0;right:0;bottom:0;z-index:2;
 display:flex;align-items:center;justify-content:space-between;gap:12px;
 padding:36px 16px 14px;background:linear-gradient(transparent, rgba(17,17,17,.55));
 }
-.act-dots{display:flex;flex-wrap:wrap;gap:2px;}
-.act-dots button{width:20px;height:20px;padding:0;border:0;background:none;cursor:pointer;display:grid;place-items:center;}
-.act-dots button::before{content:"";width:8px;height:8px;border-radius:4px;background:rgba(251,251,246,.55);transition:width .3s ease, background-color .3s ease;}
-.act-dots button[aria-current="true"]{width:30px;}
-.act-dots button[aria-current="true"]::before{width:24px;background:var(--white);}
+/* Puntos del carrusel: una sola fila que se desliza (como en Instagram).
+   Se ven como máximo ~8; los más lejanos al actual se achican. */
+.act-dots{
+display:flex;flex-wrap:nowrap;gap:0;position:relative;
+max-width:136px;overflow:hidden;scrollbar-width:none;
+}
+.act-dots::-webkit-scrollbar{display:none;}
+.act-dots button{flex:0 0 16px;width:16px;height:20px;padding:0;border:0;background:none;cursor:pointer;display:grid;place-items:center;transition:flex-basis .3s ease;}
+.act-dots button::before{content:"";width:7px;height:7px;border-radius:4px;background:rgba(251,251,246,.55);transition:width .3s ease,height .3s ease,background-color .3s ease;}
+.act-dots button[data-d="2"]::before{width:5px;height:5px;}
+.act-dots button[data-d="3"]::before{width:3px;height:3px;}
+.act-dots button[aria-current="true"]{flex-basis:26px;}
+.act-dots button[aria-current="true"]::before{width:18px;background:var(--white);}
 .act-pausa{
 font-family:var(--font-mono);font-size:11.5px;letter-spacing:.04em;color:var(--white);cursor:pointer;
 background:rgba(17,17,17,.35);border:1px solid rgba(251,251,246,.6);border-radius:20px;padding:5px 13px;

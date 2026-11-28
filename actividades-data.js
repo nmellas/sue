@@ -176,8 +176,20 @@
     });
     cargarSlide(idx);
     cargarSlide((idx + 1) % slides.length);
-    var dots = $("act-dots").children;
-    for (var i = 0; i < dots.length; i++) dots[i].setAttribute("aria-current", i === idx ? "true" : "false");
+    var cont = $("act-dots"), dots = cont.children;
+    for (var i = 0; i < dots.length; i++) {
+      dots[i].setAttribute("aria-current", i === idx ? "true" : "false");
+      // Tamaño según la distancia a la foto actual: los lejanos se achican
+      var d = Math.abs(i - idx);
+      if (d >= 4) dots[i].setAttribute("data-d", "3");
+      else if (d === 3) dots[i].setAttribute("data-d", "2");
+      else dots[i].removeAttribute("data-d");
+    }
+    // La fila de puntos se desliza para dejar el actual al centro (16 px por punto)
+    if (cont.scrollWidth > cont.clientWidth + 1) {
+      var x = idx * 16 + 13 - cont.clientWidth / 2;
+      cont.scrollTo({ left: Math.max(0, x), behavior: reduceMotion ? "auto" : "smooth" });
+    }
     $("act-contador").textContent = slides.length > 1 ? "Foto " + (idx + 1) + " de " + slides.length : "";
   }
 
