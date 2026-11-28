@@ -7,6 +7,8 @@
 <title>IPoM de septiembre 2026: menor crecimiento en el corto plazo, recuperación de la inversión y pocos cambios en la inflación — SUE</title>
 <meta name="description" content="La desaceleración de la demanda interna y el deterioro del mercado laboral llevaron al Banco Central a recortar a la baja su proyección de crecimiento para 2026. ¿Qué cambió respecto de junio y qué…">
 <link rel="stylesheet" href="styles.css">
+<!-- Conexión anticipada al servidor de las fotos de Drive (formularios) -->
+<link rel="preconnect" href="https://lh3.googleusercontent.com">
 <!-- Ícono de la pestaña -->
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="shortcut icon" href="/favicon.ico">
@@ -40,7 +42,7 @@
 <header class="site-header">
   <nav class="nav">
     <a href="index.html" class="brand">
-  <img src="logofinal_sue.png" alt="Sociedad Universitaria de Economía" class="logo-img">
+  <img src="logofinal_sue.webp" alt="SUE — Sociedad Universitaria de Economía" class="logo-img" width="720" height="183" fetchpriority="high">
 </a>
     <button class="nav-toggle" aria-expanded="false" aria-label="Abrir menú">☰</button>
     <ul class="nav-links">
@@ -115,7 +117,6 @@
   </div>
 </footer>
 
-<script src="ticker-cache.js"></script>
 <script src="indicators.js"></script>
 <!-- Se carga para usar el MISMO enlace CSV que publicaciones.html (CONFIG.CSV_URL).
      Así el número de artículo en "articulo.html?id=…" siempre coincide. -->
@@ -148,12 +149,12 @@
   }
   function imagenUrl(raw, ancho) {
     var u = primeraUrl(raw), id = idDrive(u);
-    if (id) return "https://drive.google.com/thumbnail?id=" + id + "&sz=w" + (ancho || 1600);
+    if (id) return "https://lh3.googleusercontent.com/d/" + id + "=w" + (ancho || 1600) + "-rj-l82";
     return /^https?:\/\//i.test(u) ? u : "";
   }
   function imagenRespaldo(raw, ancho) {
     var id = idDrive(primeraUrl(raw));
-    return id ? "https://lh3.googleusercontent.com/d/" + id + "=w" + (ancho || 1600) : "";
+    return id ? "https://drive.google.com/thumbnail?id=" + id + "&sz=w" + (ancho || 1600) : "";
   }
 
   // Aplica el formato inline de Markdown (negrita, cursiva, tachado,

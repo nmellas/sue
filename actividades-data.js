@@ -55,13 +55,17 @@
   }
 
   // Google Forms guarda las fotos como enlaces de Drive separados por comas.
+  // Se piden a lh3.googleusercontent.com (sin redirecciones) y en JPEG
+  // comprimido ("-rj-l82"): Drive entrega las fotos subidas en PNG, que pesan
+  // hasta 15 veces más. Si falla, se usa la miniatura clásica de Drive.
   function leerFotos(txt) {
     return String(txt || "").split(/[\s,]+/).filter(Boolean).map(function (u) {
       var id = idDrive(u);
       if (id) {
         return {
-          src: function (w) { return "https://drive.google.com/thumbnail?id=" + id + "&sz=w" + w; },
-          respaldo: function (w) { return "https://lh3.googleusercontent.com/d/" + id + "=w" + w; }
+          drive: true,
+          src: function (w) { return "https://lh3.googleusercontent.com/d/" + id + "=w" + w + "-rj-l82"; },
+          respaldo: function (w) { return "https://drive.google.com/thumbnail?id=" + id + "&sz=w" + w; }
         };
       }
       if (/^https?:\/\//i.test(u)) return { src: function () { return u; }, respaldo: null };
@@ -90,16 +94,27 @@
 
   /* ---------- Utilidades de render ---------- */
 
-  function crearImg(foto, ancho, alt, prioridad) {
+  // Anchos que se ofrecen al navegador: cada pantalla baja solo el que necesita
+  // (un celular no descarga la versión de 1600 px).
+  var ANCHOS = [480, 800, 1200, 1600];
+
+  function crearImg(foto, ancho, alt, prioridad, sizes) {
     var img = new Image();
     img.decoding = "async";
     img.loading = prioridad ? "eager" : "lazy";
+    if (prioridad === "alta" && "fetchPriority" in img) img.fetchPriority = "high";
     img.alt = alt;
     if (foto.respaldo) {
       img.addEventListener("error", function onErr() {
         img.removeEventListener("error", onErr);
+        img.removeAttribute("srcset");
         img.src = foto.respaldo(ancho);
       });
+    }
+    if (foto.drive && sizes) {
+      img.sizes = sizes;
+      img.srcset = ANCHOS.filter(function (w) { return w <= ancho; })
+        .map(function (w) { return foto.src(w) + " " + w + "w"; }).join(", ");
     }
     img.src = foto.src(ancho);
     return img;
@@ -127,7 +142,9 @@
     var s = slides[i];
     if (!s || s.dataset.cargada) return;
     s.dataset.cargada = "1";
-    s.appendChild(crearImg(s._foto, CONFIG.anchoFoto, s._alt, true));
+    // La primera foto va con prioridad alta; las demás se cargan de a una, justo antes de mostrarse
+    s.appendChild(crearImg(s._foto, CONFIG.anchoFoto, s._alt, i === 0 ? "alta" : true,
+      "(max-width: 860px) 100vw, 700px"));
   }
 
   function ir(n) {
@@ -239,7 +256,8 @@
 
     if (act.fotos.length) {
       var media = el("div", "act-card-media");
-      media.appendChild(crearImg(act.fotos[0], CONFIG.anchoMiniatura, "", false));
+      media.appendChild(crearImg(act.fotos[0], CONFIG.anchoMiniatura, act.titulo, false,
+        "(max-width: 640px) 100vw, 400px"));
       if (act.fotos.length > 1) media.appendChild(el("span", "act-badge", act.fotos.length + " fotos"));
       art.appendChild(media);
     }

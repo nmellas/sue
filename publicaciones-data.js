@@ -69,12 +69,12 @@ var SUE_IMAGEN = (function () {
   return {
     url: function (raw, ancho) {
       var u = primera(raw), id = idDrive(u);
-      if (id) return "https://drive.google.com/thumbnail?id=" + id + "&sz=w" + (ancho || 1600);
+      if (id) return "https://lh3.googleusercontent.com/d/" + id + "=w" + (ancho || 1600) + "-rj-l82";
       return /^https?:\/\//i.test(u) ? u : "";
     },
     respaldo: function (raw, ancho) {
       var id = idDrive(primera(raw));
-      return id ? "https://lh3.googleusercontent.com/d/" + id + "=w" + (ancho || 1600) : "";
+      return id ? "https://drive.google.com/thumbnail?id=" + id + "&sz=w" + (ancho || 1600) : "";
     }
   };
 })();

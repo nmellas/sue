@@ -71,7 +71,8 @@ const campoParecido = (fila, gruposDeClaves) => {
 function imagenUrl(raw) {
   const u = String(raw).split(/[\s,]+/).filter(Boolean)[0] || "";
   const id = (u.match(/[?&]id=([\w-]{10,})/) || u.match(/\/d\/([\w-]{10,})/) || [])[1];
-  if (id) return `https://drive.google.com/thumbnail?id=${id}&sz=w1200`;
+  // JPEG comprimido: WhatsApp y otras redes no muestran vistas previas muy pesadas
+  if (id) return `https://lh3.googleusercontent.com/d/${id}=w1200-rj-l82`;
   return /^https?:\/\//i.test(u) ? u : "";
 }
 function slugify(titulo) {
