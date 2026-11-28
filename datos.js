@@ -70,15 +70,30 @@
   }
 
   /* ---------- Gráfico de línea ---------- */
-  function dibujar(cont, serieCompleta, cfg, anios) {
-    var datos = serieCompleta;
-    if (cfg.desde) datos = datos.filter(function (d) { return d[0] >= cfg.desde; });
-    if (anios) {
+  // Recorta una serie al período elegido: { anios: n } (0 = todo) o { desde, hasta } ("AAAA-MM")
+  function recortar(serie, cfg, rango) {
+    if (rango.desde) return serie.filter(function (d) { return d[0] >= rango.desde && d[0] <= rango.hasta; });
+    var datos = cfg.desde ? serie.filter(function (d) { return d[0] >= cfg.desde; }) : serie;
+    if (rango.anios && datos.length) {
       var ult = datos[datos.length - 1][0].split("-");
-      var corte = (+ult[0] - anios) + "-" + ult[1];
+      var corte = (+ult[0] - rango.anios) + "-" + ult[1];
       datos = datos.filter(function (d) { return d[0] > corte; });
     }
+    return datos;
+  }
+
+  function dibujar(cont, serieCompleta, cfg, rango) {
+    var datos = recortar(serieCompleta, cfg, rango);
     cont.textContent = "";
+    if (datos.length < 2) {
+      var aviso = document.createElement("p");
+      aviso.className = "dt-sin-datos";
+      aviso.textContent = serieCompleta.length
+        ? "No hay datos de este indicador en el período elegido (parte en " + nombreMes(serieCompleta[0][0]) + ")."
+        : "Sin datos.";
+      cont.appendChild(aviso);
+      return;
+    }
     var W = cont.clientWidth, H = cont.clientHeight || 240;
     var m = { t: 14, r: 64, b: 26, l: 46 };
     var w = W - m.l - m.r, h = H - m.t - m.b;
@@ -101,7 +116,7 @@
     cont.appendChild(svg);
 
     // Grilla y eje Y
-    var decEje = cfg.decEje != null ? cfg.decEje : (esc.paso < 1 ? 1 : 0);
+    var decEje = cfg.decEje != null ? cfg.decEje : (esc.paso % 1 !== 0 ? 1 : 0);
     esc.ticks.forEach(function (t) {
       el("line", { x1: m.l, x2: m.l + w, y1: Y(t), y2: Y(t), "class": t === 0 && cfg.cero ? "dt-cero" : "dt-grid-line" }, svg);
       var tx = el("text", { x: m.l - 8, y: Y(t) + 4, "text-anchor": "end", "class": "dt-eje-texto" }, svg);
@@ -287,6 +302,139 @@
     calcular();
   }
 
+  /* ---------- Descargas (CSV y Excel, del período elegido) ---------- */
+  var COLUMNAS = [
+    ["inflacion", "Inflación anual (%)"],
+    ["ipc", "IPC, variación mensual (%)"],
+    ["tpm", "TPM (%)"],
+    ["dolar", "Dólar observado ($, promedio mensual)"],
+    ["cobre", "Cobre (US$/lb, promedio mensual)"],
+    ["imacec", "IMACEC (variación % 12 meses)"],
+    ["desempleo", "Desempleo (%)"]
+  ];
+
+  // Tabla ancha: una fila por mes, una columna por indicador
+  function armarTabla(series, claves, rango) {
+    var porMes = {}, cols = COLUMNAS.filter(function (c) { return claves.indexOf(c[0]) !== -1; });
+    cols.forEach(function (c, j) {
+      recortar(series[c[0]], CONFIG[c[0]] || {}, rango).forEach(function (p) {
+        (porMes[p[0]] = porMes[p[0]] || [])[j] = p[1];
+      });
+    });
+    var meses = Object.keys(porMes).sort();
+    return {
+      encabezado: ["Mes"].concat(cols.map(function (c) { return c[1]; })),
+      filas: meses.map(function (m) {
+        var f = [m];
+        for (var j = 0; j < cols.length; j++) f.push(porMes[m][j] == null ? null : porMes[m][j]);
+        return f;
+      })
+    };
+  }
+
+  function csv(t) {
+    var esc = function (v) { v = v == null ? "" : String(v); return /[",\n;]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+    return "﻿" + [t.encabezado].concat(t.filas).map(function (f) { return f.map(esc).join(","); }).join("\r\n") + "\r\n";
+  }
+
+  /* Excel (.xlsx) armado a mano: un .xlsx es un zip con archivos XML. */
+  var CRC = (function () {
+    var t = [];
+    for (var n = 0; n < 256; n++) { var c = n; for (var k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; }
+    return t;
+  })();
+  function crc32(b) { var c = 0xffffffff; for (var i = 0; i < b.length; i++) c = CRC[(c ^ b[i]) & 255] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; }
+  function zip(archivos) {
+    var enc = new TextEncoder(), partes = [], central = [], offset = 0;
+    function u16(v) { return [v & 255, (v >>> 8) & 255]; }
+    function u32(v) { return [v & 255, (v >>> 8) & 255, (v >>> 16) & 255, (v >>> 24) & 255]; }
+    archivos.forEach(function (a) {
+      var nombre = enc.encode(a.nombre), datos = enc.encode(a.texto), crc = crc32(datos);
+      var local = [].concat([0x50, 0x4b, 3, 4], u16(20), u16(0x0800), u16(0), u16(0), u16(0x21),
+        u32(crc), u32(datos.length), u32(datos.length), u16(nombre.length), u16(0));
+      partes.push(new Uint8Array(local), nombre, datos);
+      central.push(new Uint8Array([].concat([0x50, 0x4b, 1, 2], u16(20), u16(20), u16(0x0800), u16(0), u16(0), u16(0x21),
+        u32(crc), u32(datos.length), u32(datos.length), u16(nombre.length), u16(0), u16(0), u16(0), u16(0), u32(0), u32(offset))), nombre);
+      offset += local.length + nombre.length + datos.length;
+    });
+    var tamCentral = central.reduce(function (s, p) { return s + p.length; }, 0);
+    var fin = new Uint8Array([].concat([0x50, 0x4b, 5, 6], u16(0), u16(0), u16(archivos.length), u16(archivos.length),
+      u32(tamCentral), u32(offset), u16(0)));
+    return new Blob(partes.concat(central, [fin]), { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+  }
+  function xmlEsc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function letra(j) { return String.fromCharCode(65 + j); }
+  function hoja(filas, anchos, conFechas) {
+    var x = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+      '<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>';
+    anchos.forEach(function (w, j) { x += '<col min="' + (j + 1) + '" max="' + (j + 1) + '" width="' + w + '" customWidth="1"/>'; });
+    x += "</cols><sheetData>";
+    filas.forEach(function (f, i) {
+      x += '<row r="' + (i + 1) + '">';
+      f.forEach(function (v, j) {
+        var ref = letra(j) + (i + 1);
+        if (v == null || v === "") return;
+        if (i === 0) x += '<c r="' + ref + '" t="inlineStr" s="2"><is><t>' + xmlEsc(v) + "</t></is></c>";
+        else if (j === 0 && conFechas && /^\d{4}-\d{2}$/.test(v)) {
+          var serial = Date.UTC(+v.slice(0, 4), +v.slice(5) - 1, 1) / 864e5 + 25569;
+          x += '<c r="' + ref + '" s="1"><v>' + serial + "</v></c>";
+        } else if (typeof v === "number") x += '<c r="' + ref + '"><v>' + v + "</v></c>";
+        else x += '<c r="' + ref + '" t="inlineStr"><is><t xml:space="preserve">' + xmlEsc(v) + "</t></is></c>";
+      });
+      x += "</row>";
+    });
+    return x + "</sheetData></worksheet>";
+  }
+  function xlsx(hojas) {
+    var ns = 'xmlns="http://schemas.openxmlformats.org/', archivos = [];
+    archivos.push({ nombre: "[Content_Types].xml", texto: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types ' + ns + 'package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' +
+      hojas.map(function (h, i) { return '<Override PartName="/xl/worksheets/sheet' + (i + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'; }).join("") + "</Types>" });
+    archivos.push({ nombre: "_rels/.rels", texto: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships ' + ns + 'package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>' });
+    archivos.push({ nombre: "xl/workbook.xml", texto: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook ' + ns + 'spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>' +
+      hojas.map(function (h, i) { return '<sheet name="' + xmlEsc(h.nombre) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>'; }).join("") + "</sheets></workbook>" });
+    archivos.push({ nombre: "xl/_rels/workbook.xml.rels", texto: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships ' + ns + 'package/2006/relationships">' +
+      hojas.map(function (h, i) { return '<Relationship Id="rId' + (i + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (i + 1) + '.xml"/>'; }).join("") +
+      '<Relationship Id="rId' + (hojas.length + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>' });
+    archivos.push({ nombre: "xl/styles.xml", texto: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet ' + ns + 'spreadsheetml/2006/main"><numFmts count="1"><numFmt numFmtId="164" formatCode="mmm yyyy"/></numFmts><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>' });
+    hojas.forEach(function (h, i) { archivos.push({ nombre: "xl/worksheets/sheet" + (i + 1) + ".xml", texto: hoja(h.filas, h.anchos, h.fechas) }); });
+    return zip(archivos);
+  }
+
+  function bajar(blob, nombre) {
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = nombre;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+  }
+
+  function descargar(series, clave, formato, rango, efectivo, D) {
+    var claves = clave === "todo" ? COLUMNAS.map(function (c) { return c[0]; }) : [clave];
+    var t = armarTabla(series, claves, rango);
+    if (!t.filas.length) { alert("No hay datos en el período elegido."); return; }
+    var desde = t.filas[0][0], hasta = t.filas[t.filas.length - 1][0];
+    var base = "sue-" + (clave === "todo" ? "datos-economicos" : clave) + "_" + desde + "_" + hasta;
+    if (formato === "csv") { bajar(new Blob([csv(t)], { type: "text/csv;charset=utf-8" }), base + ".csv"); return; }
+    var act = new Date(D.actualizado);
+    var notas = [
+      ["Datos económicos de Chile — Sociedad Universitaria de Economía (SUE)"],
+      ["Página", "https://suecon.cl/datos.html"],
+      ["Fuente", "Banco Central de Chile e INE, vía mindicador.cl"],
+      ["Actualizado", act.toISOString().slice(0, 10)],
+      ["Período", nombreMes(desde) + " a " + nombreMes(hasta)],
+      [""],
+      ["Notas"],
+      ["Inflación anual", "Variación del IPC en 12 meses, calculada acumulando las variaciones mensuales."],
+      ["IPC", "Los meses que aún no publica la fuente se calculan desde la UF (se reajusta con el IPC del mes anterior)."],
+      ["Dólar y cobre", "Promedio de los valores diarios de cada mes."],
+      ["TPM", "Valor al cierre de cada mes."],
+      ["Desempleo", "Trimestre móvil terminado en el mes indicado (INE)."]
+    ];
+    bajar(xlsx([
+      { nombre: "Datos", filas: [t.encabezado].concat(t.filas), anchos: [12].concat(t.encabezado.slice(1).map(function () { return 22; })), fechas: true },
+      { nombre: "Notas", filas: notas, anchos: [18, 90] }
+    ]), base + ".xlsx");
+  }
+
   /* ---------- Inicio ---------- */
   function iniciar(D) {
     var series = {
@@ -297,25 +445,84 @@
     $("dt-actualizado").textContent = "Actualizado el " + act.getDate() + " de " + MESES[act.getMonth()] + " de " + act.getFullYear() + " · Fuente: Banco Central e INE";
     resumen(D, series);
 
-    var anios = 10;
+    series.ipc = D.ipc.map(function (p) { return [p[0], p[1]]; });   // solo para las descargas
+    var rango = { anios: 10 };
     var charts = [].slice.call(document.querySelectorAll(".dt-chart"));
     charts.forEach(function (c) {
       var k = c.getAttribute("data-serie");
-      tabla(c.closest(".dt-card"), series[k], CONFIG[k]);
+      var card = c.closest(".dt-card");
+      tabla(card, series[k], CONFIG[k]);
+      // Botones de descarga de este indicador
+      var caja = document.createElement("div");
+      caja.className = "dt-descargas";
+      var lab = document.createElement("span"); lab.className = "dt-filtros-label"; lab.textContent = "Descargar";
+      caja.appendChild(lab);
+      [["xlsx", "Excel"], ["csv", "CSV"]].forEach(function (f) {
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "dt-bajar"; b.textContent = f[1];
+        b.setAttribute("data-formato", f[0]); b.setAttribute("data-serie", k);
+        b.setAttribute("aria-label", "Descargar " + CONFIG[k].nombre + " en " + f[1]);
+        caja.appendChild(b);
+      });
+      card.appendChild(caja);
     });
+
+    /* Selector de período: botones rápidos + "desde / hasta" */
+    var ultimoMes = Object.keys(series).reduce(function (m, k) {
+      var s = series[k]; return s.length && s[s.length - 1][0] > m ? s[s.length - 1][0] : m;
+    }, "0000-00");
+    var primerMes = "1976-01";
+    var sel = { dm: $("rango-desde-mes"), da: $("rango-desde-anio"), hm: $("rango-hasta-mes"), ha: $("rango-hasta-anio") };
+    [sel.dm, sel.hm].forEach(function (s) {
+      MESES_CORTOS.forEach(function (n, i) { s.add(new Option(n, String(i + 1).padStart(2, "0"))); });
+    });
+    [sel.da, sel.ha].forEach(function (s) {
+      for (var a = +ultimoMes.slice(0, 4); a >= +primerMes.slice(0, 4); a--) s.add(new Option(a, a));
+    });
+    function mostrarRango(desde, hasta) {
+      sel.dm.value = desde.slice(5); sel.da.value = desde.slice(0, 4);
+      sel.hm.value = hasta.slice(5); sel.ha.value = hasta.slice(0, 4);
+    }
+    // Rango que representa cada botón rápido (para mostrarlo en los selectores y en las descargas)
+    function rangoEfectivo() {
+      if (rango.desde) return { desde: rango.desde, hasta: rango.hasta };
+      if (!rango.anios) return { desde: primerMes, hasta: ultimoMes };
+      var p = ultimoMes.split("-");
+      var d = (+p[0] - rango.anios) + "-" + p[1];
+      var dd = d.split("-"), mm = +dd[1] + 1, yy = +dd[0];
+      if (mm > 12) { mm = 1; yy++; }
+      return { desde: yy + "-" + String(mm).padStart(2, "0"), hasta: ultimoMes };
+    }
+    function marcarBotones() {
+      [].forEach.call(document.querySelectorAll(".dt-rango"), function (o) {
+        var on = !rango.desde && +o.getAttribute("data-anios") === rango.anios;
+        o.classList.toggle("is-activo", on);
+        o.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+    }
     function todo() {
-      charts.forEach(function (c) { var k = c.getAttribute("data-serie"); dibujar(c, series[k], CONFIG[k], anios); });
+      charts.forEach(function (c) { var k = c.getAttribute("data-serie"); dibujar(c, series[k], CONFIG[k], rango); });
+      var r = rangoEfectivo(); mostrarRango(r.desde, r.hasta);
+      marcarBotones();
     }
     todo();
     [].forEach.call(document.querySelectorAll(".dt-rango"), function (b) {
-      b.addEventListener("click", function () {
-        anios = +b.getAttribute("data-anios");
-        [].forEach.call(document.querySelectorAll(".dt-rango"), function (o) {
-          o.classList.toggle("is-activo", o === b);
-          o.setAttribute("aria-pressed", o === b ? "true" : "false");
-        });
+      b.addEventListener("click", function () { rango = { anios: +b.getAttribute("data-anios") }; todo(); });
+    });
+    [sel.dm, sel.da, sel.hm, sel.ha].forEach(function (s) {
+      s.addEventListener("change", function () {
+        var desde = sel.da.value + "-" + sel.dm.value, hasta = sel.ha.value + "-" + sel.hm.value;
+        if (desde > hasta) { var t = desde; desde = hasta; hasta = t; }   // si quedan al revés, se invierten
+        rango = { desde: desde, hasta: hasta };
         todo();
       });
+    });
+
+    /* Descargas */
+    document.addEventListener("click", function (e) {
+      var b = e.target.closest && e.target.closest(".dt-bajar");
+      if (!b) return;
+      descargar(series, b.getAttribute("data-serie"), b.getAttribute("data-formato"), rango, rangoEfectivo(), D);
     });
     var ancho = window.innerWidth, t = null;
     window.addEventListener("resize", function () {
