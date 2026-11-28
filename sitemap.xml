@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://suecon.cl/</loc>
     <lastmod>2026-11-28</lastmod>
@@ -37,21 +37,38 @@
     <priority>0.4</priority>
   </url>
   <url>
+    <loc>https://suecon.cl/encuentro.html</loc>
+    <lastmod>2026-11-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image><image:loc>https://suecon.cl/img/invitados/claudia-sanhueza.webp</image:loc></image:image>
+    <image:image><image:loc>https://suecon.cl/img/invitados/jose-de-gregorio.webp</image:loc></image:image>
+    <image:image><image:loc>https://suecon.cl/img/invitados/nicolas-eyzaguirre.webp</image:loc></image:image>
+    <image:image><image:loc>https://suecon.cl/img/invitados/oscar-landerretche.webp</image:loc></image:image>
+    <image:image><image:loc>https://suecon.cl/img/invitados/pablo-munoz.webp</image:loc></image:image>
+    <image:image><image:loc>https://suecon.cl/img/invitados/paola-bordon.webp</image:loc></image:image>
+    <image:image><image:loc>https://suecon.cl/img/invitados/rodrigo-duran.webp</image:loc></image:image>
+    <image:image><image:loc>https://suecon.cl/img/invitados/valentina-paredes.webp</image:loc></image:image>
+  </url>
+  <url>
     <loc>https://suecon.cl/p/ipom-de-septiembre-2026-menor-crecimiento-en-el-corto-plazo.html</loc>
     <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+    <image:image><image:loc>https://lh3.googleusercontent.com/d/1D7tsExJ4E3JzBqA3Y8lXuUoAGnCADtTn=w1200-rj-l82</image:loc></image:image>
   </url>
   <url>
     <loc>https://suecon.cl/p/nobel-de-economia-2026-hall-woodford-y-la-microfundacion-de-la.html</loc>
     <lastmod>2026-10-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+    <image:image><image:loc>https://static.eldiario.es/clip/de6f7ac9-e9cb-4c23-8c2d-708087340f97_16-9-discover-aspect-ratio_default_0_x784y375.jpg</image:loc></image:image>
   </url>
   <url>
     <loc>https://suecon.cl/p/la-sue-te-resume-el-informe-de-politica-monetaria-ipom-de-junio-del.html</loc>
     <lastmod>2026-08-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+    <image:image><image:loc>https://static.emol.cl/emol50/Fotos/2026/09/08/file_20260908165424.jpg</image:loc></image:image>
   </url>
 </urlset>

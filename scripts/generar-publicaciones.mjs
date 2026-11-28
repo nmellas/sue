@@ -16,7 +16,7 @@
      para que Google encuentre las publicaciones nuevas sin esperar a que
      alguien avise. Ver TUTORIAL-seo.md para activarlo en Search Console.
    ========================================================================== */
-import { readFile, writeFile, rm, mkdir } from "node:fs/promises";
+import { readFile, writeFile, rm, mkdir, readdir } from "node:fs/promises";
 
 const RAIZ = new URL("../", import.meta.url);
 const leer = (f) => readFile(new URL(f, RAIZ), "utf8");
@@ -98,6 +98,11 @@ function fechaISO(txt) {
 
 const escXml = (s) => String(s).replace(/&/g, "&amp;");
 
+// Fotos de los invitados del 1.er Encuentro (carpeta img/invitados)
+const fotosEncuentro = (await readdir(new URL("img/invitados/", RAIZ)).catch(() => []))
+  .filter((f) => /\.(webp|jpe?g|png)$/i.test(f)).sort()
+  .map((f) => BASE + "img/invitados/" + f);
+
 function construirSitemap(base, articulos) {
   const hoy = new Date().toISOString().slice(0, 10);
   // Páginas fijas del sitio (no incluye articulo.html ni 404.html: la primera
@@ -110,15 +115,19 @@ function construirSitemap(base, articulos) {
     { loc: base + "quienes-somos.html", changefreq: "monthly", priority: "0.6" },
     { loc: base + "simulador.html", changefreq: "monthly", priority: "0.6" },
     { loc: base + "contacto.html", changefreq: "yearly", priority: "0.4" },
+    { loc: base + "encuentro.html", changefreq: "monthly", priority: "0.7", imagenes: fotosEncuentro },
   ].map((p) => ({ ...p, lastmod: hoy }));
 
   const entradas = [...fijas, ...articulos].map((u) =>
     `  <url>\n    <loc>${escXml(u.loc)}</loc>\n` +
     (u.lastmod ? `    <lastmod>${u.lastmod}</lastmod>\n` : "") +
-    `    <changefreq>${u.changefreq}</changefreq>\n    <priority>${u.priority}</priority>\n  </url>`
+    `    <changefreq>${u.changefreq}</changefreq>\n    <priority>${u.priority}</priority>\n` +
+    // Imágenes de la página: ayuda a que aparezcan en Google Imágenes
+    (u.imagenes || []).map((img) => `    <image:image><image:loc>${escXml(img)}</image:loc></image:image>\n`).join("") +
+    `  </url>`
   ).join("\n");
 
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entradas}\n</urlset>\n`;
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n${entradas}\n</urlset>\n`;
 }
 
 /* ---------- Generación ---------- */
@@ -189,7 +198,8 @@ for (const [id, fila] of filas.entries()) {
 
   // Solo la dirección canónica va al sitemap (las direcciones antiguas llevan
   // su <link rel="canonical"> apuntando a esta, así que no deben indexarse aparte).
-  articulosParaSitemap.push({ loc: url, lastmod: fechaISO(clave), changefreq: "monthly", priority: "0.6" });
+  articulosParaSitemap.push({ loc: url, lastmod: fechaISO(clave), changefreq: "monthly", priority: "0.6",
+    imagenes: imagen.startsWith(BASE + "og-image") ? [] : [imagen] });
 }
 await writeFile(new URL("p/_direcciones.json", RAIZ), JSON.stringify(nuevoHistorial, null, 2) + "\n");
 await writeFile(new URL("sitemap.xml", RAIZ), construirSitemap(BASE, articulosParaSitemap));

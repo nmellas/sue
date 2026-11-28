@@ -79,7 +79,9 @@ document.addEventListener('DOMContentLoaded', function () {
   var estilo = document.createElement("style");
   estilo.textContent =
     "html{scroll-padding-top:110px;}" +
-    ".sue-rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease;transition-delay:var(--rv-d,0ms);will-change:opacity,transform;}" +
+    // !important: algunas tarjetas (p. ej. las de publicaciones) tienen su propia
+    // transición para el hover, que si no anularía el fade mientras aparecen.
+    ".sue-rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease !important;transition-delay:var(--rv-d,0ms) !important;will-change:opacity,transform;}" +
     ".sue-rv.sue-rv-in{opacity:1;transform:none;}";
   document.head.appendChild(estilo);
 
