@@ -86,12 +86,14 @@ var SUE_IMAGEN = (function () {
     });
   }
 
-  function miniatura(pub) {
+  function miniatura(pub, i) {
     var src = SUE_IMAGEN.url(pub.imagen, 900);
     if (!src) return "";
     var resp = SUE_IMAGEN.respaldo(pub.imagen, 900);
+    // Las 3 primeras se piden de inmediato (se ven al abrir la página); el resto, al bajar.
     // Si Drive falla, prueba la URL de respaldo; si también falla, oculta la miniatura
-    return '<div class="pub-thumb"><img src="' + escapeHtml(src) + '" alt="" loading="lazy" decoding="async"' +
+    return '<div class="pub-thumb"><img src="' + escapeHtml(src) + '" alt="' + escapeHtml(pub.titulo || "") + '"' +
+      (i < 3 ? ' loading="eager" fetchpriority="high"' : ' loading="lazy"') + ' decoding="async"' +
       ' data-r="' + escapeHtml(resp) + '"' +
       ' onerror="if(this.dataset.r){var r=this.dataset.r;this.dataset.r=\'\';this.src=r;}else{this.parentNode.style.display=\'none\';}"></div>';
   }
@@ -152,7 +154,7 @@ var SUE_IMAGEN = (function () {
       .map(function (pub, i) {
         return (
           '<div class="pub-row' + (pub.imagen ? " has-thumb" : "") + '" data-tipo="' + escapeHtml(pub.tipo) + '">' +
-            miniatura(pub) +
+            miniatura(pub, i) +
             '<span class="idx">§' + (total - i) + '</span>' +
             "<div>" +
               '<span class="meta">' + escapeHtml(pub.tipo).toUpperCase() +

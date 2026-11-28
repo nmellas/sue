@@ -529,9 +529,13 @@ background:var(--white);border:1.5px solid var(--ink);border-radius:6px;
 }
 .doc-teaser h3{font-size:19px;margin-bottom:6px;}
 .doc-teaser p{font-size:14.5px;margin:0;}
+/* Cuadro del simulador: dibujo de un banco a la izquierda */
+.sim-teaser{grid-template-columns:auto 1fr auto;}
+.sim-ico{width:84px;height:auto;display:block;}
 @media (max-width:640px){
 .doc-teaser{grid-template-columns:1fr;}
 .doc-teaser .btn{justify-self:start;}
+.sim-ico{width:60px;}
 }
 
 /* ============ PUBLICATIONS LIST ============ */
