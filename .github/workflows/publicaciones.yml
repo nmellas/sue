@@ -1,13 +1,19 @@
 # Copia en la web las fotos de los formularios (img/actividades, img/publicaciones)
 # y genera una página por publicación (carpeta p/) para que cada una tenga
-# su propia vista previa al compartirla. Corre cada hora y también a mano
-# desde la pestaña Actions → "Páginas de publicaciones" → Run workflow.
+# su propia vista previa al compartirla.
+# Corre:
+#   - al instante cuando alguien envía un formulario o edita la hoja (lo avisa
+#     el Apps Script de las hojas; ver scripts/apps-script-formularios.gs),
+#   - cada hora como respaldo,
+#   - y a mano desde Actions → "Páginas de publicaciones" → Run workflow.
 name: Páginas de publicaciones
 
 on:
   schedule:
     - cron: "15 * * * *"   # cada hora, al minuto 15
   workflow_dispatch:        # botón para ejecutarlo a mano
+  repository_dispatch:      # aviso del Apps Script al enviar un formulario
+    types: [formulario]
   push:
     paths:
       - "articulo.html"
@@ -32,9 +38,22 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
-      # Copia en la web las fotos subidas por los formularios (Drive)
-      - run: node scripts/guardar-fotos.mjs
-      - run: node scripts/generar-publicaciones.mjs
+      # Copia en la web las fotos subidas por los formularios (Drive) y
+      # genera las páginas de publicaciones.
+      # Cuando lo dispara un formulario, la hoja "publicada en la web" puede
+      # tardar unos minutos en mostrar la respuesta nueva: se reintenta cada
+      # minuto (hasta ~10 min) hasta que aparezca algún cambio.
+      - name: Copiar fotos y generar páginas
+        run: |
+          intentos=1
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then intentos=10; fi
+          for i in $(seq 1 $intentos); do
+            node scripts/guardar-fotos.mjs
+            node scripts/generar-publicaciones.mjs
+            git add -A p sitemap.xml img/actividades img/publicaciones fotos-drive.js
+            if ! git diff --staged --quiet; then echo "Hay cambios."; break; fi
+            if [ "$i" -lt "$intentos" ]; then echo "Aún sin cambios; reintento en 60 s ($i/$intentos)…"; sleep 60; fi
+          done
       - name: Guardar cambios (solo si hay)
         run: |
           git config user.name "SUE bot"

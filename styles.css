@@ -176,11 +176,19 @@ transition:color .15s ease, background .15s ease;
 }
 
 @media (max-width:860px){
+  /* Menú del celular: solo tres rayas gruesas, sin recuadro (el ☰ del HTML se oculta) */
   .nav-toggle{
-    display:inline-flex !important;align-items:center;gap:8px;
-    font-size:22px;padding:8px 12px;line-height:1;
-    color:var(--brick);border-color:var(--brick);
+    display:inline-block !important;position:relative;
+    width:46px;height:46px;padding:0;border:0;border-radius:0;
+    font-size:0;line-height:0;color:var(--brick);
+    -webkit-tap-highlight-color:transparent;
   }
+  .nav-toggle::before{
+    content:"";position:absolute;left:8px;right:8px;top:12px;height:3.5px;
+    background:currentColor;border-radius:3px;
+    box-shadow:0 9px 0 currentColor,0 18px 0 currentColor;
+  }
+  .nav-toggle:focus-visible{outline:2px solid currentColor;outline-offset:2px;}
 
   .nav-links{
     position:absolute;top:100%;left:0;right:0;
