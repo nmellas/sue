@@ -1,4 +1,5 @@
-# Genera una página por publicación (carpeta p/) para que cada una tenga
+# Copia en la web las fotos de los formularios (img/actividades, img/publicaciones)
+# y genera una página por publicación (carpeta p/) para que cada una tenga
 # su propia vista previa al compartirla. Corre cada hora y también a mano
 # desde la pestaña Actions → "Páginas de publicaciones" → Run workflow.
 name: Páginas de publicaciones
@@ -12,6 +13,8 @@ on:
       - "articulo.html"
       - "publicaciones-data.js"
       - "scripts/generar-publicaciones.mjs"
+      - "scripts/guardar-fotos.mjs"
+      - "actividades-data.js"
 
 permissions:
   contents: write
@@ -29,12 +32,14 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
+      # Copia en la web las fotos subidas por los formularios (Drive)
+      - run: node scripts/guardar-fotos.mjs
       - run: node scripts/generar-publicaciones.mjs
       - name: Guardar cambios (solo si hay)
         run: |
           git config user.name "SUE bot"
           git config user.email "actions@users.noreply.github.com"
-          git add -A p sitemap.xml
+          git add -A p sitemap.xml img/actividades img/publicaciones fotos-drive.js
           if git diff --staged --quiet; then
             echo "Sin cambios en las páginas."
             exit 0

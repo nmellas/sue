@@ -58,13 +58,25 @@
   // Se piden a lh3.googleusercontent.com (sin redirecciones) y en JPEG
   // comprimido ("-rj-l82"): Drive entrega las fotos subidas en PNG, que pesan
   // hasta 15 veces más. Si falla, se usa la miniatura clásica de Drive.
+  // Si la foto ya fue copiada dentro de la web (fotos-drive.js, lo actualiza
+  // GitHub Actions cada hora), se usa esa copia: carga desde suecon.cl y Google
+  // la indexa como imagen del sitio. Si no, se pide a Drive como antes.
   function leerFotos(txt) {
     return String(txt || "").split(/[\s,]+/).filter(Boolean).map(function (u) {
       var id = idDrive(u);
+      var local = id && window.SUE_FOTOS && window.SUE_FOTOS[id];
+      var lh3 = function (w) { return "https://lh3.googleusercontent.com/d/" + id + "=w" + w + "-rj-l82"; };
+      if (local) {
+        return {
+          local: local,
+          src: function (w) { return w <= 800 ? local.src800 : local.src; },
+          respaldo: lh3
+        };
+      }
       if (id) {
         return {
           drive: true,
-          src: function (w) { return "https://lh3.googleusercontent.com/d/" + id + "=w" + w + "-rj-l82"; },
+          src: lh3,
           respaldo: function (w) { return "https://drive.google.com/thumbnail?id=" + id + "&sz=w" + w; }
         };
       }
@@ -111,7 +123,14 @@
         img.src = foto.respaldo(ancho);
       });
     }
-    if (foto.drive && sizes) {
+    if (foto.local) {
+      // Copia local: dos tamaños (800 y 1600 px) y medidas reales para que no salte el contenido
+      if (foto.local.ancho && foto.local.alto) { img.width = foto.local.ancho; img.height = foto.local.alto; }
+      if (sizes && ancho > 800) {
+        img.sizes = sizes;
+        img.srcset = foto.local.src800 + " 800w, " + foto.local.src + " 1600w";
+      }
+    } else if (foto.drive && sizes) {
       img.sizes = sizes;
       img.srcset = ANCHOS.filter(function (w) { return w <= ancho; })
         .map(function (w) { return foto.src(w) + " " + w + "w"; }).join(", ");

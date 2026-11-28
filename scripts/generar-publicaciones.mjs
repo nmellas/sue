@@ -68,9 +68,18 @@ const campoParecido = (fila, gruposDeClaves) => {
         if (sinTildes(k).includes(c) && fila[k].trim()) return fila[k].trim();
   return "";
 };
+// Fotos de Drive ya copiadas dentro de la web (las guarda scripts/guardar-fotos.mjs)
+let FOTOS = {};
+try {
+  const js = await leer("fotos-drive.js");
+  FOTOS = JSON.parse(js.slice(js.indexOf("{"), js.lastIndexOf("}") + 1));
+} catch { FOTOS = {}; }
+const idDe = (u) => (String(u).match(/[?&]id=([\w-]{10,})/) || String(u).match(/\/d\/([\w-]{10,})/) || [])[1];
+
 function imagenUrl(raw) {
   const u = String(raw).split(/[\s,]+/).filter(Boolean)[0] || "";
-  const id = (u.match(/[?&]id=([\w-]{10,})/) || u.match(/\/d\/([\w-]{10,})/) || [])[1];
+  const id = idDe(u);
+  if (id && FOTOS[id]) return BASE + FOTOS[id].src;
   // JPEG comprimido: WhatsApp y otras redes no muestran vistas previas muy pesadas
   if (id) return `https://lh3.googleusercontent.com/d/${id}=w1200-rj-l82`;
   return /^https?:\/\//i.test(u) ? u : "";
@@ -111,7 +120,8 @@ function construirSitemap(base, articulos) {
   const fijas = [
     { loc: base, changefreq: "daily", priority: "1.0" },
     { loc: base + "publicaciones.html", changefreq: "daily", priority: "0.8" },
-    { loc: base + "actividades.html", changefreq: "weekly", priority: "0.7" },
+    { loc: base + "actividades.html", changefreq: "weekly", priority: "0.7",
+      imagenes: Object.values(FOTOS).filter((f) => f.tipo === "actividad").map((f) => base + f.src) },
     { loc: base + "quienes-somos.html", changefreq: "monthly", priority: "0.6" },
     { loc: base + "simulador.html", changefreq: "monthly", priority: "0.6" },
     { loc: base + "contacto.html", changefreq: "yearly", priority: "0.4" },
@@ -199,7 +209,12 @@ for (const [id, fila] of filas.entries()) {
   // Solo la dirección canónica va al sitemap (las direcciones antiguas llevan
   // su <link rel="canonical"> apuntando a esta, así que no deben indexarse aparte).
   articulosParaSitemap.push({ loc: url, lastmod: fechaISO(clave), changefreq: "monthly", priority: "0.6",
-    imagenes: imagen.startsWith(BASE + "og-image") ? [] : [imagen] });
+    imagenes: [
+      ...(imagen.startsWith(BASE + "og-image") ? [] : [imagen]),
+      // Fotos dentro del artículo que ya están copiadas en la web
+      ...[...campo(fila, ["Contenido"]).matchAll(/(?:[?&]id=|\/d\/)([\w-]{20,})/g)]
+        .map((m) => FOTOS[m[1]] && BASE + FOTOS[m[1]].src).filter(Boolean),
+    ] });
 }
 await writeFile(new URL("p/_direcciones.json", RAIZ), JSON.stringify(nuevoHistorial, null, 2) + "\n");
 await writeFile(new URL("sitemap.xml", RAIZ), construirSitemap(BASE, articulosParaSitemap));

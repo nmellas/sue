@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IPoM de septiembre 2026: menor crecimiento en el corto plazo, recuperación de la inversión y pocos cambios en la inflación — SUE</title>
 <meta name="description" content="La desaceleración de la demanda interna y el deterioro del mercado laboral llevaron al Banco Central a recortar a la baja su proyección de crecimiento para 2026. ¿Qué cambió respecto de junio y qué…">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=3">
 <!-- Conexión anticipada al servidor de las fotos de Drive (formularios) -->
 <link rel="preconnect" href="https://lh3.googleusercontent.com">
 <!-- Ícono de la pestaña -->
@@ -24,7 +24,7 @@
 <meta property="og:locale" content="es_CL">
 <meta property="og:title" content="IPoM de septiembre 2026: menor crecimiento en el corto plazo, recuperación de la inversión y pocos cambios en la inflación">
 <meta property="og:description" content="La desaceleración de la demanda interna y el deterioro del mercado laboral llevaron al Banco Central a recortar a la baja su proyección de crecimiento para 2026. ¿Qué cambió respecto de junio y qué…">
-<meta property="og:image" content="https://lh3.googleusercontent.com/d/1D7tsExJ4E3JzBqA3Y8lXuUoAGnCADtTn=w1200-rj-l82">
+<meta property="og:image" content="https://suecon.cl/img/publicaciones/ipom-de-septiembre-2026-menor-crecimiento-en-el-corto-plazo-portada.jpg">
 <meta property="og:image:alt" content="IPoM de septiembre 2026: menor crecimiento en el corto plazo, recuperación de la inversión y pocos cambios en la inflación">
 <meta property="article:author" content="Fernanda Cabeza Jerez">
 <meta property="article:section" content="Artículo">
@@ -118,6 +118,7 @@
 </footer>
 
 <script src="indicators.js"></script>
+<script src="fotos-drive.js"></script>
 <!-- Se carga para usar el MISMO enlace CSV que publicaciones.html (CONFIG.CSV_URL).
      Así el número de artículo en "articulo.html?id=…" siempre coincide. -->
 <script src="publicaciones-data.js"></script>
@@ -149,11 +150,16 @@
   }
   function imagenUrl(raw, ancho) {
     var u = primeraUrl(raw), id = idDrive(u);
+    // Copia dentro de la web (fotos-drive.js), si ya existe
+    var local = id && window.SUE_FOTOS && window.SUE_FOTOS[id];
+    if (local) return local.src;
     if (id) return "https://lh3.googleusercontent.com/d/" + id + "=w" + (ancho || 1600) + "-rj-l82";
     return /^https?:\/\//i.test(u) ? u : "";
   }
   function imagenRespaldo(raw, ancho) {
     var id = idDrive(primeraUrl(raw));
+    if (id && window.SUE_FOTOS && window.SUE_FOTOS[id])
+      return "https://lh3.googleusercontent.com/d/" + id + "=w" + (ancho || 1600) + "-rj-l82";
     return id ? "https://drive.google.com/thumbnail?id=" + id + "&sz=w" + (ancho || 1600) : "";
   }
 

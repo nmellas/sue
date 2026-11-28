@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>La SUE te resume el Informe de Política Monetaria (IPoM) de junio del 2026 — SUE</title>
 <meta name="description" content="El Informe de Política Monetaria (IPoM) de junio de 2026 del Banco Central de Chile detalla una economía afectada por un shock petrolero y una contracción transitoria en recursos naturales,…">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=3">
 <!-- Conexión anticipada al servidor de las fotos de Drive (formularios) -->
 <link rel="preconnect" href="https://lh3.googleusercontent.com">
 <!-- Ícono de la pestaña -->
@@ -118,6 +118,7 @@
 </footer>
 
 <script src="indicators.js"></script>
+<script src="fotos-drive.js"></script>
 <!-- Se carga para usar el MISMO enlace CSV que publicaciones.html (CONFIG.CSV_URL).
      Así el número de artículo en "articulo.html?id=…" siempre coincide. -->
 <script src="publicaciones-data.js"></script>
@@ -149,11 +150,16 @@
   }
   function imagenUrl(raw, ancho) {
     var u = primeraUrl(raw), id = idDrive(u);
+    // Copia dentro de la web (fotos-drive.js), si ya existe
+    var local = id && window.SUE_FOTOS && window.SUE_FOTOS[id];
+    if (local) return local.src;
     if (id) return "https://lh3.googleusercontent.com/d/" + id + "=w" + (ancho || 1600) + "-rj-l82";
     return /^https?:\/\//i.test(u) ? u : "";
   }
   function imagenRespaldo(raw, ancho) {
     var id = idDrive(primeraUrl(raw));
+    if (id && window.SUE_FOTOS && window.SUE_FOTOS[id])
+      return "https://lh3.googleusercontent.com/d/" + id + "=w" + (ancho || 1600) + "-rj-l82";
     return id ? "https://drive.google.com/thumbnail?id=" + id + "&sz=w" + (ancho || 1600) : "";
   }
 

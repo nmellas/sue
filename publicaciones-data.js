@@ -69,11 +69,16 @@ var SUE_IMAGEN = (function () {
   return {
     url: function (raw, ancho) {
       var u = primera(raw), id = idDrive(u);
+      // Copia dentro de la web (fotos-drive.js), si ya existe
+      var local = id && window.SUE_FOTOS && window.SUE_FOTOS[id];
+      if (local) return (ancho || 1600) <= 900 ? local.src800 : local.src;
       if (id) return "https://lh3.googleusercontent.com/d/" + id + "=w" + (ancho || 1600) + "-rj-l82";
       return /^https?:\/\//i.test(u) ? u : "";
     },
     respaldo: function (raw, ancho) {
       var id = idDrive(primera(raw));
+      if (id && window.SUE_FOTOS && window.SUE_FOTOS[id])
+        return "https://lh3.googleusercontent.com/d/" + id + "=w" + (ancho || 1600) + "-rj-l82";
       return id ? "https://drive.google.com/thumbnail?id=" + id + "&sz=w" + (ancho || 1600) : "";
     }
   };

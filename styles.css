@@ -685,7 +685,7 @@ transition:border-color .15s ease, transform .15s ease;
 }
 .act-card:hover{border-color:var(--ink);transform:translateY(-2px);}
 .act-card-media{position:relative;aspect-ratio:3 / 2;background:var(--paper-2);border-bottom:1px solid var(--line);}
-.act-card-media img{width:100%;height:100%;object-fit:cover;display:block;}
+.act-card-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
 .act-badge{
 position:absolute;right:10px;bottom:10px;
 font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--white);
