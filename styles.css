@@ -175,7 +175,7 @@ transition:color .15s ease, background .15s ease;
   padding:8px 10px;cursor:pointer;font-family:var(--font-mono);font-size:13px;
 }
 
-@media (max-width:860px){
+@media (max-width:1060px){  /* menú de celular: hasta 1060 px (con 7 enlaces no caben antes) */
   /* Menú del celular: solo tres rayas gruesas, sin recuadro (el ☰ del HTML se oculta) */
   .nav-toggle{
     display:inline-block !important;position:relative;
@@ -980,6 +980,6 @@ color:var(--ink-soft);white-space:pre-wrap;
 
 .nav-links a.nav-evento{background:var(--brick);color:#fff;font-weight:600;}
 .nav-links a.nav-evento:hover{background:var(--brick-dark);}
-@media (min-width:861px){
+@media (min-width:1061px){
   .nav-links a.nav-evento{margin-right:22px;}
 }

@@ -65,6 +65,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://suecon.cl/datos.html</loc>
+    <lastmod>2026-11-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://suecon.cl/contacto.html</loc>
     <lastmod>2026-11-28</lastmod>
     <changefreq>yearly</changefreq>

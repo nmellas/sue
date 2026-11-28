@@ -124,6 +124,7 @@ function construirSitemap(base, articulos) {
       imagenes: Object.values(FOTOS).filter((f) => f.tipo === "actividad").map((f) => base + f.src) },
     { loc: base + "quienes-somos.html", changefreq: "monthly", priority: "0.6" },
     { loc: base + "simulador.html", changefreq: "monthly", priority: "0.6" },
+    { loc: base + "datos.html", changefreq: "daily", priority: "0.8" },
     { loc: base + "contacto.html", changefreq: "yearly", priority: "0.4" },
     { loc: base + "encuentro.html", changefreq: "monthly", priority: "0.7", imagenes: fotosEncuentro },
   ].map((p) => ({ ...p, lastmod: hoy }));

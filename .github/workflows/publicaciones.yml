@@ -21,6 +21,7 @@ on:
       - "scripts/generar-publicaciones.mjs"
       - "scripts/guardar-fotos.mjs"
       - "actividades-data.js"
+      - "scripts/datos-economicos.mjs"
 
 permissions:
   contents: write
@@ -43,6 +44,10 @@ jobs:
       # Cuando lo dispara un formulario, la hoja "publicada en la web" puede
       # tardar unos minutos en mostrar la respuesta nueva: se reintenta cada
       # minuto (hasta ~10 min) hasta que aparezca algún cambio.
+      # Indicadores económicos para datos.html (si mindicador.cl falla, se
+      # mantienen los datos anteriores y el resto sigue igual)
+      - name: Actualizar datos económicos
+        run: node scripts/datos-economicos.mjs || echo "No se pudieron actualizar los datos económicos."
       - name: Copiar fotos y generar páginas
         run: |
           intentos=1
@@ -50,7 +55,7 @@ jobs:
           for i in $(seq 1 $intentos); do
             node scripts/guardar-fotos.mjs
             node scripts/generar-publicaciones.mjs
-            git add -A p sitemap.xml img/actividades img/publicaciones fotos-drive.js
+            git add -A p sitemap.xml img/actividades img/publicaciones fotos-drive.js datos
             if ! git diff --staged --quiet; then echo "Hay cambios."; break; fi
             if [ "$i" -lt "$intentos" ]; then echo "Aún sin cambios; reintento en 60 s ($i/$intentos)…"; sleep 60; fi
           done
@@ -58,7 +63,7 @@ jobs:
         run: |
           git config user.name "SUE bot"
           git config user.email "actions@users.noreply.github.com"
-          git add -A p sitemap.xml img/actividades img/publicaciones fotos-drive.js
+          git add -A p sitemap.xml img/actividades img/publicaciones fotos-drive.js datos
           if git diff --staged --quiet; then
             echo "Sin cambios en las páginas."
             exit 0

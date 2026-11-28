@@ -1,0 +1,123 @@
+/* ============================================================
+   Página de datos — SUE
+   Gráficos de línea simples (SVG propio, sin librerías):
+   una serie por gráfico en el rojo de la SUE, grilla y ejes
+   en gris suave, valor final rotulado y lectura al pasar el
+   mouse o tocar.
+   ============================================================ */
+
+.dt-oculto{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+.dt-actualizado{font-family:var(--font-mono);font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint);margin:0;}
+
+/* ---------- Resumen (tarjetas con el último valor) ---------- */
+.dt-resumen-wrap{padding:36px 0 44px;}
+.dt-resumen{
+list-style:none;margin:0;padding:0;
+display:grid;grid-template-columns:repeat(6,minmax(0,1fr));
+border:1.5px solid var(--ink);border-radius:6px;background:var(--white);
+}
+.dt-tile{display:flex;flex-direction:column;gap:4px;padding:18px 18px 16px;border-left:1px solid var(--line);min-width:0;}
+.dt-tile:first-child{border-left:none;}
+.dt-tile-label{font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);}
+.dt-tile-valor{font-family:var(--font-display);font-size:28px;font-weight:600;line-height:1.1;color:var(--negroclaro);font-variant-numeric:tabular-nums;}
+.dt-tile-nota{font-family:var(--font-mono);font-size:11.5px;color:#7a6f66;}
+.dt-tile a{color:inherit;text-decoration:none;}
+.dt-tile a:hover .dt-tile-label{text-decoration:underline;}
+@media (max-width:1000px){
+.dt-resumen{grid-template-columns:repeat(3,minmax(0,1fr));}
+.dt-tile:nth-child(4){border-left:none;}
+.dt-tile:nth-child(n+4){border-top:1px solid var(--line);}
+}
+@media (max-width:560px){
+.dt-resumen{grid-template-columns:repeat(2,minmax(0,1fr));}
+.dt-tile{padding:14px 14px 12px;}
+.dt-tile:nth-child(n){border-left:1px solid var(--line);border-top:1px solid var(--line);}
+.dt-tile:nth-child(odd){border-left:none;}
+.dt-tile:nth-child(-n+2){border-top:none;}
+.dt-tile-valor{font-size:23px;}
+}
+
+/* ---------- Filtro de período ---------- */
+.dt-filtros{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 22px;}
+.dt-filtros-label{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);margin-right:4px;}
+.dt-rango{
+font-family:var(--font-mono);font-size:13px;font-weight:500;color:var(--ink-soft);cursor:pointer;
+background:var(--white);border:1px solid var(--line);border-radius:20px;padding:6px 14px;
+transition:border-color .15s ease, background .15s ease, color .15s ease;
+}
+.dt-rango:hover{border-color:var(--ink);}
+.dt-rango.is-activo{background:var(--ink);border-color:var(--ink);color:#fff;}
+.dt-rango:focus-visible{outline:2px solid var(--ink);outline-offset:2px;}
+
+/* ---------- Tarjetas de gráficos ---------- */
+.dt-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;}
+@media (max-width:860px){.dt-grid{grid-template-columns:1fr;}}
+.dt-card{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:24px 24px 20px;min-width:0;scroll-margin-top:110px;}
+.dt-card h2{font-size:22px;margin:0 0 4px;}
+.dt-sub{font-size:13.5px;margin:0 0 14px;color:#6f655d;}
+.dt-explica{font-size:14px;margin:14px 0 0;}
+.dt-explica strong{color:var(--negroclaro);}
+.dt-explica a{color:var(--ink);}
+@media (max-width:560px){.dt-card{padding:18px 16px 16px;}}
+
+/* El gráfico */
+.dt-chart{position:relative;height:240px;touch-action:pan-y;}
+.dt-chart svg{display:block;width:100%;height:100%;overflow:visible;}
+.dt-chart svg:focus{outline:none;}
+.dt-chart svg:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:2px;}
+.dt-grid-line{stroke:#e6dfd3;stroke-width:1;shape-rendering:crispEdges;}
+.dt-eje-texto{font-family:'Montserrat',sans-serif;font-size:11px;fill:#7a6f66;font-variant-numeric:tabular-nums;}
+.dt-linea{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;}
+.dt-area{fill:var(--ink);opacity:.08;}
+.dt-cero{stroke:#b9b0a3;stroke-width:1;shape-rendering:crispEdges;}
+.dt-banda{fill:var(--gold);opacity:.14;}
+.dt-meta{stroke:var(--gold);stroke-width:1.5;}
+.dt-meta-texto{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;fill:#7a5b12;}
+.dt-punto{fill:var(--ink);stroke:var(--white);stroke-width:2;}
+.dt-fin-texto{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;fill:var(--negroclaro);font-variant-numeric:tabular-nums;}
+.dt-cursor{stroke:#8a7f75;stroke-width:1;shape-rendering:crispEdges;}
+.dt-cursor-punto{fill:var(--ink);stroke:var(--white);stroke-width:2;}
+
+/* Lectura al pasar el mouse */
+.dt-tip{
+position:absolute;top:0;left:0;pointer-events:none;z-index:2;
+background:var(--negroclaro);color:#fff;border-radius:4px;padding:6px 10px;
+font-family:'Montserrat',sans-serif;line-height:1.3;white-space:nowrap;
+box-shadow:0 4px 14px rgba(0,0,0,.18);transform:translate(-50%,-100%);
+}
+.dt-tip strong{display:block;font-size:14px;font-variant-numeric:tabular-nums;}
+.dt-tip span{font-size:11.5px;color:#d9d3cb;}
+
+/* Tabla de datos (accesible y para quien prefiera números) */
+.dt-tabla{margin-top:12px;font-family:'Montserrat',sans-serif;font-size:13px;}
+.dt-tabla summary{cursor:pointer;color:var(--ink);font-weight:600;font-size:12.5px;}
+.dt-tabla table{border-collapse:collapse;margin-top:8px;width:100%;max-width:320px;}
+.dt-tabla th,.dt-tabla td{padding:4px 8px;border-bottom:1px solid #eee7dc;text-align:left;font-variant-numeric:tabular-nums;color:var(--negroclaro);}
+.dt-tabla td:last-child,.dt-tabla th:last-child{text-align:right;}
+.dt-tabla th{font-weight:600;color:var(--ink-soft);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;}
+
+/* ---------- Calculadora ---------- */
+.dt-calc-wrap{background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.dt-calc{display:flex;flex-wrap:wrap;gap:18px 26px;align-items:flex-end;margin:0 0 26px;}
+.dt-campo{display:flex;gap:8px;align-items:center;border:0;padding:0;margin:0;flex-wrap:wrap;}
+.dt-campo > span:first-child, .dt-campo legend{
+display:block;width:100%;padding:0;margin:0 0 6px;
+font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);
+}
+.dt-monto{display:flex;align-items:center;gap:6px;background:var(--white);border:1.5px solid var(--ink);border-radius:4px;padding:0 12px;height:46px;}
+.dt-monto span{font-family:var(--font-display);font-size:20px;color:var(--negroclaro);}
+.dt-monto input{border:0;background:none;outline:none;font-family:var(--font-display);font-size:20px;color:var(--negroclaro);width:9.5em;font-variant-numeric:tabular-nums;}
+.dt-monto:focus-within{box-shadow:0 0 0 3px rgba(191,13,31,.18);}
+.dt-campo select{
+height:46px;border:1.5px solid var(--ink);border-radius:4px;background:var(--white);color:var(--negroclaro);
+font-family:'Montserrat',sans-serif;font-size:15px;padding:0 10px;cursor:pointer;
+}
+.dt-campo select:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(191,13,31,.18);}
+.dt-calc-resultado{border-left:3px solid var(--ink);padding:4px 0 4px 20px;}
+.dt-calc-num{font-family:var(--font-display);font-size:clamp(34px,5vw,52px);font-weight:600;line-height:1.05;color:var(--negroclaro);margin:0 0 8px;font-variant-numeric:tabular-nums;}
+.dt-calc-texto{font-size:15.5px;margin:0;max-width:62ch;}
+
+.dt-notas p{max-width:82ch;}
+.dt-notas h2{font-size:22px;}
+.dt-notas p{font-size:14px;}
+.dt-notas a{color:var(--ink);}
